@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Sets up and upgrades everything KDNA Grants stores in the database.
+ * Sets up and upgrades everything KDNA Launchpad stores in the database.
  */
 class KDNA_Grants_Install {
 
@@ -243,7 +243,7 @@ class KDNA_Grants_Install {
 	 */
 
 	/**
-	 * The fields KDNA Grants needs to read from the application form.
+	 * The fields KDNA Launchpad needs to read from the application form.
 	 *
 	 * Key => label and help text shown on the Settings screen. 'types' limits
 	 * the dropdown to suitable KDNA Forms field types (empty means any field).

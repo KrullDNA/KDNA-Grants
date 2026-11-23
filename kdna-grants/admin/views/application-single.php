@@ -163,7 +163,7 @@ $kdna_grants_links = function ( $html ) {
 					<?php endforeach; ?>
 				<?php else : ?>
 					<?php if ( $application['entry_id'] && ! $entry ) : ?>
-						<p class="kdna-grants-muted"><?php esc_html_e( 'The KDNA Forms entry for this application can no longer be found, so only the details KDNA Grants keeps are shown.', 'kdna-grants' ); ?></p>
+						<p class="kdna-grants-muted"><?php esc_html_e( 'The KDNA Forms entry for this application can no longer be found, so only the details KDNA Launchpad keeps are shown.', 'kdna-grants' ); ?></p>
 					<?php endif; ?>
 					<?php
 					$kdna_grants_basic = array(

@@ -62,7 +62,7 @@ class KDNA_Grants_Rounds {
 	}
 
 	/**
-	 * Removes every scheduled KDNA Grants rounds task. Used when the plugin is deactivated.
+	 * Removes every scheduled KDNA Launchpad rounds task. Used when the plugin is deactivated.
 	 */
 	public static function clear_cron() {
 		wp_clear_scheduled_hook( self::CRON_HOOK );

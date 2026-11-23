@@ -37,7 +37,7 @@ class KDNA_Grants_Frontend {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ), 5 );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'maybe_enqueue_for_shortcode' ) );
 
-		// Elementor: the KDNA Tools category and the Grant Application widget.
+		// Elementor: the KDNA Tools category and the Launchpad Application widget.
 		add_action( 'elementor/elements/categories_registered', array( __CLASS__, 'register_elementor_category' ) );
 		add_action( 'elementor/widgets/register', array( __CLASS__, 'register_elementor_widget' ) );
 		add_action( 'elementor/frontend/after_register_scripts', array( __CLASS__, 'register_assets' ) );
@@ -72,7 +72,7 @@ class KDNA_Grants_Frontend {
 	}
 
 	/**
-	 * Loads and registers the Grant Application widget. Only runs when Elementor is active.
+	 * Loads and registers the Launchpad Application widget. Only runs when Elementor is active.
 	 *
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor's widgets manager.
 	 */
@@ -248,7 +248,7 @@ class KDNA_Grants_Frontend {
 
 			if ( '' === $form ) {
 				$form = current_user_can( 'manage_options' ) || $args['preview']
-					? '<p class="kdna-grants-application__notice">' . esc_html__( 'The grant application form appears here. Choose it in KDNA Grants > Settings.', 'kdna-grants' ) . '</p>'
+					? '<p class="kdna-grants-application__notice">' . esc_html__( 'The grant application form appears here. Choose it in Launchpad > Settings.', 'kdna-grants' ) . '</p>'
 					: '';
 			}
 

@@ -1,10 +1,10 @@
-=== KDNA Grants ===
+=== KDNA Launchpad ===
 Contributors: krulldna
 Tags: grants, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Runs KDNA Launchpad, the quarterly KDNA website grant, on top of KDNA Forms: rou
 
 == Description ==
 
-KDNA Grants does not collect applications itself. KDNA Forms does that. KDNA Grants sits on top of KDNA Forms and handles everything after an application is submitted:
+KDNA Launchpad does not collect applications itself. KDNA Forms does that. KDNA Launchpad sits on top of KDNA Forms and handles everything after an application is submitted:
 
 * Rounds: opens and closes the application form on set dates, and files each application under the right round
 * Eligibility: flags applications that don't qualify (ABN checksum, staff limit, existing clients, duplicates, past winners)
@@ -25,17 +25,17 @@ KDNA Grants does not collect applications itself. KDNA Forms does that. KDNA Gra
 
 = Claude =
 
-Add your Claude API key and studio profile in KDNA Grants > Settings > Claude. When a round closes, Claude reads every application in the background and writes a round overview on the Claude's picks tab. It only suggests: you score and choose the winner. Names, email addresses, phone numbers, addresses and ABNs are never sent to Claude. A developer can set the key in wp-config.php instead: `define( 'KDNA_GRANTS_CLAUDE_API_KEY', 'sk-ant-...' );`
+Add your Claude API key and studio profile in Launchpad > Settings > Claude. When a round closes, Claude reads every application in the background and writes a round overview on the Claude's picks tab. It only suggests: you score and choose the winner. Names, email addresses, phone numbers, addresses and ABNs are never sent to Claude. A developer can set the key in wp-config.php instead: `define( 'KDNA_GRANTS_CLAUDE_API_KEY', 'sk-ant-...' );`
 
 = Offers =
 
 When you choose a winner, qualifying unsuccessful applicants get a personal code. Put `{offer_code}`, `{offer_percent}` and `{offer_expiry}` in the unsuccessful email, inside `[offer]...[/offer]` so the wording only shows to people who get a code. Record the outcome on the Offers tab with Accept offer. Each business only ever gets one offer, matched by email, ABN or business name.
 
-Requires KDNA Forms 3.7.1 or newer. If KDNA Forms is not active, KDNA Grants shows a notice and does nothing else.
+Requires KDNA Forms 3.7.1 or newer. If KDNA Forms is not active, KDNA Launchpad shows a notice and does nothing else.
 
 = Showing the application form =
 
-* Elementor: add the Grant Application widget from the KDNA Tools category.
+* Elementor: add the Launchpad Application widget from the KDNA Tools category.
 * Anywhere else: use the shortcode `[kdna_grant_application]`.
 
 Shortcode options: `countdown="yes|no"`, `countdown_label="Applications close in"`, `closed_heading="Applications closed"`, `title="no|yes"`, `description="no|yes"`.
@@ -55,11 +55,14 @@ Test rounds never fire these actions.
 
 1. Install and activate KDNA Forms.
 2. Upload the kdna-grants zip from Plugins > Add New > Upload Plugin, then activate it.
-3. Go to KDNA Grants > Settings, choose the grant application form and match its fields.
+3. Go to Launchpad > Settings, choose the grant application form and match its fields.
 4. Set up the applicant confirmation email as a Notification on the form in KDNA Forms.
-5. Go to KDNA Grants > Rounds and create the first round.
+5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.1.3 =
+* Changed: the plugin is now called KDNA Launchpad, and its dashboard menu is called Launchpad. The Elementor widget is now called Launchpad Application. Nothing else changes: the folder, settings, data and automatic updates stay as they were.
 
 = 1.1.2 =
 * Changed: the grant is now called KDNA Launchpad in the default emails, email templates, Claude's instructions and the privacy policy wording.

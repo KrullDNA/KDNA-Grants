@@ -1,9 +1,9 @@
 <?php
 /**
- * Forms bridge: the only file in KDNA Grants that talks to KDNA Forms.
+ * Forms bridge: the only file in KDNA Launchpad that talks to KDNA Forms.
  *
  * If KDNA Forms ever changes how it works, this is the only file that needs
- * updating. Every other part of KDNA Grants asks this class instead of
+ * updating. Every other part of KDNA Launchpad asks this class instead of
  * calling KDNA Forms directly.
  *
  * Confirmed against KDNA Forms 3.7.1:
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Wraps every KDNA Forms function KDNA Grants uses.
+ * Wraps every KDNA Forms function KDNA Launchpad uses.
  */
 class KDNA_Grants_Forms_Bridge {
 
@@ -47,7 +47,7 @@ class KDNA_Grants_Forms_Bridge {
 	 */
 
 	/**
-	 * True when KDNA Forms is active and recent enough for KDNA Grants to use.
+	 * True when KDNA Forms is active and recent enough for KDNA Launchpad to use.
 	 *
 	 * @return bool
 	 */
@@ -78,7 +78,7 @@ class KDNA_Grants_Forms_Bridge {
 	}
 
 	/**
-	 * True when the installed KDNA Forms is at least the version KDNA Grants was checked against.
+	 * True when the installed KDNA Forms is at least the version KDNA Launchpad was checked against.
 	 *
 	 * @return bool
 	 */
@@ -517,7 +517,7 @@ class KDNA_Grants_Forms_Bridge {
 	/**
 	 * True when the form has an active notification sent to the applicant when the form is submitted.
 	 *
-	 * The applicant confirmation email is sent by KDNA Forms, not KDNA Grants, so this is
+	 * The applicant confirmation email is sent by KDNA Forms, not KDNA Launchpad, so this is
 	 * only used to remind Nick to set it up. A notification counts if it is sent to a form
 	 * field, or to an email address written as a merge tag (other than {admin_email}).
 	 *
@@ -562,7 +562,7 @@ class KDNA_Grants_Forms_Bridge {
 	}
 
 	/**
-	 * Lists the fields of a form that can be matched to KDNA Grants fields.
+	 * Lists the fields of a form that can be matched to KDNA Launchpad fields.
 	 *
 	 * Fields made of several parts (such as Name, with First and Last) are listed
 	 * once per part, for example "Name (First)", with an ID like "1.3". This works

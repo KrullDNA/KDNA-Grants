@@ -120,7 +120,7 @@ class KDNA_Grants_Claude {
 		$key = self::get_api_key();
 
 		if ( '' === $key ) {
-			return new WP_Error( 'no_key', __( 'Add your Claude API key in KDNA Grants > Settings > Claude.', 'kdna-grants' ) );
+			return new WP_Error( 'no_key', __( 'Add your Claude API key in Launchpad > Settings > Claude.', 'kdna-grants' ) );
 		}
 
 		$body = array(
@@ -216,7 +216,7 @@ class KDNA_Grants_Claude {
 
 		switch ( $code ) {
 			case 401:
-				return __( 'Claude didn\'t accept the API key. Check it in KDNA Grants > Settings > Claude.', 'kdna-grants' );
+				return __( 'Claude didn\'t accept the API key. Check it in Launchpad > Settings > Claude.', 'kdna-grants' );
 			case 402:
 			case 403:
 				return __( 'Your Claude account can\'t make this request. Check your billing and credit in the Anthropic Console.', 'kdna-grants' );

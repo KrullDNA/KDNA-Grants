@@ -1,12 +1,12 @@
 /**
- * KDNA Grants admin script.
+ * KDNA Launchpad admin script.
  *
  * On the Settings screen:
  * - When a different form is picked, the field dropdowns update straight away
  *   with that form's fields, and any unmatched ones are guessed from their labels.
  * - Ticking "Delete all data when the plugin is deleted" asks for confirmation.
  *
- * On every KDNA Grants screen:
+ * On every KDNA Launchpad screen:
  * - The round picker shows the chosen round straight away.
  * - Delete buttons ask for confirmation first.
  *
@@ -23,7 +23,7 @@
 		return;
 	}
 
-	// Words used to guess which form field matches each KDNA Grants field.
+	// Words used to guess which form field matches each KDNA Launchpad field.
 	var GUESSES = {
 		first_name: [ '(first)', 'first name', 'first' ],
 		last_name: [ '(last)', 'last name', 'surname', 'last' ],
@@ -71,7 +71,7 @@
 	var deleteBox = document.getElementById( 'kdna-grants-delete-data' );
 
 	/**
-	 * Returns the fields of a form that suit a KDNA Grants field.
+	 * Returns the fields of a form that suit a KDNA Launchpad field.
 	 */
 	function fieldsFor( formId, target ) {
 		var fields = data.fields[ formId ] || [];
@@ -83,7 +83,7 @@
 	}
 
 	/**
-	 * Picks the best guess for a KDNA Grants field from a list of form fields, or ''.
+	 * Picks the best guess for a KDNA Launchpad field from a list of form fields, or ''.
 	 */
 	function guess( target, fields ) {
 		var words = GUESSES[ target ] || [];
@@ -572,7 +572,7 @@
 
 	/*
 	 * -------------------------------------------------------------------
-	 * Close buttons on every KDNA Grants dialog
+	 * Close buttons on every KDNA Launchpad dialog
 	 * -------------------------------------------------------------------
 	 */
 

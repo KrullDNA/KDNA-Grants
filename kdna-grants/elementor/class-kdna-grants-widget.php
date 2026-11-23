@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor widget: Grant Application.
+ * Elementor widget: Launchpad Application.
  *
  * Shows the right thing for the round: while a round is open, an optional
  * countdown and then the KDNA Forms form; while closed, the closed message with
@@ -29,7 +29,7 @@ use Elementor\Plugin;
 use Elementor\Widget_Base;
 
 /**
- * The Grant Application widget.
+ * The Launchpad Application widget.
  */
 class KDNA_Grants_Widget extends Widget_Base {
 
@@ -48,7 +48,7 @@ class KDNA_Grants_Widget extends Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return esc_html__( 'Grant Application', 'kdna-grants' );
+		return esc_html__( 'Launchpad Application', 'kdna-grants' );
 	}
 
 	/**
@@ -75,7 +75,7 @@ class KDNA_Grants_Widget extends Widget_Base {
 	 * @return string[]
 	 */
 	public function get_keywords() {
-		return array( 'grant', 'application', 'kdna', 'form', 'countdown' );
+		return array( 'launchpad', 'grant', 'application', 'kdna', 'form', 'countdown' );
 	}
 
 	/**
@@ -141,7 +141,7 @@ class KDNA_Grants_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'section_content',
 			array(
-				'label' => esc_html__( 'Grant Application', 'kdna-grants' ),
+				'label' => esc_html__( 'Launchpad Application', 'kdna-grants' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
@@ -220,7 +220,7 @@ class KDNA_Grants_Widget extends Widget_Base {
 			'closed_note',
 			array(
 				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => esc_html__( 'The closed message itself is edited in KDNA Grants > Settings > Emails and messages, so it stays the same everywhere.', 'kdna-grants' ),
+				'raw'             => esc_html__( 'The closed message itself is edited in Launchpad > Settings > Emails and messages, so it stays the same everywhere.', 'kdna-grants' ),
 				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
 			)
 		);

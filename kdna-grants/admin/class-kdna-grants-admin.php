@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin: the KDNA Grants menu, the KDNA Forms dependency notice and the Settings screen.
+ * Admin: the KDNA Launchpad menu, the KDNA Forms dependency notice and the Settings screen.
  *
  * @package KDNA_Grants
  */
@@ -11,12 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Everything KDNA Grants adds to the WordPress admin.
+ * Everything KDNA Launchpad adds to the WordPress admin.
  */
 class KDNA_Grants_Admin {
 
 	/**
-	 * Page slug of the Applications screen (the main KDNA Grants page).
+	 * Page slug of the Applications screen (the main KDNA Launchpad page).
 	 */
 	const APPLICATIONS_PAGE = 'kdna-grants';
 
@@ -121,7 +121,7 @@ class KDNA_Grants_Admin {
 	 */
 
 	/**
-	 * Explains that KDNA Grants needs KDNA Forms. Shown only to people who can manage plugins.
+	 * Explains that KDNA Launchpad needs KDNA Forms. Shown only to people who can manage plugins.
 	 */
 	public function dependency_notice() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -131,17 +131,17 @@ class KDNA_Grants_Admin {
 		if ( KDNA_Grants_Forms_Bridge::is_active() ) {
 			$message = sprintf(
 				/* translators: 1: installed KDNA Forms version, 2: required version. */
-				__( 'KDNA Grants needs KDNA Forms %2$s or newer. This site has version %1$s. Please update KDNA Forms. Until then, KDNA Grants is paused and the grant form works as a normal KDNA Forms form.', 'kdna-grants' ),
+				__( 'KDNA Launchpad needs KDNA Forms %2$s or newer. This site has version %1$s. Please update KDNA Forms. Until then, KDNA Launchpad is paused and the grant form works as a normal KDNA Forms form.', 'kdna-grants' ),
 				KDNA_Grants_Forms_Bridge::get_version(),
 				KDNA_GRANTS_MIN_FORMS_VERSION
 			);
 		} else {
-			$message = __( 'KDNA Grants needs the KDNA Forms plugin to collect applications. Please install and activate KDNA Forms. Until then, KDNA Grants is paused and does nothing.', 'kdna-grants' );
+			$message = __( 'KDNA Launchpad needs the KDNA Forms plugin to collect applications. Please install and activate KDNA Forms. Until then, KDNA Launchpad is paused and does nothing.', 'kdna-grants' );
 		}
 		?>
 		<div class="notice notice-warning">
 			<p>
-				<strong><?php esc_html_e( 'KDNA Grants', 'kdna-grants' ); ?>:</strong>
+				<strong><?php esc_html_e( 'KDNA Launchpad', 'kdna-grants' ); ?>:</strong>
 				<?php echo esc_html( $message ); ?>
 				<a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>"><?php esc_html_e( 'Go to Plugins', 'kdna-grants' ); ?></a>
 			</p>
@@ -156,15 +156,15 @@ class KDNA_Grants_Admin {
 	 */
 
 	/**
-	 * Adds the KDNA Grants menu: Applications, Rounds and Settings.
+	 * Adds the KDNA Launchpad menu: Applications, Rounds and Settings.
 	 *
 	 * Applications needs the judge capability, so it could later be given to a
 	 * guest judge. Rounds and Settings are for administrators only.
 	 */
 	public function add_menu() {
 		add_menu_page(
-			__( 'KDNA Grants', 'kdna-grants' ),
-			__( 'KDNA Grants', 'kdna-grants' ),
+			__( 'KDNA Launchpad', 'kdna-grants' ),
+			__( 'Launchpad', 'kdna-grants' ),
 			KDNA_GRANTS_CAP,
 			self::APPLICATIONS_PAGE,
 			array( $this->applications, 'render' ),
@@ -210,7 +210,7 @@ class KDNA_Grants_Admin {
 
 		$this->screen_hooks[] = add_submenu_page(
 			self::APPLICATIONS_PAGE,
-			__( 'KDNA Grants Settings', 'kdna-grants' ),
+			__( 'Launchpad Settings', 'kdna-grants' ),
 			__( 'Settings', 'kdna-grants' ),
 			'manage_options',
 			self::SETTINGS_PAGE,
@@ -219,7 +219,7 @@ class KDNA_Grants_Admin {
 	}
 
 	/**
-	 * Loads the admin styles and script, only on KDNA Grants screens.
+	 * Loads the admin styles and script, only on KDNA Launchpad screens.
 	 *
 	 * @param string $hook The current admin screen's hook suffix.
 	 */
@@ -274,14 +274,14 @@ class KDNA_Grants_Admin {
 					'noFields'           => __( 'No suitable fields in this form', 'kdna-grants' ),
 					'confirmDeleteTest'  => __( 'Delete the test rounds, their sample applications and the sample KDNA Forms entries?', 'kdna-grants' ),
 					'confirmDeleteRound' => __( 'Delete this round? This can\'t be undone.', 'kdna-grants' ),
-					'confirmUninstall'   => __( 'Are you sure? With this ticked, deleting KDNA Grants from the Plugins screen permanently removes every round, application, score and note. KDNA Forms entries are not affected.', 'kdna-grants' ),
+					'confirmUninstall'   => __( 'Are you sure? With this ticked, deleting KDNA Launchpad from the Plugins screen permanently removes every round, application, score and note. KDNA Forms entries are not affected.', 'kdna-grants' ),
 				),
 			)
 		);
 	}
 
 	/**
-	 * Adds a "Settings" link under KDNA Grants on the Plugins screen.
+	 * Adds a "Settings" link under KDNA Launchpad on the Plugins screen.
 	 *
 	 * @param array $links Existing links.
 	 * @return array

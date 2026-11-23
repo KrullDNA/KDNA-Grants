@@ -2,7 +2,7 @@
 /**
  * Applications: capturing new KDNA Forms entries into the open round, and loading them.
  *
- * KDNA Grants keeps a link to the KDNA Forms entry (its entry ID), plus the few
+ * KDNA Launchpad keeps a link to the KDNA Forms entry (its entry ID), plus the few
  * mapped answers it needs for checks and lists. The full answers stay in KDNA Forms.
  *
  * @package KDNA_Grants
@@ -135,7 +135,7 @@ class KDNA_Grants_Applications {
 		/**
 		 * Fires when a new application has been captured and checked.
 		 *
-		 * @param int   $application_id KDNA Grants application ID.
+		 * @param int   $application_id KDNA Launchpad application ID.
 		 * @param int   $round_id       Round ID.
 		 * @param array $entry          The KDNA Forms entry.
 		 */

@@ -9,7 +9,7 @@
  * @var int      $form_id    The chosen form ID.
  * @var bool     $form_found Whether the chosen form still exists.
  * @var array    $fields     Mappable fields of the chosen form.
- * @var array    $targets    The KDNA Grants fields to match.
+ * @var array    $targets    The KDNA Launchpad fields to match.
  * @var string[] $warnings   Things that still need attention.
  * @var bool     $saved      Whether settings were just saved.
  *
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="wrap kdna-grants-admin">
-	<h1 class="kdna-grants-admin__title"><?php esc_html_e( 'KDNA Grants Settings', 'kdna-grants' ); ?></h1>
+	<h1 class="kdna-grants-admin__title"><?php esc_html_e( 'Launchpad Settings', 'kdna-grants' ); ?></h1>
 
 	<?php if ( $saved ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'kdna-grants' ); ?></p></div>
@@ -97,7 +97,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Field mapping -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Match the form fields', 'kdna-grants' ); ?></h2>
-			<p class="kdna-grants-card__intro"><?php esc_html_e( 'KDNA Grants needs to know which field holds each of these answers, so it can run the eligibility checks, fill in emails and show the applications list. Every other answer is still shown in full on the judging screen.', 'kdna-grants' ); ?></p>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'KDNA Launchpad needs to know which field holds each of these answers, so it can run the eligibility checks, fill in emails and show the applications list. Every other answer is still shown in full on the judging screen.', 'kdna-grants' ); ?></p>
 
 			<p class="kdna-grants-card__empty" id="kdna-grants-map-empty" <?php echo $form_found ? 'hidden' : ''; ?>>
 				<?php esc_html_e( 'Choose the application form above to see its fields.', 'kdna-grants' ); ?>
@@ -106,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<table class="kdna-grants-map" id="kdna-grants-map" <?php echo $form_found ? '' : 'hidden'; ?>>
 				<thead>
 					<tr>
-						<th scope="col"><?php esc_html_e( 'KDNA Grants needs', 'kdna-grants' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Launchpad needs', 'kdna-grants' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Field in your form', 'kdna-grants' ); ?></th>
 					</tr>
 				</thead>
@@ -277,13 +277,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Contacting applicants -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Emailing applicants from the dashboard', 'kdna-grants' ); ?></h2>
-			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Click any applicant\'s email address in KDNA Grants to write to them without leaving the dashboard. These templates are the starting points in that window.', 'kdna-grants' ); ?></p>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Click any applicant\'s email address in KDNA Launchpad to write to them without leaving the dashboard. These templates are the starting points in that window.', 'kdna-grants' ); ?></p>
 
 			<div class="kdna-grants-row">
 				<label for="kdna-grants-reply-to" class="kdna-grants-row__label"><?php esc_html_e( 'Replies go to', 'kdna-grants' ); ?></label>
 				<div class="kdna-grants-row__control">
 					<input type="email" name="reply_to" id="kdna-grants-reply-to" class="regular-text" value="<?php echo esc_attr( $settings['reply_to'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" />
-					<p class="description"><?php esc_html_e( 'Used for every KDNA Grants email, so replies land in your normal inbox. Leave blank to use the site admin email.', 'kdna-grants' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Used for every KDNA Launchpad email, so replies land in your normal inbox. Leave blank to use the site admin email.', 'kdna-grants' ); ?></p>
 				</div>
 			</div>
 
@@ -320,7 +320,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Closed messages -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Closed message', 'kdna-grants' ); ?></h2>
-			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Shown in place of the form between rounds, by the Grant Application widget and the [kdna_grant_application] shortcode.', 'kdna-grants' ); ?></p>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Shown in place of the form between rounds, by the Launchpad Application widget and the [kdna_grant_application] shortcode.', 'kdna-grants' ); ?></p>
 
 			<div class="kdna-grants-row">
 				<label for="kdna-grants-closed-message" class="kdna-grants-row__label"><?php esc_html_e( 'When the next round is scheduled', 'kdna-grants' ); ?></label>
@@ -456,8 +456,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<label class="kdna-grants-check">
 				<input type="checkbox" name="delete_data_on_uninstall" value="1" id="kdna-grants-delete-data" <?php checked( ! empty( $settings['delete_data_on_uninstall'] ) ); ?> />
 				<span>
-					<strong><?php esc_html_e( 'Delete all KDNA Grants data when the plugin is deleted', 'kdna-grants' ); ?></strong>
-					<span class="description"><?php esc_html_e( 'Leave this off unless you are removing KDNA Grants for good. When off, deleting the plugin keeps every round, application, score and note, so reinstalling picks up where you left off. KDNA Forms entries are never deleted by KDNA Grants.', 'kdna-grants' ); ?></span>
+					<strong><?php esc_html_e( 'Delete all KDNA Launchpad data when the plugin is deleted', 'kdna-grants' ); ?></strong>
+					<span class="description"><?php esc_html_e( 'Leave this off unless you are removing KDNA Launchpad for good. When off, deleting the plugin keeps every round, application, score and note, so reinstalling picks up where you left off. KDNA Forms entries are never deleted by KDNA Launchpad.', 'kdna-grants' ); ?></span>
 				</span>
 			</label>
 		</div>
@@ -471,8 +471,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php
 		echo esc_html(
 			sprintf(
-				/* translators: 1: KDNA Grants version, 2: KDNA Forms version. */
-				__( 'KDNA Grants %1$s, using KDNA Forms %2$s', 'kdna-grants' ),
+				/* translators: 1: KDNA Launchpad version, 2: KDNA Forms version. */
+				__( 'KDNA Launchpad %1$s, using KDNA Forms %2$s', 'kdna-grants' ),
 				KDNA_GRANTS_VERSION,
 				KDNA_Grants_Forms_Bridge::get_version()
 			)

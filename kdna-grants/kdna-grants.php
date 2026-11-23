@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       KDNA Grants
+ * Plugin Name:       KDNA Launchpad
  * Plugin URI:        https://krulldna.com
  * Description:       Runs KDNA Launchpad, the quarterly KDNA website grant, on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Krull Design & Advertising (KDNA)
@@ -31,7 +31,7 @@ kdna_update_client_register( __FILE__, 'kdna-grants' );
  * ---------------------------------------------------------------------------
  */
 
-define( 'KDNA_GRANTS_VERSION', '1.1.2' );
+define( 'KDNA_GRANTS_VERSION', '1.1.3' );
 define( 'KDNA_GRANTS_DB_VERSION', '1.1.0' );
 define( 'KDNA_GRANTS_FILE', __FILE__ );
 define( 'KDNA_GRANTS_PATH', plugin_dir_path( __FILE__ ) );
@@ -40,7 +40,7 @@ define( 'KDNA_GRANTS_URL', plugin_dir_url( __FILE__ ) );
 // The oldest KDNA Forms version this plugin has been checked against.
 define( 'KDNA_GRANTS_MIN_FORMS_VERSION', '3.7.1' );
 
-// The name of the single option that holds every KDNA Grants setting.
+// The name of the single option that holds every KDNA Launchpad setting.
 define( 'KDNA_GRANTS_OPTION', 'kdna_grants_settings' );
 
 // The custom capability that lets someone see and score applications.
@@ -89,7 +89,7 @@ register_activation_hook( __FILE__, array( 'KDNA_Grants_Install', 'activate' ) )
  */
 
 /**
- * Returns all KDNA Grants settings, with defaults filled in for anything not yet saved.
+ * Returns all KDNA Launchpad settings, with defaults filled in for anything not yet saved.
  *
  * @return array
  */
@@ -112,7 +112,7 @@ function kdna_grants_get_settings() {
 }
 
 /**
- * Returns one KDNA Grants setting.
+ * Returns one KDNA Launchpad setting.
  *
  * @param string $key     The setting name.
  * @param mixed  $fallback Returned if the setting does not exist.
@@ -156,14 +156,14 @@ function kdna_grants_boot() {
 	KDNA_Grants_Claude::register();
 
 	/**
-	 * Fires once KDNA Grants is fully running with KDNA Forms.
+	 * Fires once KDNA Launchpad is fully running with KDNA Forms.
 	 */
 	do_action( 'kdna_grants_loaded' );
 }
 add_action( 'init', 'kdna_grants_boot', 5 );
 
 /**
- * Stops the scheduled KDNA Grants tasks when the plugin is deactivated.
+ * Stops the scheduled KDNA Launchpad tasks when the plugin is deactivated.
  */
 function kdna_grants_deactivate() {
 	KDNA_Grants_Rounds::clear_cron();

@@ -2,9 +2,9 @@
 /**
  * Privacy: personal data export and erase, and data retention.
  *
- * KDNA Grants joins WordPress's own Tools > Export Personal Data and
+ * KDNA Launchpad joins WordPress's own Tools > Export Personal Data and
  * Tools > Erase Personal Data, matching applications by email address. Erasing
- * removes the KDNA Grants record only; the KDNA Forms entry is handled by
+ * removes the KDNA Launchpad record only; the KDNA Forms entry is handled by
  * KDNA Forms. Old records are removed automatically after the retention period
  * set in Settings (24 months after a round is decided, by default).
  *
@@ -53,14 +53,14 @@ class KDNA_Grants_Privacy {
 	 */
 
 	/**
-	 * Adds KDNA Grants to Tools > Export Personal Data.
+	 * Adds KDNA Launchpad to Tools > Export Personal Data.
 	 *
 	 * @param array $exporters Registered exporters.
 	 * @return array
 	 */
 	public static function add_exporter( $exporters ) {
 		$exporters['kdna-grants'] = array(
-			'exporter_friendly_name' => __( 'KDNA Grants applications', 'kdna-grants' ),
+			'exporter_friendly_name' => __( 'KDNA Launchpad applications', 'kdna-grants' ),
 			'callback'               => array( __CLASS__, 'export' ),
 		);
 
@@ -68,14 +68,14 @@ class KDNA_Grants_Privacy {
 	}
 
 	/**
-	 * Adds KDNA Grants to Tools > Erase Personal Data.
+	 * Adds KDNA Launchpad to Tools > Erase Personal Data.
 	 *
 	 * @param array $erasers Registered erasers.
 	 * @return array
 	 */
 	public static function add_eraser( $erasers ) {
 		$erasers['kdna-grants'] = array(
-			'eraser_friendly_name' => __( 'KDNA Grants applications', 'kdna-grants' ),
+			'eraser_friendly_name' => __( 'KDNA Launchpad applications', 'kdna-grants' ),
 			'callback'             => array( __CLASS__, 'erase' ),
 		);
 
@@ -83,7 +83,7 @@ class KDNA_Grants_Privacy {
 	}
 
 	/**
-	 * Every KDNA Grants application with this email address.
+	 * Every KDNA Launchpad application with this email address.
 	 *
 	 * @param string $email Email address.
 	 * @return array[]
@@ -103,7 +103,7 @@ class KDNA_Grants_Privacy {
 	}
 
 	/**
-	 * Exports what KDNA Grants holds about an email address.
+	 * Exports what KDNA Launchpad holds about an email address.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Page number (everything fits on one page).
@@ -161,7 +161,7 @@ class KDNA_Grants_Privacy {
 
 			$items[] = array(
 				'group_id'    => 'kdna-grants',
-				'group_label' => __( 'KDNA Grants applications', 'kdna-grants' ),
+				'group_label' => __( 'KDNA Launchpad applications', 'kdna-grants' ),
 				'item_id'     => 'kdna-grants-application-' . $application['id'],
 				'data'        => $rows,
 			);
@@ -170,7 +170,7 @@ class KDNA_Grants_Privacy {
 		foreach ( KDNA_Grants_Offers::find_matching( $email, '', '', false ) as $offer ) {
 			$items[] = array(
 				'group_id'    => 'kdna-grants-offers',
-				'group_label' => __( 'KDNA Grants offers', 'kdna-grants' ),
+				'group_label' => __( 'KDNA Launchpad offers', 'kdna-grants' ),
 				'item_id'     => 'kdna-grants-offer-' . $offer['id'],
 				'data'        => array(
 					array(
@@ -204,7 +204,7 @@ class KDNA_Grants_Privacy {
 	}
 
 	/**
-	 * Removes every KDNA Grants record for an email address. The KDNA Forms entry is left to KDNA Forms.
+	 * Removes every KDNA Launchpad record for an email address. The KDNA Forms entry is left to KDNA Forms.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Page number (everything is done in one go).
@@ -226,7 +226,7 @@ class KDNA_Grants_Privacy {
 
 		$messages = array();
 		if ( $applications ) {
-			$messages[] = __( 'KDNA Grants application records were removed. The original form entries are kept by KDNA Forms and can be erased there.', 'kdna-grants' );
+			$messages[] = __( 'KDNA Launchpad application records were removed. The original form entries are kept by KDNA Forms and can be erased there.', 'kdna-grants' );
 		}
 
 		return array(
@@ -328,6 +328,6 @@ class KDNA_Grants_Privacy {
 				: __( 'You can ask us to export or delete your data at any time.', 'kdna-grants' )
 		) . '</p>';
 
-		wp_add_privacy_policy_content( __( 'KDNA Grants', 'kdna-grants' ), $text );
+		wp_add_privacy_policy_content( __( 'KDNA Launchpad', 'kdna-grants' ), $text );
 	}
 }
