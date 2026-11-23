@@ -99,6 +99,7 @@ $kdna_grants_links = function ( $html ) {
 						<div class="kdna-grants-claude-take__lists">
 							<?php
 							$kdna_grants_lists = array(
+								'scope_notes'    => __( 'Outside the grant', 'kdna-grants' ),
 								'highlights'     => __( 'Strengths', 'kdna-grants' ),
 								'concerns'       => __( 'Concerns', 'kdna-grants' ),
 								'call_questions' => __( 'Ask on a call', 'kdna-grants' ),

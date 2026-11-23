@@ -4,7 +4,7 @@ Tags: grants, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,15 @@ Test rounds never fire these actions.
 5. Go to KDNA Grants > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.1.1 =
+* New: Claude flags anything an applicant wants that the grant doesn't include (for example an online shop), or anything they don't have ready (for example no logo or photos), as "Outside the grant".
+* New: "Hosting and next steps" email template for winners, recommending VentraIP.
+* Changed: offers now default to 28 days, with wording asking applicants to engage KDNA and approve their quote by the expiry date. Saved settings still on the old 90-day default move to 28 days.
+* Changed: rounds now default to quarterly. The first round is suggested for the next calendar quarter, open for two months, with the winner announced by the 15th of the month after. Saved settings still on the old two-month gap move to three months.
+* Changed: "Create next round" keeps month-end closing dates on the last day of the month (28 February becomes 31 May), and never spills into the following month.
+* Changed: default winner email now covers next steps, VentraIP and extras at 25% off. Round names in emails now sit in brackets.
+* Fixed: Claude's instructions no longer describe the grant as "every two months".
 
 = 1.1.0 =
 * New: Claude's picks. Claude reads each application against your studio profile, rates how interesting the brief is, lists strengths, concerns and call questions, and writes a round overview with its top picks. Runs automatically when a round closes, or on demand.

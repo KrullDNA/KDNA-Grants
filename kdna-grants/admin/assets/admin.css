@@ -1205,6 +1205,16 @@
 	margin-top: 16px;
 }
 
+/* 1.1.1: scope notes from Claude */
+.kdna-grants-scope {
+	display: block;
+	margin-top: 4px;
+	padding: 2px 8px;
+	border-left: 3px solid var(--kdna-grants-warn-line);
+	background: var(--kdna-grants-warn-bg);
+	font-size: 12px;
+}
+
 /* Respect the hidden attribute even where display is set above. */
 .kdna-grants-admin [hidden] {
 	display: none !important;

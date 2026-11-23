@@ -3,7 +3,7 @@
  * Plugin Name:       KDNA Grants
  * Plugin URI:        https://krulldna.com
  * Description:       Runs the KDNA Website Grant on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Krull Design & Advertising (KDNA)
@@ -31,7 +31,7 @@ kdna_update_client_register( __FILE__, 'kdna-grants' );
  * ---------------------------------------------------------------------------
  */
 
-define( 'KDNA_GRANTS_VERSION', '1.1.0' );
+define( 'KDNA_GRANTS_VERSION', '1.1.1' );
 define( 'KDNA_GRANTS_DB_VERSION', '1.1.0' );
 define( 'KDNA_GRANTS_FILE', __FILE__ );
 define( 'KDNA_GRANTS_PATH', plugin_dir_path( __FILE__ ) );

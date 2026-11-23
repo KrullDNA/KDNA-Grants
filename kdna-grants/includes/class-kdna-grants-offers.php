@@ -3,7 +3,7 @@
  * Offers: a discount on the first brief for unsuccessful applicants.
  *
  * When a winner is chosen, every unsuccessful applicant who qualifies gets a
- * personal code (25% off by default, valid for 90 days) in their unsuccessful
+ * personal code (25% off by default, valid for 28 days) in their unsuccessful
  * email. Nick records the outcome by hand, because quotes and invoices happen
  * outside WordPress: Accept (the first brief got the discount), Decline, or it
  * expires on its own. Each business only ever gets one offer, matched by email,

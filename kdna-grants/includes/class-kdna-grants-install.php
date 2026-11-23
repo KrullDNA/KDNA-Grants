@@ -78,6 +78,49 @@ class KDNA_Grants_Install {
 		if ( get_option( self::DB_VERSION_OPTION ) !== KDNA_GRANTS_DB_VERSION ) {
 			self::activate();
 		}
+
+		self::maybe_upgrade_settings();
+	}
+
+	/**
+	 * One-off tidy-ups to saved settings when the plugin is updated.
+	 *
+	 * 1.1.1: adds the "Hosting and next steps" email template, moves offers still
+	 * on the old 90-day default to the agreed 28 days, and moves the round gap from
+	 * the old two-month default to three months (quarterly rounds).
+	 */
+	private static function maybe_upgrade_settings() {
+		$done = get_option( 'kdna_grants_settings_version', '' );
+
+		if ( version_compare( (string) $done, '1.1.1', '>=' ) ) {
+			return;
+		}
+
+		$settings = get_option( KDNA_GRANTS_OPTION, array() );
+
+		if ( is_array( $settings ) && $settings ) {
+			if ( isset( $settings['compose_templates'] ) && is_array( $settings['compose_templates'] ) ) {
+				$names = wp_list_pluck( $settings['compose_templates'], 'name' );
+				foreach ( self::default_compose_templates() as $template ) {
+					if ( __( 'Hosting and next steps', 'kdna-grants' ) === $template['name'] && ! in_array( $template['name'], $names, true ) ) {
+						$settings['compose_templates'][] = $template;
+					}
+				}
+			}
+
+			if ( isset( $settings['offer_days'] ) && 90 === (int) $settings['offer_days'] ) {
+				$settings['offer_days'] = 28;
+			}
+
+			// Quarterly rounds: move the old two-month default gap to three months.
+			if ( isset( $settings['round_gap_months'] ) && 2 === (int) $settings['round_gap_months'] ) {
+				$settings['round_gap_months'] = 3;
+			}
+
+			update_option( KDNA_GRANTS_OPTION, $settings, false );
+		}
+
+		update_option( 'kdna_grants_settings_version', '1.1.1', false );
 	}
 
 	/**
@@ -273,7 +316,7 @@ class KDNA_Grants_Install {
 			'field_map'                => array_fill_keys( array_keys( self::mappable_fields() ), '' ),
 
 			// Stage 2: rounds and eligibility.
-			'round_gap_months'         => 2,
+			'round_gap_months'         => 3,
 			'staff_limit'              => 20,
 			'existing_clients'         => '',
 
@@ -318,7 +361,7 @@ class KDNA_Grants_Install {
 			// 1.1.0: offers for unsuccessful applicants.
 			'offers_enabled'           => true,
 			'offer_percent'            => 25,
-			'offer_days'               => 90,
+			'offer_days'               => 28,
 			'offer_cap'                => '',
 
 			// Stage 4: privacy. Records are removed this many months after a round is decided (0 keeps them).
@@ -342,16 +385,17 @@ class KDNA_Grants_Install {
 			'winner'       => array(
 				'subject' => __( 'Congratulations {first_name}, {business_name} has won the KDNA Website Grant', 'kdna-grants' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
-					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant, {round_name}. We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-grants' ) . '</p>'
-					. '<p>' . __( 'We\'ll be in touch in the next few days to book a time to talk through your new website and what happens next.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant ({round_name}). We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'We\'ll be in touch in the next few days to book a kick-off meeting. In the meantime, you can get ready by setting up your domain name and WordPress hosting (we recommend VentraIP), and gathering your words, photos, logo files, brand colours and fonts.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'If you\'d like more than the grant covers, such as extra pages or an online shop, we\'ll quote the extras separately at 25% off our standard rates.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'Congratulations again,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
 			),
 			'unsuccessful' => array(
 				'subject' => __( 'Your KDNA Website Grant application, {round_name}', 'kdna-grants' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
-					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant, {round_name}, and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant ({round_name}), and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'You\'re very welcome to apply again. The next round opens on {next_open_date}.', 'kdna-grants' ) . '</p>'
-					. '[offer]<p>' . __( 'We\'d still love to help {business_name}. As a thank you for applying, you can have {offer_percent}% off your first brief with KDNA, whether that\'s a logo, a website, a presentation or a mix. Just quote {offer_code} when you get in touch. This offer is valid until {offer_expiry} and applies to your first brief only; later work is at our standard rates.', 'kdna-grants' ) . '</p>[/offer]'
+					. '[offer]<p>' . __( 'We\'d still love to help {business_name}. As a thank you for applying, you can have {offer_percent}% off your first brief with KDNA, whether that\'s a logo, a website, a presentation or a mix. Just quote {offer_code} when you get in touch, then engage us and approve your quote by {offer_expiry}. The quote is based on your requirements, and the discount applies to your first brief only. Later work is at our standard rates.', 'kdna-grants' ) . '</p>[/offer]'
 					. '<p>' . __( 'Thank you again, and all the best,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
 			),
 		);
@@ -367,17 +411,22 @@ class KDNA_Grants_Install {
 			array(
 				'name'    => __( 'Shortlist call invitation', 'kdna-grants' ),
 				'subject' => __( 'Your KDNA Website Grant application, {business_name}', 'kdna-grants' ),
-				'body'    => __( "Hi {first_name},\n\nThank you for applying for the KDNA Website Grant. I really enjoyed reading about {business_name}, and you're on my shortlist for {round_name}.\n\nWould you be free for a 20-minute call this week so I can learn a little more? Just reply with a couple of times that suit you.\n\nNick Krull, KDNA", 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThank you for applying for the KDNA Website Grant. I really enjoyed reading about {business_name}, and you're on my shortlist this round.\n\nWould you be free for a 20-minute call this week so I can learn a little more? Just reply with a couple of times that suit you.\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 			array(
 				'name'    => __( 'A quick question', 'kdna-grants' ),
 				'subject' => __( 'A quick question about your grant application', 'kdna-grants' ),
-				'body'    => __( "Hi {first_name},\n\nThanks for applying for the KDNA Website Grant. I'm reading through applications for {round_name} and had a quick question about {business_name}:\n\n\n\nNick Krull, KDNA", 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThanks for applying for the KDNA Website Grant. I'm reading through this round's applications and had a quick question about {business_name}:\n\n\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 			array(
 				'name'    => __( 'Offer reminder', 'kdna-grants' ),
 				'subject' => __( 'Your {offer_percent}% KDNA offer, {business_name}', 'kdna-grants' ),
-				'body'    => __( "Hi {first_name},\n\nJust a friendly reminder that your {offer_percent}% discount on your first brief with KDNA is valid until {offer_expiry}. Your code is {offer_code}.\n\nIf you'd like to talk about a logo, website or anything else for {business_name}, just reply to this email.\n\nNick Krull, KDNA", 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nJust a friendly reminder that your {offer_percent}% discount on your first brief with KDNA ends on {offer_expiry}. To use it, quote {offer_code}, then engage us and approve your quote by that date.\n\nIf you'd like to talk about a logo, website or anything else for {business_name}, just reply to this email.\n\nNick Krull, KDNA", 'kdna-grants' ),
+			),
+			array(
+				'name'    => __( 'Hosting and next steps', 'kdna-grants' ),
+				'subject' => __( 'Next steps for your new website, {business_name}', 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nCongratulations again! Here's how to get ready for your kick-off meeting:\n\n1. Domain and hosting: set up your domain name and a WordPress hosting plan. We recommend VentraIP (ventraip.com.au), an Australian host with local support. If you'd prefer another host, check with me before you buy.\n\n2. Your words: up to 5 pages, with up to 400 words per page, written and proofread.\n\n3. Your images: at least 10 good-quality photos you have the right to use.\n\n4. Your brand: your logo (ideally a vector file such as SVG, AI, EPS or PDF), brand colours and fonts.\n\nPlease send everything within 4 weeks of our kick-off meeting. If you'd like more than the grant covers, such as extra pages or an online shop, I'll quote the extras separately at 25% off.\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 		);
 	}

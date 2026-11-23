@@ -506,21 +506,36 @@ class KDNA_Grants_Rounds {
 		$latest = self::get_latest_round();
 
 		if ( $latest ) {
-			$gap      = max( 1, absint( kdna_grants_get_setting( 'round_gap_months', 2 ) ) );
-			$modifier = '+' . $gap . ' months';
+			$gap = max( 1, absint( kdna_grants_get_setting( 'round_gap_months', 3 ) ) );
 
-			$opens  = ( new DateTime( $latest['opens_at'], new DateTimeZone( 'UTC' ) ) )->setTimezone( $tz )->modify( $modifier );
-			$closes = ( new DateTime( $latest['closes_at'], new DateTimeZone( 'UTC' ) ) )->setTimezone( $tz )->modify( $modifier );
+			$opens  = self::add_months( ( new DateTime( $latest['opens_at'], new DateTimeZone( 'UTC' ) ) )->setTimezone( $tz ), $gap );
+			$closes = self::add_months( ( new DateTime( $latest['closes_at'], new DateTimeZone( 'UTC' ) ) )->setTimezone( $tz ), $gap );
 
 			if ( $latest['announce_date'] ) {
-				$announce = ( new DateTime( $latest['announce_date'], $tz ) )->modify( $modifier );
+				$announce = self::add_months( new DateTime( $latest['announce_date'], $tz ), $gap );
 			} else {
 				$announce = ( clone $closes )->modify( '+14 days' );
 			}
 		} else {
-			$opens    = ( new DateTime( 'tomorrow 09:00', $tz ) );
-			$closes   = ( clone $opens )->modify( '+1 month' )->setTime( 17, 0 );
-			$announce = ( clone $closes )->modify( '+14 days' );
+			// The first round: opens at the start of the next calendar quarter (1 January, April, July or
+			// October), stays open for two months, and the winner is announced by the 15th of the month after.
+			$now     = new DateTime( 'now', $tz );
+			$month   = (int) $now->format( 'n' );
+			$quarter = (int) ( floor( ( $month - 1 ) / 3 ) * 3 + 4 );
+			$year    = (int) $now->format( 'Y' );
+
+			if ( $quarter > 12 ) {
+				$quarter -= 12;
+				++$year;
+			}
+
+			$opens = new DateTime( 'now', $tz );
+			$opens->setDate( $year, $quarter, 1 )->setTime( 0, 0 );
+
+			$closes = ( clone $opens )->modify( 'last day of +1 month' )->setTime( 23, 59 );
+
+			$announce = ( clone $opens )->modify( 'first day of +2 months' );
+			$announce->setDate( (int) $announce->format( 'Y' ), (int) $announce->format( 'n' ), 15 );
 		}
 
 		return array(
@@ -529,6 +544,30 @@ class KDNA_Grants_Rounds {
 			'announce' => $announce->format( 'Y-m-d' ),
 			'name'     => self::default_name( self::from_site( $opens->format( 'Y-m-d\TH:i' ) ), self::from_site( $closes->format( 'Y-m-d\TH:i' ) ) ),
 		);
+	}
+
+	/**
+	 * Moves a date forward by whole months without spilling into the month after.
+	 *
+	 * A date on the last day of its month stays on the last day (28 February plus
+	 * three months is 31 May), and 31 January plus one month is 28 or 29 February,
+	 * not early March. The time of day is kept.
+	 *
+	 * @param DateTime $date   The date.
+	 * @param int      $months How many months to add.
+	 * @return DateTime A new date.
+	 */
+	public static function add_months( DateTime $date, $months ) {
+		$day     = (int) $date->format( 'j' );
+		$is_last = (int) $date->format( 't' ) === $day;
+
+		$moved = clone $date;
+		$moved->modify( 'first day of +' . (int) $months . ' months' );
+
+		$days_in_month = (int) $moved->format( 't' );
+		$moved->setDate( (int) $moved->format( 'Y' ), (int) $moved->format( 'n' ), $is_last ? $days_in_month : min( $day, $days_in_month ) );
+
+		return $moved;
 	}
 
 	/*

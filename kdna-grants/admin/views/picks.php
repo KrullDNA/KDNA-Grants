@@ -229,6 +229,9 @@ $kdna_grants_usage    = $round ? $round['ai_usage'] : array();
 								<td>
 									<?php echo esc_html( $kdna_grants_app['ai_assessment']['summary'] ); ?>
 									<span class="kdna-grants-table__sub"><?php echo esc_html( $kdna_grants_app['ai_assessment']['interest_reason'] ); ?></span>
+									<?php if ( ! empty( $kdna_grants_app['ai_assessment']['scope_notes'] ) ) : ?>
+										<span class="kdna-grants-scope"><strong><?php esc_html_e( 'Outside the grant:', 'kdna-grants' ); ?></strong> <?php echo esc_html( implode( '; ', $kdna_grants_app['ai_assessment']['scope_notes'] ) ); ?></span>
+									<?php endif; ?>
 								</td>
 								<td>
 									<?php if ( $kdna_grants_app['is_eligible'] ) : ?>

@@ -30,6 +30,7 @@ $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}kdna_grants_offers" ); // php
 // Remove settings.
 delete_option( 'kdna_grants_settings' );
 delete_option( 'kdna_grants_db_version' );
+delete_option( 'kdna_grants_settings_version' );
 delete_option( 'kdna_grants_claude_key' );
 
 // Remove the judge capability from every role.
