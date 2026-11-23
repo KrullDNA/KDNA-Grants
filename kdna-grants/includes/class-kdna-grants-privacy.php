@@ -316,7 +316,7 @@ class KDNA_Grants_Privacy {
 
 		$months = absint( kdna_grants_get_setting( 'retention_months', 24 ) );
 
-		$text = '<p>' . esc_html__( 'When you apply for the KDNA Website Grant, we keep your application details (name, email, business name, industry, ABN and number of staff) with our judging scores, notes and the outcome, so we can assess applications fairly and contact you about the result.', 'kdna-grants' ) . '</p>';
+		$text = '<p>' . esc_html__( 'When you apply for KDNA Launchpad, we keep your application details (name, email, business name, industry, ABN and number of staff) with our judging scores, notes and the outcome, so we can assess applications fairly and contact you about the result.', 'kdna-grants' ) . '</p>';
 
 		$text .= '<p>' . esc_html(
 			$months

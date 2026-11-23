@@ -183,7 +183,7 @@ class KDNA_Grants_Emails {
 		$values = array(
 			'{first_name}'     => 'Sam',
 			'{business_name}'  => 'Brightside Bakery',
-			'{round_name}'     => __( 'Grant 4 April to 4 May 2026', 'kdna-grants' ),
+			'{round_name}'     => __( 'Q1 2027', 'kdna-grants' ),
 			'{close_date}'     => wp_date( 'j F Y' ),
 			'{announce_date}'  => wp_date( 'j F Y', time() + 14 * DAY_IN_SECONDS ),
 			'{next_open_date}' => $next ? KDNA_Grants_Rounds::format( $next['opens_at'], false ) : wp_date( 'j F Y', time() + 60 * DAY_IN_SECONDS ),

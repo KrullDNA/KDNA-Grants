@@ -4,11 +4,11 @@ Tags: grants, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Runs the KDNA Website Grant on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
+Runs KDNA Launchpad, the quarterly KDNA website grant, on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
 
 == Description ==
 
@@ -60,6 +60,10 @@ Test rounds never fire these actions.
 5. Go to KDNA Grants > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.1.2 =
+* Changed: the grant is now called KDNA Launchpad in the default emails, email templates, Claude's instructions and the privacy policy wording.
+* Changed: new rounds are named after the quarter they open in, for example "Q1 2027", so emails read "KDNA Launchpad (Q1 2027)".
 
 = 1.1.1 =
 * New: Claude flags anything an applicant wants that the grant doesn't include (for example an online shop), or anything they don't have ready (for example no logo or photos), as "Outside the grant".

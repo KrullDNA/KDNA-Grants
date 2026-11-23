@@ -375,7 +375,7 @@ class KDNA_Grants_Install {
 	/**
 	 * Default winner and unsuccessful emails.
 	 *
-	 * PLACEHOLDER COPY: to be replaced with the copy from the KDNA Website Grant
+	 * PLACEHOLDER COPY: to be replaced with the copy from the KDNA Launchpad
 	 * application form document once it is in the repository.
 	 *
 	 * @return array
@@ -383,17 +383,17 @@ class KDNA_Grants_Install {
 	public static function default_emails() {
 		return array(
 			'winner'       => array(
-				'subject' => __( 'Congratulations {first_name}, {business_name} has won the KDNA Website Grant', 'kdna-grants' ),
+				'subject' => __( 'Congratulations {first_name}, {business_name} has won KDNA Launchpad', 'kdna-grants' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
-					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant ({round_name}). We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for KDNA Launchpad ({round_name}). We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'We\'ll be in touch in the next few days to book a kick-off meeting. In the meantime, you can get ready by setting up your domain name and WordPress hosting (we recommend VentraIP), and gathering your words, photos, logo files, brand colours and fonts.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'If you\'d like more than the grant covers, such as extra pages or an online shop, we\'ll quote the extras separately at 25% off our standard rates.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'Congratulations again,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
 			),
 			'unsuccessful' => array(
-				'subject' => __( 'Your KDNA Website Grant application, {round_name}', 'kdna-grants' ),
+				'subject' => __( 'Your KDNA Launchpad application, {round_name}', 'kdna-grants' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
-					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant ({round_name}), and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for KDNA Launchpad ({round_name}), and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'You\'re very welcome to apply again. The next round opens on {next_open_date}.', 'kdna-grants' ) . '</p>'
 					. '[offer]<p>' . __( 'We\'d still love to help {business_name}. As a thank you for applying, you can have {offer_percent}% off your first brief with KDNA, whether that\'s a logo, a website, a presentation or a mix. Just quote {offer_code} when you get in touch, then engage us and approve your quote by {offer_expiry}. The quote is based on your requirements, and the discount applies to your first brief only. Later work is at our standard rates.', 'kdna-grants' ) . '</p>[/offer]'
 					. '<p>' . __( 'Thank you again, and all the best,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
@@ -410,13 +410,13 @@ class KDNA_Grants_Install {
 		return array(
 			array(
 				'name'    => __( 'Shortlist call invitation', 'kdna-grants' ),
-				'subject' => __( 'Your KDNA Website Grant application, {business_name}', 'kdna-grants' ),
-				'body'    => __( "Hi {first_name},\n\nThank you for applying for the KDNA Website Grant. I really enjoyed reading about {business_name}, and you're on my shortlist this round.\n\nWould you be free for a 20-minute call this week so I can learn a little more? Just reply with a couple of times that suit you.\n\nNick Krull, KDNA", 'kdna-grants' ),
+				'subject' => __( 'Your KDNA Launchpad application, {business_name}', 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThank you for applying for KDNA Launchpad. I really enjoyed reading about {business_name}, and you're on my shortlist this round.\n\nWould you be free for a 20-minute call this week so I can learn a little more? Just reply with a couple of times that suit you.\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 			array(
 				'name'    => __( 'A quick question', 'kdna-grants' ),
 				'subject' => __( 'A quick question about your grant application', 'kdna-grants' ),
-				'body'    => __( "Hi {first_name},\n\nThanks for applying for the KDNA Website Grant. I'm reading through this round's applications and had a quick question about {business_name}:\n\n\n\nNick Krull, KDNA", 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThanks for applying for KDNA Launchpad. I'm reading through this round's applications and had a quick question about {business_name}:\n\n\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 			array(
 				'name'    => __( 'Offer reminder', 'kdna-grants' ),

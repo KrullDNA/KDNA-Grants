@@ -474,21 +474,24 @@ class KDNA_Grants_Rounds {
 	 */
 
 	/**
-	 * Suggests a round name from its application dates, such as "Grant 4 April to 4 May 2026",
-	 * or "Grant 4 December 2026 to 4 January 2027" when the round crosses into a new year.
+	 * Suggests a round name from the quarter it opens in, such as "Q1 2027".
+	 *
+	 * Quarters follow the calendar year: Q1 is January to March, Q2 April to
+	 * June, Q3 July to September and Q4 October to December. In emails this
+	 * reads as "KDNA Launchpad (Q1 2027)".
 	 *
 	 * @param string $opens_at  UTC opening time.
-	 * @param string $closes_at UTC closing time.
+	 * @param string $closes_at UTC closing time (kept so older callers still work).
 	 * @return string
 	 */
-	public static function default_name( $opens_at, $closes_at ) {
-		$same_year = self::to_site( $opens_at, 'Y' ) === self::to_site( $closes_at, 'Y' );
+	public static function default_name( $opens_at, $closes_at = '' ) {
+		$month = (int) self::to_site( $opens_at, 'n' );
 
 		return sprintf(
-			/* translators: 1: opening date, 2: closing date. */
-			__( 'Grant %1$s to %2$s', 'kdna-grants' ),
-			self::to_site( $opens_at, $same_year ? 'j F' : 'j F Y' ),
-			self::to_site( $closes_at, 'j F Y' )
+			/* translators: 1: quarter number 1 to 4, 2: year. */
+			__( 'Q%1$d %2$s', 'kdna-grants' ),
+			(int) ceil( max( 1, $month ) / 3 ),
+			self::to_site( $opens_at, 'Y' )
 		);
 	}
 
