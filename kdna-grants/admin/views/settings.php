@@ -46,7 +46,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="kdna-grants-settings-form">
 		<input type="hidden" name="action" value="<?php echo esc_attr( KDNA_Grants_Admin::SAVE_ACTION ); ?>" />
 		<?php wp_nonce_field( KDNA_Grants_Admin::SAVE_ACTION ); ?>
+		<input type="hidden" name="tab" value="" id="kdna-grants-tab-field" />
 
+		<nav class="nav-tab-wrapper kdna-grants-tabs" aria-label="<?php esc_attr_e( 'Settings sections', 'kdna-grants' ); ?>">
+			<a href="#form" class="nav-tab nav-tab-active" data-tab="form"><?php esc_html_e( 'Form', 'kdna-grants' ); ?></a>
+			<a href="#rounds" class="nav-tab" data-tab="rounds"><?php esc_html_e( 'Rounds and eligibility', 'kdna-grants' ); ?></a>
+			<a href="#judging" class="nav-tab" data-tab="judging"><?php esc_html_e( 'Judging', 'kdna-grants' ); ?></a>
+			<a href="#emails" class="nav-tab" data-tab="emails"><?php esc_html_e( 'Emails', 'kdna-grants' ); ?></a>
+			<a href="#data" class="nav-tab" data-tab="data"><?php esc_html_e( 'Data', 'kdna-grants' ); ?></a>
+		</nav>
+
+		<div class="kdna-grants-tab-panel" data-panel="form">
 		<!-- Application form -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Application form', 'kdna-grants' ); ?></h2>
@@ -130,6 +140,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</table>
 		</div>
 
+		</div>
+
+		<div class="kdna-grants-tab-panel" data-panel="rounds">
 		<!-- Rounds -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Rounds', 'kdna-grants' ); ?></h2>
@@ -168,6 +181,99 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 
+		</div>
+
+		<div class="kdna-grants-tab-panel" data-panel="judging">
+		<!-- Judging criteria -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Judging criteria', 'kdna-grants' ); ?></h2>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Each criterion is scored 1 to 5. These should match the criteria published on the application page. Changes only affect rounds that haven\'t started judging, so past scores always stay as they were.', 'kdna-grants' ); ?></p>
+
+			<ol class="kdna-grants-criteria" id="kdna-grants-criteria">
+				<?php foreach ( array_values( (array) $settings['criteria'] ) as $kdna_grants_index => $kdna_grants_item ) : ?>
+					<li class="kdna-grants-criteria__row">
+						<input type="hidden" name="criteria[<?php echo esc_attr( $kdna_grants_index ); ?>][key]" value="<?php echo esc_attr( $kdna_grants_item['key'] ); ?>" class="kdna-grants-criteria__key" />
+						<label class="screen-reader-text" for="kdna-grants-criterion-<?php echo esc_attr( $kdna_grants_index ); ?>"><?php esc_html_e( 'Criterion name', 'kdna-grants' ); ?></label>
+						<input type="text" id="kdna-grants-criterion-<?php echo esc_attr( $kdna_grants_index ); ?>" name="criteria[<?php echo esc_attr( $kdna_grants_index ); ?>][label]" value="<?php echo esc_attr( $kdna_grants_item['label'] ); ?>" class="regular-text kdna-grants-criteria__label" />
+						<span class="kdna-grants-criteria__tools">
+							<button type="button" class="button kdna-grants-criteria__up" aria-label="<?php esc_attr_e( 'Move up', 'kdna-grants' ); ?>">&uarr;</button>
+							<button type="button" class="button kdna-grants-criteria__down" aria-label="<?php esc_attr_e( 'Move down', 'kdna-grants' ); ?>">&darr;</button>
+							<button type="button" class="button-link kdna-grants-link-danger kdna-grants-criteria__remove"><?php esc_html_e( 'Remove', 'kdna-grants' ); ?></button>
+						</span>
+					</li>
+				<?php endforeach; ?>
+			</ol>
+			<p><button type="button" class="button" id="kdna-grants-add-criterion"><?php esc_html_e( 'Add criterion', 'kdna-grants' ); ?></button></p>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-tiebreak" class="kdna-grants-row__label"><?php esc_html_e( 'Tie-break criterion', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<select name="tiebreak_criterion" id="kdna-grants-tiebreak">
+						<?php foreach ( array_values( (array) $settings['criteria'] ) as $kdna_grants_index => $kdna_grants_item ) : ?>
+							<option value="<?php echo esc_attr( $kdna_grants_index ); ?>" <?php selected( $settings['tiebreak_criterion'], $kdna_grants_item['key'] ); ?>><?php echo esc_html( $kdna_grants_item['label'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php esc_html_e( 'When two applications have the same total, the one with the higher score here ranks first.', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<div class="kdna-grants-tab-panel" data-panel="emails">
+		<!-- Emails -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Emails', 'kdna-grants' ); ?></h2>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'The winner and unsuccessful emails send when you choose a winner. The confirmation email applicants get when they apply is sent by KDNA Forms, as a Notification on the form.', 'kdna-grants' ); ?></p>
+			<p class="kdna-grants-card__intro">
+				<strong><?php esc_html_e( 'Merge tags:', 'kdna-grants' ); ?></strong>
+				<?php foreach ( KDNA_Grants_Emails::merge_tags() as $kdna_grants_tag => $kdna_grants_tag_help ) : ?>
+					<code title="<?php echo esc_attr( $kdna_grants_tag_help ); ?>"><?php echo esc_html( $kdna_grants_tag ); ?></code>
+				<?php endforeach; ?>
+			</p>
+		</div>
+
+		<?php foreach ( KDNA_Grants_Emails::types() as $kdna_grants_type => $kdna_grants_type_label ) : ?>
+			<?php $kdna_grants_template = KDNA_Grants_Emails::get_template( $kdna_grants_type ); ?>
+			<div class="kdna-grants-card kdna-grants-email-card" data-type="<?php echo esc_attr( $kdna_grants_type ); ?>">
+				<h2 class="kdna-grants-card__title"><?php echo esc_html( $kdna_grants_type_label ); ?></h2>
+
+				<label for="kdna-grants-subject-<?php echo esc_attr( $kdna_grants_type ); ?>" class="kdna-grants-scorecard__label"><?php esc_html_e( 'Subject', 'kdna-grants' ); ?></label>
+				<input type="text" class="large-text kdna-grants-email-card__subject" id="kdna-grants-subject-<?php echo esc_attr( $kdna_grants_type ); ?>" name="emails[<?php echo esc_attr( $kdna_grants_type ); ?>][subject]" value="<?php echo esc_attr( $kdna_grants_template['subject'] ); ?>" />
+
+				<p class="kdna-grants-scorecard__label"><?php esc_html_e( 'Message', 'kdna-grants' ); ?></p>
+				<?php
+				wp_editor(
+					$kdna_grants_template['body'],
+					'kdna_grants_email_' . $kdna_grants_type,
+					array(
+						'textarea_name' => 'emails[' . $kdna_grants_type . '][body]',
+						'textarea_rows' => 12,
+						'media_buttons' => false,
+						'teeny'         => true,
+					)
+				);
+				?>
+
+				<p class="kdna-grants-email-card__test">
+					<button type="button" class="button kdna-grants-send-test" data-type="<?php echo esc_attr( $kdna_grants_type ); ?>"><?php esc_html_e( 'Send test email', 'kdna-grants' ); ?></button>
+					<span class="kdna-grants-email-card__result" role="status" aria-live="polite"></span>
+					<span class="description">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %s: email address. */
+								__( 'Sends what is on screen to %s, with sample details filled in.', 'kdna-grants' ),
+								get_option( 'admin_email' )
+							)
+						);
+						?>
+					</span>
+				</p>
+			</div>
+		<?php endforeach; ?>
+		</div>
+
+		<div class="kdna-grants-tab-panel" data-panel="data">
 		<!-- Data -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Data', 'kdna-grants' ); ?></h2>
@@ -179,6 +285,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="description"><?php esc_html_e( 'Leave this off unless you are removing KDNA Grants for good. When off, deleting the plugin keeps every round, application, score and note, so reinstalling picks up where you left off. KDNA Forms entries are never deleted by KDNA Grants.', 'kdna-grants' ); ?></span>
 				</span>
 			</label>
+		</div>
+
 		</div>
 
 		<?php submit_button( __( 'Save settings', 'kdna-grants' ) ); ?>

@@ -173,6 +173,8 @@ class KDNA_Grants_Rounds {
 		$row['id']                    = (int) $row['id'];
 		$row['winner_application_id'] = $row['winner_application_id'] ? (int) $row['winner_application_id'] : 0;
 		$row['is_test']               = (bool) $row['is_test'];
+		$row['decision_note']         = (string) $row['decision_note'];
+		$row['announce_date']         = (string) $row['announce_date'];
 		$row['criteria']              = $row['criteria'] ? json_decode( $row['criteria'], true ) : null;
 		$row['activity_log']          = $row['activity_log'] ? (array) json_decode( $row['activity_log'], true ) : array();
 		$row['status']                = self::status_for( $row );

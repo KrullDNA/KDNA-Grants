@@ -116,6 +116,7 @@ class KDNA_Grants_Install {
 			last_name varchar(191) NOT NULL DEFAULT '',
 			email varchar(191) NOT NULL DEFAULT '',
 			business_name varchar(191) NOT NULL DEFAULT '',
+			industry varchar(191) NOT NULL DEFAULT '',
 			abn varchar(20) NOT NULL DEFAULT '',
 			staff varchar(100) NOT NULL DEFAULT '',
 			eligibility_flags longtext,
@@ -152,6 +153,7 @@ class KDNA_Grants_Install {
 	 *
 	 * Key => label and help text shown on the Settings screen. 'types' limits
 	 * the dropdown to suitable KDNA Forms field types (empty means any field).
+	 * 'required' fields are listed under "Still to do" until they are matched.
 	 *
 	 * @return array
 	 */
@@ -160,37 +162,50 @@ class KDNA_Grants_Install {
 			'first_name'    => array(
 				'label' => __( 'First name', 'kdna-grants' ),
 				'help'  => __( 'Used in emails, for example "Hi {first_name}".', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
 			),
 			'last_name'     => array(
 				'label' => __( 'Last name', 'kdna-grants' ),
 				'help'  => __( 'Shown on the applications list.', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
 			),
 			'email'         => array(
 				'label' => __( 'Email', 'kdna-grants' ),
 				'help'  => __( 'Where the winner and unsuccessful emails go. Also used for the duplicate, past winner and existing client checks.', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
 			),
 			'business_name' => array(
 				'label' => __( 'Business name', 'kdna-grants' ),
 				'help'  => __( 'Shown on the applications list and checked against your existing client list.', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
+			),
+			'industry'      => array(
+				'label'    => __( 'Industry (optional)', 'kdna-grants' ),
+				'help'     => __( 'Shown on the applications list. Leave unmatched if the form doesn\'t ask for it.', 'kdna-grants' ),
+				'types'    => array(),
+				'required' => false,
 			),
 			'abn'           => array(
 				'label' => __( 'ABN', 'kdna-grants' ),
 				'help'  => __( 'Checked with the official ABN checksum, and for duplicates and past winners.', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
 			),
 			'staff'         => array(
 				'label' => __( 'Number of staff', 'kdna-grants' ),
 				'help'  => __( 'Checked against the staff limit.', 'kdna-grants' ),
-				'types' => array(),
+				'types'    => array(),
+				'required' => true,
 			),
 			'logo'          => array(
 				'label' => __( 'Logo upload', 'kdna-grants' ),
 				'help'  => __( 'Shown as an image on the judging screen. Only file upload fields are listed.', 'kdna-grants' ),
-				'types' => array( 'fileupload' ),
+				'types'    => array( 'fileupload' ),
+				'required' => true,
 			),
 		);
 	}
@@ -220,11 +235,41 @@ class KDNA_Grants_Install {
 			),
 			'tiebreak_criterion'       => 'readiness',
 
+			// Stage 3: emails. The applicant confirmation email is sent by KDNA Forms.
+			'emails'                   => self::default_emails(),
+
 			// Stage 4: privacy.
 			'retention_months'         => 24,
 
 			// Uninstall: off by default, so deleting the plugin never removes records by accident.
 			'delete_data_on_uninstall' => false,
+		);
+	}
+
+	/**
+	 * Default winner and unsuccessful emails.
+	 *
+	 * PLACEHOLDER COPY: to be replaced with the copy from the KDNA Website Grant
+	 * application form document once it is in the repository.
+	 *
+	 * @return array
+	 */
+	public static function default_emails() {
+		return array(
+			'winner'       => array(
+				'subject' => __( 'Congratulations {first_name}, {business_name} has won the KDNA Website Grant', 'kdna-grants' ),
+				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant, {round_name}. We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'We\'ll be in touch in the next few days to book a time to talk through your new website and what happens next.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Congratulations again,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
+			),
+			'unsuccessful' => array(
+				'subject' => __( 'Your KDNA Website Grant application, {round_name}', 'kdna-grants' ),
+				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant, {round_name}, and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'You\'re very welcome to apply again. The next round opens on {next_open_date}.', 'kdna-grants' ) . '</p>'
+					. '<p>' . __( 'Thank you again, and all the best,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
+			),
 		);
 	}
 

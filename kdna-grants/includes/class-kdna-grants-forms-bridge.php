@@ -12,6 +12,8 @@
  * - Refusing a submission: filter 'kdnaform_validation_{form_id}' (runs before saving),
  *   with the error heading changed through 'kdnaform_validation_message_{form_id}'.
  * - Test entries: KDNAAPI::add_entry() and KDNAAPI::delete_entry().
+ * - Showing answers: KDNAFormsModel::get_lead_field_value() and KDNACommon::get_lead_field_display(),
+ *   the same as KDNA Forms' own Entries screen.
  * - Reading an entry: KDNAAPI::get_entry( $entry_id ).
  * - Listing forms: KDNAAPI::get_forms(). Reading one form: KDNAAPI::get_form( $form_id ).
  * - Displaying a form: kdna_form() (the same as the [kdnaform] shortcode).
@@ -230,6 +232,118 @@ class KDNA_Grants_Forms_Bridge {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Every answer in an entry, in the order of the form, ready to show on the judging screen.
+	 *
+	 * Uses KDNA Forms' own display formatting, the same as its Entries screen, so
+	 * links, lists and uploaded files appear as they do there. Section headings are
+	 * included; empty answers are left out.
+	 *
+	 * @param array $entry The KDNA Forms entry.
+	 * @return array List of array( 'type' => 'section' or 'answer', 'label' => text, 'html' => formatted answer ).
+	 */
+	public static function get_entry_answers( $entry ) {
+		$form = is_array( $entry ) && ! empty( $entry['form_id'] ) ? self::get_form( $entry['form_id'] ) : false;
+
+		if ( ! $form || empty( $form['fields'] ) ) {
+			return array();
+		}
+
+		$answers = array();
+
+		foreach ( $form['fields'] as $field ) {
+			if ( ! is_object( $field ) || ! method_exists( $field, 'get_input_type' ) ) {
+				continue;
+			}
+
+			$type = $field->get_input_type();
+
+			if ( 'section' === $type ) {
+				$answers[] = array(
+					'type'  => 'section',
+					'label' => self::field_label( $field ),
+					'html'  => '',
+				);
+				continue;
+			}
+
+			if ( in_array( $type, array( 'captcha', 'html', 'password', 'page', 'submit' ), true ) ) {
+				continue;
+			}
+
+			$value   = KDNAFormsModel::get_lead_field_value( $entry, $field );
+			$display = KDNACommon::get_lead_field_display( $field, $value, $entry );
+			$display = apply_filters( 'kdnaform_entry_field_value', $display, $field, $entry, $form );
+
+			if ( '' === trim( wp_strip_all_tags( (string) $display ) ) && false === strpos( (string) $display, '<img' ) ) {
+				continue;
+			}
+
+			$answers[] = array(
+				'type'  => 'answer',
+				'label' => self::field_label( $field ),
+				'html'  => (string) $display,
+			);
+		}
+
+		// Drop section headings with no answers under them.
+		$tidy = array();
+		foreach ( $answers as $index => $answer ) {
+			$next = isset( $answers[ $index + 1 ] ) ? $answers[ $index + 1 ] : null;
+			if ( 'section' === $answer['type'] && ( ! $next || 'section' === $next['type'] ) ) {
+				continue;
+			}
+			$tidy[] = $answer;
+		}
+
+		return $tidy;
+	}
+
+	/**
+	 * Secure links to the files uploaded in a file upload field, through KDNA Forms' own file handling.
+	 *
+	 * The real file location is never exposed: KDNA Forms checks a security token on each link.
+	 *
+	 * @param array  $entry    The KDNA Forms entry.
+	 * @param string $field_id The file upload field ID.
+	 * @return string[] Links, one per file.
+	 */
+	public static function get_file_urls( $entry, $field_id ) {
+		$form = is_array( $entry ) && ! empty( $entry['form_id'] ) ? self::get_form( $entry['form_id'] ) : false;
+
+		if ( ! $form || '' === (string) $field_id || empty( $entry[ $field_id ] ) ) {
+			return array();
+		}
+
+		$field = KDNAAPI::get_field( $form, $field_id );
+		if ( ! $field || ! method_exists( $field, 'get_download_url' ) ) {
+			return array();
+		}
+
+		$raw   = (string) $entry[ $field_id ];
+		$files = json_decode( $raw, true );
+		$files = is_array( $files ) ? $files : array( $raw );
+		$urls  = array();
+
+		foreach ( $files as $file ) {
+			if ( is_string( $file ) && '' !== $file ) {
+				$urls[] = $field->get_download_url( $file, false, absint( $entry['id'] ) );
+			}
+		}
+
+		return $urls;
+	}
+
+	/**
+	 * Link to an entry on KDNA Forms' own Entries screen.
+	 *
+	 * @param array $entry The KDNA Forms entry.
+	 * @return string
+	 */
+	public static function get_entry_url( $entry ) {
+		return admin_url( 'admin.php?page=kdna_entries&view=entry&id=' . absint( $entry['form_id'] ) . '&lid=' . absint( $entry['id'] ) );
 	}
 
 	/**

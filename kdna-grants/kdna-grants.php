@@ -32,7 +32,7 @@ kdna_update_client_register( __FILE__, 'kdna-grants' );
  */
 
 define( 'KDNA_GRANTS_VERSION', '1.0.0' );
-define( 'KDNA_GRANTS_DB_VERSION', '1.0.0' );
+define( 'KDNA_GRANTS_DB_VERSION', '1.0.1' );
 define( 'KDNA_GRANTS_FILE', __FILE__ );
 define( 'KDNA_GRANTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KDNA_GRANTS_URL', plugin_dir_url( __FILE__ ) );
@@ -141,6 +141,7 @@ function kdna_grants_boot() {
 
 	KDNA_Grants_Rounds::register();
 	KDNA_Grants_Applications::register();
+	KDNA_Grants_Emails::register();
 
 	/**
 	 * Fires once KDNA Grants is fully running with KDNA Forms.

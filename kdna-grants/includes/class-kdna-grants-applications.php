@@ -153,7 +153,7 @@ class KDNA_Grants_Applications {
 		$map    = (array) kdna_grants_get_setting( 'field_map', array() );
 		$values = array();
 
-		foreach ( array( 'first_name', 'last_name', 'email', 'business_name', 'abn', 'staff' ) as $key ) {
+		foreach ( array( 'first_name', 'last_name', 'email', 'business_name', 'industry', 'abn', 'staff' ) as $key ) {
 			$field_id       = isset( $map[ $key ] ) ? (string) $map[ $key ] : '';
 			$values[ $key ] = '' === $field_id ? '' : KDNA_Grants_Forms_Bridge::get_entry_value( $entry, $field_id, $form );
 		}
@@ -172,7 +172,7 @@ class KDNA_Grants_Applications {
 	 *
 	 * @param int   $round_id Round ID.
 	 * @param int   $entry_id KDNA Forms entry ID (0 for a test application without an entry).
-	 * @param array $values   first_name, last_name, email, business_name, abn, staff.
+	 * @param array $values   first_name, last_name, email, business_name, industry, abn, staff.
 	 * @return int The application ID, or 0 on failure.
 	 */
 	public static function create( $round_id, $entry_id, $values ) {
@@ -189,6 +189,7 @@ class KDNA_Grants_Applications {
 				'last_name'         => self::clip( $values, 'last_name' ),
 				'email'             => self::clip( $values, 'email', 191, 'sanitize_email' ),
 				'business_name'     => self::clip( $values, 'business_name' ),
+				'industry'          => self::clip( $values, 'industry' ),
 				'abn'               => self::clip( $values, 'abn', 20 ),
 				'staff'             => self::clip( $values, 'staff', 100 ),
 				'eligibility_flags' => wp_json_encode( array() ),
@@ -206,14 +207,14 @@ class KDNA_Grants_Applications {
 	 * Updates some columns of an application.
 	 *
 	 * @param int   $application_id Application ID.
-	 * @param array $data           Column => value. Arrays are stored as JSON.
+	 * @param array $data           Column => value. Arrays and objects are stored as JSON.
 	 * @return bool
 	 */
 	public static function update( $application_id, $data ) {
 		global $wpdb;
 
 		foreach ( $data as $key => $value ) {
-			if ( is_array( $value ) ) {
+			if ( is_array( $value ) || is_object( $value ) ) {
 				$data[ $key ] = wp_json_encode( $value );
 			}
 		}
@@ -348,6 +349,8 @@ class KDNA_Grants_Applications {
 			$row[ $key ] = (int) $row[ $key ];
 		}
 
+		$row['notes']             = (string) $row['notes'];
+		$row['email_status']      = (string) $row['email_status'];
 		$row['shortlisted']       = (bool) $row['shortlisted'];
 		$row['eligibility_flags'] = $row['eligibility_flags'] ? (array) json_decode( $row['eligibility_flags'], true ) : array();
 		$row['scores']            = $row['scores'] ? (array) json_decode( $row['scores'], true ) : array();
