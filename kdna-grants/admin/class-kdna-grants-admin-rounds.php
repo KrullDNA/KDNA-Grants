@@ -19,6 +19,7 @@ class KDNA_Grants_Admin_Rounds {
 	const DELETE_ACTION      = 'kdna_grants_delete_round';
 	const CREATE_TEST_ACTION = 'kdna_grants_create_test';
 	const DELETE_TEST_ACTION = 'kdna_grants_delete_test';
+	const EXPORT_ACTION      = 'kdna_grants_export_round';
 
 	/**
 	 * Hooks the form handlers.
@@ -28,6 +29,7 @@ class KDNA_Grants_Admin_Rounds {
 		add_action( 'admin_post_' . self::DELETE_ACTION, array( $this, 'handle_delete' ) );
 		add_action( 'admin_post_' . self::CREATE_TEST_ACTION, array( $this, 'handle_create_test' ) );
 		add_action( 'admin_post_' . self::DELETE_TEST_ACTION, array( $this, 'handle_delete_test' ) );
+		add_action( 'admin_post_' . self::EXPORT_ACTION, array( $this, 'handle_export' ) );
 	}
 
 	/*
@@ -117,6 +119,8 @@ class KDNA_Grants_Admin_Rounds {
 	public function handle_save() {
 		$this->check( self::SAVE_ACTION );
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Checked in check() above.
+
 		$round_id = isset( $_POST['round_id'] ) ? absint( wp_unslash( $_POST['round_id'] ) ) : 0;
 		$round    = $round_id ? KDNA_Grants_Rounds::get( $round_id ) : null;
 
@@ -164,6 +168,8 @@ class KDNA_Grants_Admin_Rounds {
 			KDNA_Grants_Admin::redirect( KDNA_Grants_Admin::ROUNDS_PAGE, '', $args );
 		}
 
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
 		KDNA_Grants_Rounds::save( $data, $round_id );
 
 		KDNA_Grants_Admin::redirect( KDNA_Grants_Admin::ROUNDS_PAGE, 'round_saved' );
@@ -175,7 +181,7 @@ class KDNA_Grants_Admin_Rounds {
 	public function handle_delete() {
 		$this->check( self::DELETE_ACTION );
 
-		$round_id = isset( $_POST['round_id'] ) ? absint( wp_unslash( $_POST['round_id'] ) ) : 0;
+		$round_id = isset( $_POST['round_id'] ) ? absint( wp_unslash( $_POST['round_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Checked in check() above.
 		$round    = KDNA_Grants_Rounds::get( $round_id );
 
 		if ( ! $round || $round['is_test'] ) {
@@ -211,6 +217,44 @@ class KDNA_Grants_Admin_Rounds {
 		KDNA_Grants_Test_Tool::delete();
 
 		KDNA_Grants_Admin::redirect( KDNA_Grants_Admin::ROUNDS_PAGE, 'test_deleted' );
+	}
+
+	/**
+	 * Downloads a round as a CSV file.
+	 */
+	public function handle_export() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'kdna-grants' ) );
+		}
+
+		$round_id = isset( $_GET['round'] ) ? absint( wp_unslash( $_GET['round'] ) ) : 0;
+		check_admin_referer( self::EXPORT_ACTION . '_' . $round_id );
+
+		$round = KDNA_Grants_Rounds::get( $round_id );
+		if ( ! $round ) {
+			KDNA_Grants_Admin::redirect( KDNA_Grants_Admin::ROUNDS_PAGE, 'not_found' );
+		}
+
+		KDNA_Grants_Export::download( $round );
+	}
+
+	/**
+	 * Link that downloads a round's CSV.
+	 *
+	 * @param int $round_id Round ID.
+	 * @return string
+	 */
+	public static function export_url( $round_id ) {
+		return wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => self::EXPORT_ACTION,
+					'round'  => absint( $round_id ),
+				),
+				admin_url( 'admin-post.php' )
+			),
+			self::EXPORT_ACTION . '_' . absint( $round_id )
+		);
 	}
 
 	/*

@@ -101,12 +101,12 @@ $kdna_grants_links = function ( $html ) {
 					<?php endif; ?>
 					<?php
 					$kdna_grants_basic = array(
-						__( 'Name', 'kdna-grants' )          => trim( $application['first_name'] . ' ' . $application['last_name'] ),
-						__( 'Email', 'kdna-grants' )         => $application['email'],
+						__( 'Name', 'kdna-grants' )     => trim( $application['first_name'] . ' ' . $application['last_name'] ),
+						__( 'Email', 'kdna-grants' )    => $application['email'],
 						__( 'Business name', 'kdna-grants' ) => $application['business_name'],
-						__( 'Industry', 'kdna-grants' )      => $application['industry'],
-						__( 'ABN', 'kdna-grants' )           => KDNA_Grants_Eligibility::format_abn( $application['abn'] ),
-						__( 'Staff', 'kdna-grants' )         => $application['staff'],
+						__( 'Industry', 'kdna-grants' ) => $application['industry'],
+						__( 'ABN', 'kdna-grants' )      => KDNA_Grants_Eligibility::format_abn( $application['abn'] ),
+						__( 'Staff', 'kdna-grants' )    => $application['staff'],
 					);
 					foreach ( array_filter( $kdna_grants_basic, 'strlen' ) as $kdna_grants_label => $kdna_grants_value ) :
 						?>

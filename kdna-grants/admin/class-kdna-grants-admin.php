@@ -190,26 +190,26 @@ class KDNA_Grants_Admin {
 			'kdna-grants-admin',
 			'kdnaGrantsSettings',
 			array(
-				'fields'    => $is_settings ? KDNA_Grants_Forms_Bridge::get_all_mappable_fields() : array(),
-				'targets'   => $targets,
-				'editUrl'   => admin_url( 'admin.php?page=kdna_edit_forms&id=' ),
-				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+				'fields'     => $is_settings ? KDNA_Grants_Forms_Bridge::get_all_mappable_fields() : array(),
+				'targets'    => $targets,
+				'editUrl'    => admin_url( 'admin.php?page=kdna_edit_forms&id=' ),
+				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 				'scoreNonce' => wp_create_nonce( KDNA_Grants_Admin_Applications::SAVE_SCORE_ACTION ),
-				'testNonce' => wp_create_nonce( 'kdna_grants_test_email' ),
-				'i18n'      => array(
-					'saving'           => __( 'Saving…', 'kdna-grants' ),
-					'saved'            => __( 'Saved', 'kdna-grants' ),
-					'saveFailed'       => __( 'Not saved. Please try again.', 'kdna-grants' ),
-					'sending'          => __( 'Sending…', 'kdna-grants' ),
-					'confirmReopen'    => __( 'Reopen judging? Scores can be changed again and a new winner chosen. Emails already sent can\'t be unsent, and if you choose a winner again, the winner and unsuccessful emails are sent again. This is recorded in the round history.', 'kdna-grants' ),
-					'reasonNeeded'     => __( 'Please give a short reason.', 'kdna-grants' ),
-					'removeCriterion'  => __( 'Remove', 'kdna-grants' ),
-					'newCriterion'     => __( 'New criterion', 'kdna-grants' ),
-					'choose'           => __( 'Choose a field', 'kdna-grants' ),
-					'noFields'         => __( 'No suitable fields in this form', 'kdna-grants' ),
+				'testNonce'  => wp_create_nonce( 'kdna_grants_test_email' ),
+				'i18n'       => array(
+					'saving'             => __( 'Saving…', 'kdna-grants' ),
+					'saved'              => __( 'Saved', 'kdna-grants' ),
+					'saveFailed'         => __( 'Not saved. Please try again.', 'kdna-grants' ),
+					'sending'            => __( 'Sending…', 'kdna-grants' ),
+					'confirmReopen'      => __( 'Reopen judging? Scores can be changed again and a new winner chosen. Emails already sent can\'t be unsent, and if you choose a winner again, the winner and unsuccessful emails are sent again. This is recorded in the round history.', 'kdna-grants' ),
+					'reasonNeeded'       => __( 'Please give a short reason.', 'kdna-grants' ),
+					'removeCriterion'    => __( 'Remove', 'kdna-grants' ),
+					'newCriterion'       => __( 'New criterion', 'kdna-grants' ),
+					'choose'             => __( 'Choose a field', 'kdna-grants' ),
+					'noFields'           => __( 'No suitable fields in this form', 'kdna-grants' ),
 					'confirmDeleteTest'  => __( 'Delete the test rounds, their sample applications and the sample KDNA Forms entries?', 'kdna-grants' ),
 					'confirmDeleteRound' => __( 'Delete this round? This can\'t be undone.', 'kdna-grants' ),
-					'confirmUninstall' => __( 'Are you sure? With this ticked, deleting KDNA Grants from the Plugins screen permanently removes every round, application, score and note. KDNA Forms entries are not affected.', 'kdna-grants' ),
+					'confirmUninstall'   => __( 'Are you sure? With this ticked, deleting KDNA Grants from the Plugins screen permanently removes every round, application, score and note. KDNA Forms entries are not affected.', 'kdna-grants' ),
 				),
 			)
 		);
@@ -323,6 +323,17 @@ class KDNA_Grants_Admin {
 		}
 		$settings['emails'] = $emails;
 
+		// Closed messages.
+		$defaults = KDNA_Grants_Install::default_settings();
+		foreach ( array( 'closed_message', 'closed_message_none' ) as $key ) {
+			$value            = isset( $_POST[ $key ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ $key ] ) ) : '';
+			$settings[ $key ] = '' !== trim( $value ) ? $value : $defaults[ $key ];
+		}
+
+		// Data retention: 0 keeps records, otherwise 1 to 120 months.
+		$retention                    = isset( $_POST['retention_months'] ) ? absint( wp_unslash( $_POST['retention_months'] ) ) : 24;
+		$settings['retention_months'] = min( 120, $retention );
+
 		$settings['delete_data_on_uninstall'] = ! empty( $_POST['delete_data_on_uninstall'] );
 
 		update_option( KDNA_GRANTS_OPTION, $settings, false );
@@ -364,7 +375,8 @@ class KDNA_Grants_Admin {
 			$base   = $key;
 			$suffix = 2;
 			while ( isset( $used[ $key ] ) ) {
-				$key = $base . '_' . $suffix++;
+				$key = $base . '_' . $suffix;
+				++$suffix;
 			}
 			$used[ $key ] = true;
 

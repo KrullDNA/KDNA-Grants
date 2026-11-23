@@ -61,6 +61,8 @@ require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-judging.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-emails.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-privacy.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-test-tool.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-export.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-frontend.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-rounds.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-applications.php';
@@ -107,13 +109,13 @@ function kdna_grants_get_settings() {
  * Returns one KDNA Grants setting.
  *
  * @param string $key     The setting name.
- * @param mixed  $default Returned if the setting does not exist.
+ * @param mixed  $fallback Returned if the setting does not exist.
  * @return mixed
  */
-function kdna_grants_get_setting( $key, $default = null ) {
+function kdna_grants_get_setting( $key, $fallback = null ) {
 	$settings = kdna_grants_get_settings();
 
-	return array_key_exists( $key, $settings ) ? $settings[ $key ] : $default;
+	return array_key_exists( $key, $settings ) ? $settings[ $key ] : $fallback;
 }
 
 /*
@@ -142,6 +144,8 @@ function kdna_grants_boot() {
 	KDNA_Grants_Rounds::register();
 	KDNA_Grants_Applications::register();
 	KDNA_Grants_Emails::register();
+	KDNA_Grants_Privacy::register();
+	KDNA_Grants_Frontend::register();
 
 	/**
 	 * Fires once KDNA Grants is fully running with KDNA Forms.
@@ -155,5 +159,7 @@ add_action( 'init', 'kdna_grants_boot', 5 );
  */
 function kdna_grants_deactivate() {
 	KDNA_Grants_Rounds::clear_cron();
+	wp_clear_scheduled_hook( KDNA_Grants_Emails::CRON_HOOK );
+	wp_clear_scheduled_hook( KDNA_Grants_Privacy::CRON_HOOK );
 }
 register_deactivation_hook( __FILE__, 'kdna_grants_deactivate' );

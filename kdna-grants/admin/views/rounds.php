@@ -128,6 +128,9 @@ $kdna_grants_new_url = add_query_arg(
 						<td><?php echo $kdna_grants_winner ? esc_html( $kdna_grants_winner['business_name'] ) : '<span aria-hidden="true">&ndash;</span>'; ?></td>
 						<td class="kdna-grants-table__actions">
 							<a href="<?php echo esc_url( $kdna_grants_apps_url ); ?>"><?php esc_html_e( 'Applications', 'kdna-grants' ); ?></a>
+							<?php if ( $kdna_grants_count ) : ?>
+								<a href="<?php echo esc_url( KDNA_Grants_Admin_Rounds::export_url( $kdna_grants_round['id'] ) ); ?>"><?php esc_html_e( 'Export CSV', 'kdna-grants' ); ?></a>
+							<?php endif; ?>
 							<?php if ( ! $kdna_grants_round['is_test'] && KDNA_Grants_Rounds::STATUS_DECIDED !== $kdna_grants_round['status'] ) : ?>
 								<a href="<?php echo esc_url( $kdna_grants_edit_url ); ?>"><?php esc_html_e( 'Edit', 'kdna-grants' ); ?></a>
 							<?php endif; ?>

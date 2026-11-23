@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<a href="#form" class="nav-tab nav-tab-active" data-tab="form"><?php esc_html_e( 'Form', 'kdna-grants' ); ?></a>
 			<a href="#rounds" class="nav-tab" data-tab="rounds"><?php esc_html_e( 'Rounds and eligibility', 'kdna-grants' ); ?></a>
 			<a href="#judging" class="nav-tab" data-tab="judging"><?php esc_html_e( 'Judging', 'kdna-grants' ); ?></a>
-			<a href="#emails" class="nav-tab" data-tab="emails"><?php esc_html_e( 'Emails', 'kdna-grants' ); ?></a>
+			<a href="#emails" class="nav-tab" data-tab="emails"><?php esc_html_e( 'Emails and messages', 'kdna-grants' ); ?></a>
 			<a href="#data" class="nav-tab" data-tab="data"><?php esc_html_e( 'Data', 'kdna-grants' ); ?></a>
 		</nav>
 
@@ -67,11 +67,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="kdna-grants-row__control">
 					<select name="form_id" id="kdna-grants-form-id">
 						<option value="0"><?php esc_html_e( 'Choose a form', 'kdna-grants' ); ?></option>
-						<?php foreach ( $forms as $id => $title ) : ?>
-							<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $form_id, $id ); ?>>
+						<?php foreach ( $forms as $kdna_grants_form_option => $kdna_grants_form_title ) : ?>
+							<option value="<?php echo esc_attr( $kdna_grants_form_option ); ?>" <?php selected( $form_id, $kdna_grants_form_option ); ?>>
 								<?php
 								/* translators: 1: form title, 2: form ID. */
-								echo esc_html( sprintf( __( '%1$s (ID %2$d)', 'kdna-grants' ), $title, $id ) );
+								echo esc_html( sprintf( __( '%1$s (ID %2$d)', 'kdna-grants' ), $kdna_grants_form_title, $kdna_grants_form_option ) );
 								?>
 							</option>
 						<?php endforeach; ?>
@@ -271,9 +271,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</p>
 			</div>
 		<?php endforeach; ?>
+
+		<!-- Closed messages -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Closed message', 'kdna-grants' ); ?></h2>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Shown in place of the form between rounds, by the Grant Application widget and the [kdna_grant_application] shortcode.', 'kdna-grants' ); ?></p>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-closed-message" class="kdna-grants-row__label"><?php esc_html_e( 'When the next round is scheduled', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<textarea name="closed_message" id="kdna-grants-closed-message" rows="3" class="large-text"><?php echo esc_textarea( $settings['closed_message'] ); ?></textarea>
+					<p class="description"><?php esc_html_e( 'Use {next_open_date} for the date the next round opens.', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-closed-none" class="kdna-grants-row__label"><?php esc_html_e( 'When no next round is scheduled', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<textarea name="closed_message_none" id="kdna-grants-closed-none" rows="3" class="large-text"><?php echo esc_textarea( $settings['closed_message_none'] ); ?></textarea>
+				</div>
+			</div>
+		</div>
 		</div>
 
 		<div class="kdna-grants-tab-panel" data-panel="data">
+		<!-- Retention -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Data retention', 'kdna-grants' ); ?></h2>
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-retention" class="kdna-grants-row__label"><?php esc_html_e( 'Keep records for', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<input type="number" name="retention_months" id="kdna-grants-retention" min="0" max="120" step="1" class="small-text" value="<?php echo esc_attr( $settings['retention_months'] ); ?>" />
+					<?php esc_html_e( 'months after a round is decided', 'kdna-grants' ); ?>
+					<p class="description"><?php esc_html_e( 'After this, the round and its applications, scores and notes are removed automatically. Enter 0 to keep them. KDNA Forms entries are not affected. Requests to export or erase someone\'s data are handled in Tools > Export Personal Data and Tools > Erase Personal Data.', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+		</div>
+
 		<!-- Data -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Data', 'kdna-grants' ); ?></h2>

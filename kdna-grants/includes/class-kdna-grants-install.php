@@ -73,7 +73,7 @@ class KDNA_Grants_Install {
 	/**
 	 * Creates (or updates) the two custom tables.
 	 *
-	 * dbDelta() compares these definitions with what is in the database and
+	 * The WordPress dbDelta() function compares these definitions with what is in the database and
 	 * only adds what is missing, so it is safe to run more than once.
 	 * All dates are stored in UTC and shown in the site's time zone.
 	 */
@@ -160,26 +160,26 @@ class KDNA_Grants_Install {
 	public static function mappable_fields() {
 		return array(
 			'first_name'    => array(
-				'label' => __( 'First name', 'kdna-grants' ),
-				'help'  => __( 'Used in emails, for example "Hi {first_name}".', 'kdna-grants' ),
+				'label'    => __( 'First name', 'kdna-grants' ),
+				'help'     => __( 'Used in emails, for example "Hi {first_name}".', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
 			'last_name'     => array(
-				'label' => __( 'Last name', 'kdna-grants' ),
-				'help'  => __( 'Shown on the applications list.', 'kdna-grants' ),
+				'label'    => __( 'Last name', 'kdna-grants' ),
+				'help'     => __( 'Shown on the applications list.', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
 			'email'         => array(
-				'label' => __( 'Email', 'kdna-grants' ),
-				'help'  => __( 'Where the winner and unsuccessful emails go. Also used for the duplicate, past winner and existing client checks.', 'kdna-grants' ),
+				'label'    => __( 'Email', 'kdna-grants' ),
+				'help'     => __( 'Where the winner and unsuccessful emails go. Also used for the duplicate, past winner and existing client checks.', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
 			'business_name' => array(
-				'label' => __( 'Business name', 'kdna-grants' ),
-				'help'  => __( 'Shown on the applications list and checked against your existing client list.', 'kdna-grants' ),
+				'label'    => __( 'Business name', 'kdna-grants' ),
+				'help'     => __( 'Shown on the applications list and checked against your existing client list.', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
@@ -190,20 +190,20 @@ class KDNA_Grants_Install {
 				'required' => false,
 			),
 			'abn'           => array(
-				'label' => __( 'ABN', 'kdna-grants' ),
-				'help'  => __( 'Checked with the official ABN checksum, and for duplicates and past winners.', 'kdna-grants' ),
+				'label'    => __( 'ABN', 'kdna-grants' ),
+				'help'     => __( 'Checked with the official ABN checksum, and for duplicates and past winners.', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
 			'staff'         => array(
-				'label' => __( 'Number of staff', 'kdna-grants' ),
-				'help'  => __( 'Checked against the staff limit.', 'kdna-grants' ),
+				'label'    => __( 'Number of staff', 'kdna-grants' ),
+				'help'     => __( 'Checked against the staff limit.', 'kdna-grants' ),
 				'types'    => array(),
 				'required' => true,
 			),
 			'logo'          => array(
-				'label' => __( 'Logo upload', 'kdna-grants' ),
-				'help'  => __( 'Shown as an image on the judging screen. Only file upload fields are listed.', 'kdna-grants' ),
+				'label'    => __( 'Logo upload', 'kdna-grants' ),
+				'help'     => __( 'Shown as an image on the judging screen. Only file upload fields are listed.', 'kdna-grants' ),
 				'types'    => array( 'fileupload' ),
 				'required' => true,
 			),
@@ -228,17 +228,33 @@ class KDNA_Grants_Install {
 
 			// Stage 3: judging. Each criterion is scored 1 to 5.
 			'criteria'                 => array(
-				array( 'key' => 'fit', 'label' => __( 'Fit', 'kdna-grants' ) ),
-				array( 'key' => 'impact', 'label' => __( 'Impact', 'kdna-grants' ) ),
-				array( 'key' => 'readiness', 'label' => __( 'Readiness', 'kdna-grants' ) ),
-				array( 'key' => 'story', 'label' => __( 'Story', 'kdna-grants' ) ),
+				array(
+					'key'   => 'fit',
+					'label' => __( 'Fit', 'kdna-grants' ),
+				),
+				array(
+					'key'   => 'impact',
+					'label' => __( 'Impact', 'kdna-grants' ),
+				),
+				array(
+					'key'   => 'readiness',
+					'label' => __( 'Readiness', 'kdna-grants' ),
+				),
+				array(
+					'key'   => 'story',
+					'label' => __( 'Story', 'kdna-grants' ),
+				),
 			),
 			'tiebreak_criterion'       => 'readiness',
 
 			// Stage 3: emails. The applicant confirmation email is sent by KDNA Forms.
 			'emails'                   => self::default_emails(),
 
-			// Stage 4: privacy.
+			// Stage 4: the message shown in place of the form between rounds.
+			'closed_message'           => __( 'Applications for this round have closed. The next round opens on {next_open_date}.', 'kdna-grants' ),
+			'closed_message_none'      => __( 'Applications are closed for now. Follow KDNA for news of the next round.', 'kdna-grants' ),
+
+			// Stage 4: privacy. Records are removed this many months after a round is decided (0 keeps them).
 			'retention_months'         => 24,
 
 			// Uninstall: off by default, so deleting the plugin never removes records by accident.

@@ -88,6 +88,9 @@ $kdna_grants_is_admin = current_user_can( 'manage_options' );
 					)
 				);
 				?>
+				<?php if ( $all_applications && $kdna_grants_is_admin ) : ?>
+					<a href="<?php echo esc_url( KDNA_Grants_Admin_Rounds::export_url( $round['id'] ) ); ?>" class="button button-small kdna-grants-admin__export"><?php esc_html_e( 'Export CSV', 'kdna-grants' ); ?></a>
+				<?php endif; ?>
 				<span class="kdna-grants-admin__counts">
 					<?php
 					echo esc_html(

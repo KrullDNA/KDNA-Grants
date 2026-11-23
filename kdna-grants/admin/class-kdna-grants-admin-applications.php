@@ -115,11 +115,11 @@ class KDNA_Grants_Admin_Applications {
 			);
 		}
 
-		$winner       = $round && $round['winner_application_id'] ? KDNA_Grants_Applications::get( $round['winner_application_id'] ) : null;
-		$labels       = KDNA_Grants_Eligibility::flag_labels();
-		$settings_ok  = (bool) absint( kdna_grants_get_setting( 'form_id', 0 ) );
-		$max_total    = KDNA_Grants_Judging::max_total( $criteria );
-		$base_url     = add_query_arg(
+		$winner      = $round && $round['winner_application_id'] ? KDNA_Grants_Applications::get( $round['winner_application_id'] ) : null;
+		$labels      = KDNA_Grants_Eligibility::flag_labels();
+		$settings_ok = (bool) absint( kdna_grants_get_setting( 'form_id', 0 ) );
+		$max_total   = KDNA_Grants_Judging::max_total( $criteria );
+		$base_url    = add_query_arg(
 			array(
 				'page'  => KDNA_Grants_Admin::APPLICATIONS_PAGE,
 				'round' => $round ? $round['id'] : 0,

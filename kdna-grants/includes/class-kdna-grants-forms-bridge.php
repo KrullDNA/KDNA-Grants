@@ -16,7 +16,7 @@
  *   the same as KDNA Forms' own Entries screen.
  * - Reading an entry: KDNAAPI::get_entry( $entry_id ).
  * - Listing forms: KDNAAPI::get_forms(). Reading one form: KDNAAPI::get_form( $form_id ).
- * - Displaying a form: kdna_form() (the same as the [kdnaform] shortcode).
+ * - Displaying a form: kdna_form() (the same as the [kdnaform] shortcode), in render_form().
  * - Files: secure download links from KDNA_Field_FileUpload::get_download_url().
  * - The applicant confirmation email is a Notification set up on the form in KDNA Forms.
  *
@@ -232,6 +232,24 @@ class KDNA_Grants_Forms_Bridge {
 		}
 
 		return '';
+	}
+
+	/**
+	 * The grant form's HTML, using KDNA Forms' own display function (the same as its [kdnaform] shortcode),
+	 * so it keeps all its KDNA Forms styling and scripts.
+	 *
+	 * @param int  $form_id           The KDNA Forms form ID.
+	 * @param bool $show_title        Show the form title.
+	 * @param bool $show_description  Show the form description.
+	 * @param bool $ajax              Submit without reloading the page.
+	 * @return string
+	 */
+	public static function render_form( $form_id, $show_title = false, $show_description = false, $ajax = true ) {
+		if ( ! self::get_form( $form_id ) ) {
+			return '';
+		}
+
+		return (string) kdna_form( absint( $form_id ), (bool) $show_title, (bool) $show_description, false, null, (bool) $ajax, 0, false );
 	}
 
 	/**
@@ -517,7 +535,7 @@ class KDNA_Grants_Forms_Bridge {
 
 			$type = (string) $field->get_input_type();
 
-			if ( ! empty( $field->displayOnly ) || in_array( $type, self::DISPLAY_ONLY_TYPES, true ) ) {
+			if ( ! empty( $field->displayOnly ) || in_array( $type, self::DISPLAY_ONLY_TYPES, true ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- KDNA Forms property name.
 				continue;
 			}
 

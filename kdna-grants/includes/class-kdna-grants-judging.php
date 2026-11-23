@@ -306,7 +306,9 @@ class KDNA_Grants_Judging {
 					return $tie_b - $tie_a;
 				}
 
-				return strcmp( $a['created_at'], $b['created_at'] ) ?: $a['id'] - $b['id'];
+				$by_date = strcmp( $a['created_at'], $b['created_at'] );
+
+				return 0 !== $by_date ? $by_date : $a['id'] - $b['id'];
 			}
 		);
 
@@ -478,7 +480,7 @@ class KDNA_Grants_Judging {
 
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$wpdb->prepare(
-				"UPDATE " . KDNA_Grants_Install::rounds_table() . " SET status = %s, winner_application_id = NULL, updated_at = %s WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				'UPDATE ' . KDNA_Grants_Install::rounds_table() . ' SET status = %s, winner_application_id = NULL, updated_at = %s WHERE id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				KDNA_Grants_Rounds::STATUS_JUDGING,
 				KDNA_Grants_Rounds::now_utc(),
 				$round_id
