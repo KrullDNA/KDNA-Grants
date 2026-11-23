@@ -37,4 +37,5 @@ foreach ( wp_roles()->role_objects as $kdna_grants_role ) {
 
 // Remove any scheduled KDNA Grants tasks (added in later stages).
 wp_unschedule_hook( 'kdna_grants_cron' );
+wp_unschedule_hook( 'kdna_grants_round_tick' );
 wp_unschedule_hook( 'kdna_grants_send_emails' );

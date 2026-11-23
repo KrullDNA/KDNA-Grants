@@ -16,6 +16,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class KDNA_Grants_Admin {
 
 	/**
+	 * Page slug of the Applications screen (the main KDNA Grants page).
+	 */
+	const APPLICATIONS_PAGE = 'kdna-grants';
+
+	/**
+	 * Page slug of the Rounds screen.
+	 */
+	const ROUNDS_PAGE = 'kdna-grants-rounds';
+
+	/**
 	 * Page slug of the Settings screen.
 	 */
 	const SETTINGS_PAGE = 'kdna-grants-settings';
@@ -26,11 +36,25 @@ class KDNA_Grants_Admin {
 	const SAVE_ACTION = 'kdna_grants_save_settings';
 
 	/**
-	 * The hook suffix WordPress gives our Settings screen, used to load scripts only there.
+	 * The hook suffixes WordPress gives our screens, used to load scripts only there.
 	 *
-	 * @var string
+	 * @var string[]
 	 */
-	private $settings_hook = '';
+	private $screen_hooks = array();
+
+	/**
+	 * The Rounds screen.
+	 *
+	 * @var KDNA_Grants_Admin_Rounds
+	 */
+	private $rounds;
+
+	/**
+	 * The Applications screen.
+	 *
+	 * @var KDNA_Grants_Admin_Applications
+	 */
+	private $applications;
 
 	/**
 	 * Hooks into WordPress. If KDNA Forms isn't available, only the notice is shown.
@@ -40,6 +64,11 @@ class KDNA_Grants_Admin {
 			add_action( 'admin_notices', array( $this, 'dependency_notice' ) );
 			return;
 		}
+
+		$this->rounds       = new KDNA_Grants_Admin_Rounds();
+		$this->applications = new KDNA_Grants_Admin_Applications();
+		$this->rounds->register();
+		$this->applications->register();
 
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -89,21 +118,42 @@ class KDNA_Grants_Admin {
 	 */
 
 	/**
-	 * Adds the KDNA Grants menu. Applications and Rounds screens are added in later stages.
+	 * Adds the KDNA Grants menu: Applications, Rounds and Settings.
+	 *
+	 * Applications needs the judge capability, so it could later be given to a
+	 * guest judge. Rounds and Settings are for administrators only.
 	 */
 	public function add_menu() {
 		add_menu_page(
 			__( 'KDNA Grants', 'kdna-grants' ),
 			__( 'KDNA Grants', 'kdna-grants' ),
-			'manage_options',
-			self::SETTINGS_PAGE,
-			array( $this, 'render_settings_page' ),
+			KDNA_GRANTS_CAP,
+			self::APPLICATIONS_PAGE,
+			array( $this->applications, 'render' ),
 			'dashicons-awards',
 			58
 		);
 
-		$this->settings_hook = add_submenu_page(
-			self::SETTINGS_PAGE,
+		$this->screen_hooks[] = add_submenu_page(
+			self::APPLICATIONS_PAGE,
+			__( 'Applications', 'kdna-grants' ),
+			__( 'Applications', 'kdna-grants' ),
+			KDNA_GRANTS_CAP,
+			self::APPLICATIONS_PAGE,
+			array( $this->applications, 'render' )
+		);
+
+		$this->screen_hooks[] = add_submenu_page(
+			self::APPLICATIONS_PAGE,
+			__( 'Rounds', 'kdna-grants' ),
+			__( 'Rounds', 'kdna-grants' ),
+			'manage_options',
+			self::ROUNDS_PAGE,
+			array( $this->rounds, 'render' )
+		);
+
+		$this->screen_hooks[] = add_submenu_page(
+			self::APPLICATIONS_PAGE,
 			__( 'KDNA Grants Settings', 'kdna-grants' ),
 			__( 'Settings', 'kdna-grants' ),
 			'manage_options',
@@ -118,9 +168,12 @@ class KDNA_Grants_Admin {
 	 * @param string $hook The current admin screen's hook suffix.
 	 */
 	public function enqueue_assets( $hook ) {
-		if ( ! $this->settings_hook || $hook !== $this->settings_hook ) {
+		if ( ! in_array( $hook, array_filter( $this->screen_hooks ), true ) ) {
 			return;
 		}
+
+		// Every admin screen view stays in step with the dates.
+		KDNA_Grants_Rounds::sync_statuses();
 
 		wp_enqueue_style( 'kdna-grants-admin', KDNA_GRANTS_URL . 'admin/assets/admin.css', array(), KDNA_GRANTS_VERSION );
 		wp_enqueue_script( 'kdna-grants-admin', KDNA_GRANTS_URL . 'admin/assets/admin.js', array(), KDNA_GRANTS_VERSION, true );
@@ -140,6 +193,8 @@ class KDNA_Grants_Admin {
 				'i18n'     => array(
 					'choose'           => __( 'Choose a field', 'kdna-grants' ),
 					'noFields'         => __( 'No suitable fields in this form', 'kdna-grants' ),
+					'confirmDeleteTest'  => __( 'Delete the test rounds, their sample applications and the sample KDNA Forms entries?', 'kdna-grants' ),
+					'confirmDeleteRound' => __( 'Delete this round? This can\'t be undone.', 'kdna-grants' ),
 					'confirmUninstall' => __( 'Are you sure? With this ticked, deleting KDNA Grants from the Plugins screen permanently removes every round, application, score and note. KDNA Forms entries are not affected.', 'kdna-grants' ),
 				),
 			)
@@ -226,6 +281,18 @@ class KDNA_Grants_Admin {
 		}
 		$settings['field_map'] = $field_map;
 
+		// Rounds and eligibility.
+		$gap                          = isset( $_POST['round_gap_months'] ) ? absint( wp_unslash( $_POST['round_gap_months'] ) ) : 2;
+		$settings['round_gap_months'] = min( 12, max( 1, $gap ) );
+
+		$limit                   = isset( $_POST['staff_limit'] ) ? absint( wp_unslash( $_POST['staff_limit'] ) ) : 20;
+		$settings['staff_limit'] = min( 100000, max( 1, $limit ) );
+
+		$clients = isset( $_POST['existing_clients'] ) ? sanitize_textarea_field( wp_unslash( $_POST['existing_clients'] ) ) : '';
+		$clients = array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $clients ) ), 'strlen' );
+
+		$settings['existing_clients'] = implode( "\n", $clients );
+
 		$settings['delete_data_on_uninstall'] = ! empty( $_POST['delete_data_on_uninstall'] );
 
 		update_option( KDNA_GRANTS_OPTION, $settings, false );
@@ -300,5 +367,72 @@ class KDNA_Grants_Admin {
 		}
 
 		return $warnings;
+	}
+
+	/*
+	 * -----------------------------------------------------------------------
+	 * Shared helpers for the admin screens
+	 * -----------------------------------------------------------------------
+	 */
+
+	/**
+	 * Sends the browser back to an admin screen with a message code, then stops.
+	 *
+	 * @param string $page    Page slug.
+	 * @param string $message Message code (see message_text()).
+	 * @param array  $args    Extra query arguments.
+	 */
+	public static function redirect( $page, $message = '', $args = array() ) {
+		$args['page'] = $page;
+
+		if ( $message ) {
+			$args['kdna_grants_msg'] = $message;
+		}
+
+		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * Shows the message for the code in the address bar, if there is one.
+	 */
+	public static function render_message() {
+		$code = isset( $_GET['kdna_grants_msg'] ) ? sanitize_key( wp_unslash( $_GET['kdna_grants_msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display only.
+
+		$messages = array(
+			'round_saved'       => array( 'success', __( 'Round saved.', 'kdna-grants' ) ),
+			'round_deleted'     => array( 'success', __( 'Round deleted.', 'kdna-grants' ) ),
+			'round_not_deleted' => array( 'error', __( 'That round has applications, so it can\'t be deleted.', 'kdna-grants' ) ),
+			'round_locked'      => array( 'error', __( 'That round has been decided, so its dates can\'t be changed.', 'kdna-grants' ) ),
+			'test_created'      => array( 'success', __( 'Test rounds created. The test round is selected below, with 6 sample applications.', 'kdna-grants' ) ),
+			'test_exists'       => array( 'error', __( 'Test rounds already exist. Delete them first to create fresh ones.', 'kdna-grants' ) ),
+			'test_deleted'      => array( 'success', __( 'Test rounds deleted.', 'kdna-grants' ) ),
+			'marked_eligible'   => array( 'success', __( 'Marked as eligible. The flags are kept on record as cleared.', 'kdna-grants' ) ),
+			'not_found'         => array( 'error', __( 'That item could not be found. It may have been deleted.', 'kdna-grants' ) ),
+		);
+
+		if ( ! isset( $messages[ $code ] ) ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-%1$s is-dismissible"><p>%2$s</p></div>',
+			esc_attr( $messages[ $code ][0] ),
+			esc_html( $messages[ $code ][1] )
+		);
+	}
+
+	/**
+	 * A small coloured label showing a round's status.
+	 *
+	 * @param string $status Status key.
+	 * @return string HTML.
+	 */
+	public static function status_badge( $status ) {
+		return sprintf(
+			'<span class="kdna-grants-badge kdna-grants-badge--%1$s">%2$s</span>',
+			esc_attr( $status ),
+			esc_html( KDNA_Grants_Rounds::status_label( $status ) )
+		);
 	}
 }

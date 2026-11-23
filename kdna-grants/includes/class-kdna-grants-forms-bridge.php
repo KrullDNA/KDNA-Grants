@@ -8,7 +8,10 @@
  *
  * Confirmed against KDNA Forms 3.7.1:
  * - New submissions: action 'kdnaform_after_submission_{form_id}' ($entry, $form).
- * - Refusing a submission: filter 'kdnaform_validation_{form_id}' (runs before saving).
+ * - Form about to be shown: filter 'kdnaform_pre_render_{form_id}'.
+ * - Refusing a submission: filter 'kdnaform_validation_{form_id}' (runs before saving),
+ *   with the error heading changed through 'kdnaform_validation_message_{form_id}'.
+ * - Test entries: KDNAAPI::add_entry() and KDNAAPI::delete_entry().
  * - Reading an entry: KDNAAPI::get_entry( $entry_id ).
  * - Listing forms: KDNAAPI::get_forms(). Reading one form: KDNAAPI::get_form( $form_id ).
  * - Displaying a form: kdna_form() (the same as the [kdnaform] shortcode).
@@ -81,6 +84,183 @@ class KDNA_Grants_Forms_Bridge {
 		$version = self::get_version();
 
 		return '' !== $version && version_compare( $version, KDNA_GRANTS_MIN_FORMS_VERSION, '>=' );
+	}
+
+	/*
+	 * -----------------------------------------------------------------------
+	 * Listening to the grant form
+	 * -----------------------------------------------------------------------
+	 */
+
+	/**
+	 * Runs a callback whenever the form is about to be shown on a page.
+	 *
+	 * @param int      $form_id  The KDNA Forms form ID.
+	 * @param callable $callback Called with no arguments.
+	 */
+	public static function on_form_display( $form_id, $callback ) {
+		add_filter(
+			'kdnaform_pre_render_' . absint( $form_id ),
+			function ( $form ) use ( $callback ) {
+				call_user_func( $callback );
+				return $form;
+			}
+		);
+	}
+
+	/**
+	 * Lets a callback refuse a submission before KDNA Forms saves it.
+	 *
+	 * The callback receives true or false (whether the submission is valid so far)
+	 * and returns true or false. Returning false stops the entry being saved.
+	 *
+	 * @param int      $form_id  The KDNA Forms form ID.
+	 * @param callable $callback Called with ( bool $is_valid ), returns bool.
+	 */
+	public static function on_validation( $form_id, $callback ) {
+		add_filter(
+			'kdnaform_validation_' . absint( $form_id ),
+			function ( $validation_result ) use ( $callback ) {
+				if ( ! is_array( $validation_result ) ) {
+					return $validation_result;
+				}
+
+				$is_valid                      = ! empty( $validation_result['is_valid'] );
+				$validation_result['is_valid'] = (bool) call_user_func( $callback, $is_valid );
+
+				return $validation_result;
+			},
+			50
+		);
+	}
+
+	/**
+	 * Lets a callback change the error heading KDNA Forms shows when a submission is refused.
+	 *
+	 * @param int      $form_id  The KDNA Forms form ID.
+	 * @param callable $callback Called with ( string $markup ), returns the markup to show.
+	 */
+	public static function on_validation_message( $form_id, $callback ) {
+		add_filter(
+			'kdnaform_validation_message_' . absint( $form_id ),
+			function ( $markup ) use ( $callback ) {
+				return call_user_func( $callback, $markup );
+			},
+			50
+		);
+	}
+
+	/**
+	 * Runs a callback after KDNA Forms has saved a new submission.
+	 *
+	 * @param int      $form_id  The KDNA Forms form ID.
+	 * @param callable $callback Called with ( array $entry, array $form ).
+	 */
+	public static function on_submission( $form_id, $callback ) {
+		add_action( 'kdnaform_after_submission_' . absint( $form_id ), $callback, 10, 2 );
+	}
+
+	/*
+	 * -----------------------------------------------------------------------
+	 * Entries
+	 * -----------------------------------------------------------------------
+	 */
+
+	/**
+	 * Loads a KDNA Forms entry by its ID, or returns false.
+	 *
+	 * @param int $entry_id The KDNA Forms entry ID.
+	 * @return array|false
+	 */
+	public static function get_entry( $entry_id ) {
+		$entry_id = absint( $entry_id );
+
+		if ( ! $entry_id || ! self::is_available() ) {
+			return false;
+		}
+
+		$entry = KDNAAPI::get_entry( $entry_id );
+
+		return is_array( $entry ) ? $entry : false;
+	}
+
+	/**
+	 * True when KDNA Forms marked the entry as spam.
+	 *
+	 * @param array $entry The KDNA Forms entry.
+	 * @return bool
+	 */
+	public static function entry_is_spam( $entry ) {
+		return isset( $entry['status'] ) && 'spam' === $entry['status'];
+	}
+
+	/**
+	 * Reads one answer from an entry as plain text.
+	 *
+	 * Works for single fields ("4"), parts of a field ("1.3" for a first name),
+	 * and whole multi-part fields ("1" for a full name), whose parts are joined with spaces.
+	 *
+	 * @param array      $entry    The KDNA Forms entry.
+	 * @param string     $field_id Field or part ID.
+	 * @param array|null $form     The form (not needed, kept for future use).
+	 * @return string
+	 */
+	public static function get_entry_value( $entry, $field_id, $form = null ) {
+		$field_id = (string) $field_id;
+
+		if ( '' === $field_id || ! is_array( $entry ) ) {
+			return '';
+		}
+
+		if ( isset( $entry[ $field_id ] ) && '' !== (string) $entry[ $field_id ] ) {
+			return trim( wp_strip_all_tags( (string) $entry[ $field_id ] ) );
+		}
+
+		// A whole multi-part field: join its parts in order.
+		if ( false === strpos( $field_id, '.' ) ) {
+			$parts = array();
+			foreach ( $entry as $key => $value ) {
+				if ( 0 === strpos( (string) $key, $field_id . '.' ) && is_scalar( $value ) && '' !== trim( (string) $value ) ) {
+					$parts[ (string) $key ] = trim( (string) $value );
+				}
+			}
+			uksort( $parts, 'strnatcmp' );
+
+			return trim( wp_strip_all_tags( implode( ' ', $parts ) ) );
+		}
+
+		return '';
+	}
+
+	/**
+	 * Saves an entry straight into KDNA Forms without sending notifications. Used by the test tool only.
+	 *
+	 * @param int   $form_id The KDNA Forms form ID.
+	 * @param array $values  Field or part ID => value.
+	 * @return int The new entry ID, or 0.
+	 */
+	public static function add_test_entry( $form_id, $values ) {
+		if ( ! self::get_form( $form_id ) ) {
+			return 0;
+		}
+
+		$entry            = array_map( 'strval', $values );
+		$entry['form_id'] = absint( $form_id );
+
+		$entry_id = KDNAAPI::add_entry( $entry );
+
+		return is_wp_error( $entry_id ) ? 0 : absint( $entry_id );
+	}
+
+	/**
+	 * Permanently deletes a KDNA Forms entry. Used by the test tool only, for entries it created.
+	 *
+	 * @param int $entry_id The KDNA Forms entry ID.
+	 */
+	public static function delete_test_entry( $entry_id ) {
+		if ( absint( $entry_id ) && self::is_available() ) {
+			KDNAAPI::delete_entry( absint( $entry_id ) );
+		}
 	}
 
 	/*

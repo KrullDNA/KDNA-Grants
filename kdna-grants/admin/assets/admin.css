@@ -213,6 +213,200 @@
 	}
 }
 
+/* Wider screens for tables */
+.kdna-grants-admin--wide,
+.kdna-grants-admin:has(.kdna-grants-table) {
+	max-width: none;
+}
+
+.kdna-grants-admin__summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	align-items: center;
+	margin: 12px 0 16px;
+}
+
+.kdna-grants-admin__summary p {
+	margin: 0;
+}
+
+.kdna-grants-admin__counts {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-card__status {
+	margin-top: 0;
+}
+
+.kdna-grants-card__note {
+	margin: 16px 0 0;
+}
+
+.kdna-grants-card--test {
+	margin-top: 32px;
+	background: var(--kdna-grants-soft);
+}
+
+.kdna-grants-card .kdna-grants-row + .kdna-grants-row {
+	margin-top: 16px;
+}
+
+.kdna-grants-list {
+	margin: 0 0 8px;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+/* Round picker */
+.kdna-grants-toolbar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 12px 0 0;
+}
+
+.kdna-grants-toolbar label {
+	font-weight: 600;
+}
+
+/* Tables */
+.kdna-grants-table {
+	margin-bottom: 20px;
+}
+
+.kdna-grants-table td,
+.kdna-grants-table th {
+	vertical-align: top;
+}
+
+.kdna-grants-table__num {
+	text-align: right;
+}
+
+.kdna-grants-table__actions {
+	white-space: nowrap;
+}
+
+.kdna-grants-table__actions > * + * {
+	margin-left: 10px;
+}
+
+.kdna-grants-nowrap {
+	white-space: nowrap;
+}
+
+.kdna-grants-inline-form {
+	display: inline;
+}
+
+.kdna-grants-link-danger {
+	color: #b32d2e !important;
+}
+
+/* Status badges */
+.kdna-grants-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #f0f0f1;
+	color: var(--kdna-grants-ink);
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.kdna-grants-badge--open {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-badge--scheduled {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-grants-badge--judging {
+	background: #fcf9e8;
+	color: #8a6100;
+}
+
+.kdna-grants-badge--decided {
+	background: #1d2327;
+	color: #ffffff;
+}
+
+.kdna-grants-badge--test {
+	margin-left: 6px;
+	background: #f6f7f7;
+	border: 1px dashed #8c8f94;
+	color: var(--kdna-grants-muted);
+}
+
+/* Eligibility flags */
+.kdna-grants-eligibility {
+	min-width: 260px;
+}
+
+.kdna-grants-flags {
+	margin: 0 0 8px;
+	padding: 0;
+	list-style: none;
+}
+
+.kdna-grants-flags li {
+	margin: 0 0 6px;
+}
+
+.kdna-grants-flag {
+	display: inline-block;
+	margin-right: 6px;
+	padding: 1px 8px;
+	border-radius: 3px;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.kdna-grants-flag--ok {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-flag--cleared {
+	background: #f0f0f1;
+	color: var(--kdna-grants-muted);
+	text-decoration: line-through;
+}
+
+.kdna-grants-flag__reason {
+	font-size: 13px;
+}
+
+.kdna-grants-flags li.is-cleared .kdna-grants-flag__reason {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-flag__cleared {
+	display: block;
+	margin-top: 2px;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+}
+
+@media (max-width: 782px) {
+	.kdna-grants-table--applications thead {
+		display: none;
+	}
+
+	.kdna-grants-table--applications tr,
+	.kdna-grants-table--applications td {
+		display: block;
+	}
+}
+
 /* Respect the hidden attribute even where display is set above. */
 .kdna-grants-admin [hidden] {
 	display: none !important;

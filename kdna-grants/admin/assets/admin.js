@@ -5,6 +5,10 @@
  * - When a different form is picked, the field dropdowns update straight away
  *   with that form's fields, and any unmatched ones are guessed from their labels.
  * - Ticking "Delete all data when the plugin is deleted" asks for confirmation.
+ *
+ * On every KDNA Grants screen:
+ * - The round picker shows the chosen round straight away.
+ * - Delete buttons ask for confirmation first.
  */
 ( function () {
 	'use strict';
@@ -25,6 +29,26 @@
 		staff: [ 'staff', 'employees', 'team size', 'team' ],
 		logo: [ 'logo' ]
 	};
+
+	// Round picker: show the chosen round straight away.
+	document.querySelectorAll( '.kdna-grants-autosubmit' ).forEach( function ( select ) {
+		select.addEventListener( 'change', function () {
+			select.form.submit();
+		} );
+	} );
+
+	// Ask before deleting.
+	document.querySelectorAll( 'form[data-confirm]' ).forEach( function ( form ) {
+		form.addEventListener( 'submit', function ( event ) {
+			var type = form.getAttribute( 'data-confirm' );
+			var message = 'test' === type ? data.i18n.confirmDeleteTest : data.i18n.confirmDeleteRound;
+
+			// eslint-disable-next-line no-alert
+			if ( ! window.confirm( message ) ) {
+				event.preventDefault();
+			}
+		} );
+	} );
 
 	var formSelect = document.getElementById( 'kdna-grants-form-id' );
 	var mapTable = document.getElementById( 'kdna-grants-map' );

@@ -130,6 +130,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</table>
 		</div>
 
+		<!-- Rounds -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Rounds', 'kdna-grants' ); ?></h2>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-gap" class="kdna-grants-row__label"><?php esc_html_e( 'Gap between rounds', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<input type="number" name="round_gap_months" id="kdna-grants-gap" min="1" max="12" step="1" class="small-text" value="<?php echo esc_attr( $settings['round_gap_months'] ); ?>" />
+					<?php esc_html_e( 'months', 'kdna-grants' ); ?>
+					<p class="description"><?php esc_html_e( '"Create next round" fills in dates this many months after the last round.', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Eligibility -->
+		<div class="kdna-grants-card">
+			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Eligibility checks', 'kdna-grants' ); ?></h2>
+			<p class="kdna-grants-card__intro"><?php esc_html_e( 'Every new application is checked automatically. Checks only flag an application for you to look at. They never delete or reject it.', 'kdna-grants' ); ?></p>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-staff-limit" class="kdna-grants-row__label"><?php esc_html_e( 'Staff limit', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<?php esc_html_e( 'Fewer than', 'kdna-grants' ); ?>
+					<input type="number" name="staff_limit" id="kdna-grants-staff-limit" min="1" step="1" class="small-text" value="<?php echo esc_attr( $settings['staff_limit'] ); ?>" />
+					<?php esc_html_e( 'staff', 'kdna-grants' ); ?>
+					<p class="description"><?php esc_html_e( 'Applications at or over this number are flagged. Answers like "5 to 19" or "20 or more" are read using the highest number.', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-grants-row">
+				<label for="kdna-grants-clients" class="kdna-grants-row__label"><?php esc_html_e( 'Existing clients', 'kdna-grants' ); ?></label>
+				<div class="kdna-grants-row__control">
+					<textarea name="existing_clients" id="kdna-grants-clients" rows="8" class="large-text code"><?php echo esc_textarea( $settings['existing_clients'] ); ?></textarea>
+					<p class="description"><?php esc_html_e( 'One per line. Enter an email domain (for example acmeplumbing.com.au) or a business name (for example Acme Plumbing). Business names are matched ignoring capitals, punctuation and words like "Pty Ltd".', 'kdna-grants' ); ?></p>
+				</div>
+			</div>
+		</div>
+
 		<!-- Data -->
 		<div class="kdna-grants-card">
 			<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Data', 'kdna-grants' ); ?></h2>

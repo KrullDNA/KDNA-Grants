@@ -60,7 +60,10 @@ require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-eligibility.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-judging.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-emails.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-privacy.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-test-tool.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin.php';
+require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-rounds.php';
+require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-applications.php';
 
 /*
  * ---------------------------------------------------------------------------
@@ -120,15 +123,14 @@ function kdna_grants_get_setting( $key, $default = null ) {
  */
 
 /**
- * Starts the plugin once every plugin has loaded, so we can tell whether KDNA Forms is there.
+ * Starts the plugin on init, once every plugin has loaded and translations are ready.
  *
- * If KDNA Forms is missing or too old, only the admin notice and the Settings
- * screen's notice run. Nothing else is loaded, so nothing can cause an error.
+ * If KDNA Forms is missing or too old, only the admin notice runs. Nothing
+ * else is loaded, so nothing can cause an error.
  */
 function kdna_grants_boot() {
 	// Keep the database up to date after an update (activation does not run on updates).
-	// Runs on init, because the default settings contain translatable text.
-	add_action( 'init', array( 'KDNA_Grants_Install', 'maybe_upgrade' ), 5 );
+	KDNA_Grants_Install::maybe_upgrade();
 
 	$admin = new KDNA_Grants_Admin();
 	$admin->register();
@@ -137,10 +139,20 @@ function kdna_grants_boot() {
 		return;
 	}
 
-	/*
-	 * Everything below needs KDNA Forms. Later stages hook in here:
-	 * rounds, capture, eligibility, judging, emails, privacy and the front end.
+	KDNA_Grants_Rounds::register();
+	KDNA_Grants_Applications::register();
+
+	/**
+	 * Fires once KDNA Grants is fully running with KDNA Forms.
 	 */
 	do_action( 'kdna_grants_loaded' );
 }
-add_action( 'plugins_loaded', 'kdna_grants_boot', 20 );
+add_action( 'init', 'kdna_grants_boot', 5 );
+
+/**
+ * Stops the scheduled KDNA Grants tasks when the plugin is deactivated.
+ */
+function kdna_grants_deactivate() {
+	KDNA_Grants_Rounds::clear_cron();
+}
+register_deactivation_hook( __FILE__, 'kdna_grants_deactivate' );
