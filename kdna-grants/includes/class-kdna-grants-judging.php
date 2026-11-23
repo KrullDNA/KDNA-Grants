@@ -441,6 +441,8 @@ class KDNA_Grants_Judging {
 				)
 		);
 
+		// Offers go to qualifying unsuccessful applicants before the emails are written.
+		KDNA_Grants_Offers::issue_for_round( $round_id );
 		KDNA_Grants_Emails::queue_round( $round_id );
 
 		if ( ! $round['is_test'] ) {

@@ -350,6 +350,10 @@ class KDNA_Grants_Applications {
 		}
 
 		$row['notes']             = (string) $row['notes'];
+		$row['ai_status']         = (string) $row['ai_status'];
+		$row['ai_error']          = (string) $row['ai_error'];
+		$row['ai_assessment']     = $row['ai_assessment'] ? (array) json_decode( $row['ai_assessment'], true ) : array();
+		$row['contact_log']       = $row['contact_log'] ? (array) json_decode( $row['contact_log'], true ) : array();
 		$row['email_status']      = (string) $row['email_status'];
 		$row['shortlisted']       = (bool) $row['shortlisted'];
 		$row['eligibility_flags'] = $row['eligibility_flags'] ? (array) json_decode( $row['eligibility_flags'], true ) : array();

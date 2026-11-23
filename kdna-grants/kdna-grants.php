@@ -3,7 +3,7 @@
  * Plugin Name:       KDNA Grants
  * Plugin URI:        https://krulldna.com
  * Description:       Runs the KDNA Website Grant on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Krull Design & Advertising (KDNA)
@@ -31,8 +31,8 @@ kdna_update_client_register( __FILE__, 'kdna-grants' );
  * ---------------------------------------------------------------------------
  */
 
-define( 'KDNA_GRANTS_VERSION', '1.0.0' );
-define( 'KDNA_GRANTS_DB_VERSION', '1.0.1' );
+define( 'KDNA_GRANTS_VERSION', '1.1.0' );
+define( 'KDNA_GRANTS_DB_VERSION', '1.1.0' );
 define( 'KDNA_GRANTS_FILE', __FILE__ );
 define( 'KDNA_GRANTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KDNA_GRANTS_URL', plugin_dir_url( __FILE__ ) );
@@ -63,9 +63,15 @@ require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-privacy.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-test-tool.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-export.php';
 require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-frontend.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-offers.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-claude.php';
+require_once KDNA_GRANTS_PATH . 'includes/class-kdna-grants-contact.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-rounds.php';
 require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-applications.php';
+require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-picks.php';
+require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-offers.php';
+require_once KDNA_GRANTS_PATH . 'admin/class-kdna-grants-admin-contact.php';
 
 /*
  * ---------------------------------------------------------------------------
@@ -146,6 +152,8 @@ function kdna_grants_boot() {
 	KDNA_Grants_Emails::register();
 	KDNA_Grants_Privacy::register();
 	KDNA_Grants_Frontend::register();
+	KDNA_Grants_Offers::register();
+	KDNA_Grants_Claude::register();
 
 	/**
 	 * Fires once KDNA Grants is fully running with KDNA Forms.
@@ -161,5 +169,7 @@ function kdna_grants_deactivate() {
 	KDNA_Grants_Rounds::clear_cron();
 	wp_clear_scheduled_hook( KDNA_Grants_Emails::CRON_HOOK );
 	wp_clear_scheduled_hook( KDNA_Grants_Privacy::CRON_HOOK );
+	wp_clear_scheduled_hook( KDNA_Grants_Offers::CRON_HOOK );
+	wp_clear_scheduled_hook( KDNA_Grants_Claude::CRON_HOOK );
 }
 register_deactivation_hook( __FILE__, 'kdna_grants_deactivate' );

@@ -83,6 +83,71 @@ $kdna_grants_links = function ( $html ) {
 				</div>
 			<?php endif; ?>
 
+			<?php if ( KDNA_Grants_Claude::is_enabled() || $application['ai_assessment'] ) : ?>
+				<?php $kdna_grants_ai = $application['ai_assessment']; ?>
+				<div class="kdna-grants-claude-take">
+					<div class="kdna-grants-claude-take__head">
+						<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Claude\'s take', 'kdna-grants' ); ?></h2>
+						<?php if ( $kdna_grants_ai ) : ?>
+							<?php echo KDNA_Grants_Admin_Picks::rating( $kdna_grants_ai['interest_rating'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?>
+						<?php endif; ?>
+					</div>
+
+					<?php if ( $kdna_grants_ai ) : ?>
+						<p><?php echo esc_html( $kdna_grants_ai['summary'] ); ?></p>
+						<p class="kdna-grants-muted"><strong><?php esc_html_e( 'Interesting brief:', 'kdna-grants' ); ?></strong> <?php echo esc_html( $kdna_grants_ai['interest_reason'] ); ?></p>
+						<div class="kdna-grants-claude-take__lists">
+							<?php
+							$kdna_grants_lists = array(
+								'highlights'     => __( 'Strengths', 'kdna-grants' ),
+								'concerns'       => __( 'Concerns', 'kdna-grants' ),
+								'call_questions' => __( 'Ask on a call', 'kdna-grants' ),
+							);
+							foreach ( $kdna_grants_lists as $kdna_grants_key => $kdna_grants_title ) :
+								if ( empty( $kdna_grants_ai[ $kdna_grants_key ] ) ) {
+									continue;
+								}
+								?>
+								<div>
+									<h3><?php echo esc_html( $kdna_grants_title ); ?></h3>
+									<ul>
+										<?php foreach ( $kdna_grants_ai[ $kdna_grants_key ] as $kdna_grants_item ) : ?>
+											<li><?php echo esc_html( $kdna_grants_item ); ?></li>
+										<?php endforeach; ?>
+									</ul>
+								</div>
+							<?php endforeach; ?>
+						</div>
+						<p class="kdna-grants-muted kdna-grants-claude-take__meta">
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: %s: date and time. */
+									__( 'Read %s. A second opinion only: your scores are your own.', 'kdna-grants' ),
+									KDNA_Grants_Rounds::format( $application['ai_assessed_at'] )
+								)
+							);
+							?>
+						</p>
+					<?php elseif ( in_array( $application['ai_status'], array( 'queued', 'running' ), true ) ) : ?>
+						<p class="kdna-grants-muted"><?php esc_html_e( 'Claude is reading this application now. Refresh in a minute or two.', 'kdna-grants' ); ?></p>
+					<?php elseif ( 'failed' === $application['ai_status'] ) : ?>
+						<p class="kdna-grants-text-error"><?php echo esc_html( $application['ai_error'] ); ?></p>
+					<?php else : ?>
+						<p class="kdna-grants-muted"><?php esc_html_e( 'Claude hasn\'t read this application yet.', 'kdna-grants' ); ?></p>
+					<?php endif; ?>
+
+					<?php if ( current_user_can( 'manage_options' ) && KDNA_Grants_Claude::is_enabled() ) : ?>
+						<p>
+							<button type="button" class="button kdna-grants-assess" data-application="<?php echo esc_attr( $application['id'] ); ?>">
+								<?php echo $kdna_grants_ai ? esc_html__( 'Ask Claude again', 'kdna-grants' ) : esc_html__( 'Ask Claude now', 'kdna-grants' ); ?>
+							</button>
+							<span class="kdna-grants-assess__status" role="status" aria-live="polite"></span>
+						</p>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
 			<dl class="kdna-grants-answers">
 				<?php if ( $answers ) : ?>
 					<?php foreach ( $answers as $kdna_grants_answer ) : ?>
@@ -134,8 +199,42 @@ $kdna_grants_links = function ( $html ) {
 			</p>
 		</div>
 
-		<!-- Right: eligibility and the scorecard -->
+		<!-- Right: contact, eligibility and the scorecard -->
 		<aside class="kdna-grants-single__side">
+
+			<?php if ( current_user_can( 'manage_options' ) ) : ?>
+				<div class="kdna-grants-card kdna-grants-side-card">
+					<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Contact', 'kdna-grants' ); ?></h2>
+					<p>
+						<?php echo esc_html( trim( $application['first_name'] . ' ' . $application['last_name'] ) ); ?><br />
+						<?php echo KDNA_Grants_Admin_Contact::button( $application ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?>
+					</p>
+					<?php $kdna_grants_offer_note = KDNA_Grants_Admin_Offers::summary( $application ); ?>
+					<?php if ( $kdna_grants_offer_note ) : ?>
+						<p><?php echo $kdna_grants_offer_note; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?> <a href="<?php echo esc_url( admin_url( 'admin.php?page=' . KDNA_Grants_Admin::OFFERS_PAGE ) ); ?>"><?php esc_html_e( 'Offers', 'kdna-grants' ); ?></a></p>
+					<?php endif; ?>
+					<?php if ( $application['contact_log'] ) : ?>
+						<details class="kdna-grants-log">
+							<summary>
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %d: number of emails. */
+										_n( '%d email sent from the dashboard', '%d emails sent from the dashboard', count( $application['contact_log'] ), 'kdna-grants' ),
+										count( $application['contact_log'] )
+									)
+								);
+								?>
+							</summary>
+							<ul>
+								<?php foreach ( array_reverse( $application['contact_log'] ) as $kdna_grants_sent ) : ?>
+									<li><span class="kdna-grants-muted"><?php echo esc_html( KDNA_Grants_Rounds::format( $kdna_grants_sent['time'] ) ); ?>:</span> <?php echo esc_html( $kdna_grants_sent['subject'] ); ?></li>
+								<?php endforeach; ?>
+							</ul>
+						</details>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 
 			<div class="kdna-grants-card kdna-grants-side-card">
 				<h2 class="kdna-grants-card__title"><?php esc_html_e( 'Eligibility', 'kdna-grants' ); ?></h2>

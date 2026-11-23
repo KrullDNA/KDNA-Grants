@@ -257,6 +257,13 @@ class KDNA_Grants_Test_Tool {
 			}
 
 			KDNA_Grants_Applications::delete_for_round( $round['id'] );
+			$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				KDNA_Grants_Install::offers_table(),
+				array(
+					'round_id' => $round['id'],
+					'is_test'  => 1,
+				)
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				KDNA_Grants_Install::rounds_table(),

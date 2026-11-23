@@ -49,7 +49,10 @@
 			var messages = {
 				test: data.i18n.confirmDeleteTest,
 				round: data.i18n.confirmDeleteRound,
-				reopen: data.i18n.confirmReopen
+				reopen: data.i18n.confirmReopen,
+				reassess: data.i18n.confirmReassess,
+				decline: data.i18n.confirmDecline,
+				undo: data.i18n.confirmUndo
 			};
 			var message = messages[ type ] || data.i18n.confirmDeleteRound;
 
@@ -530,4 +533,287 @@
 			reason.setCustomValidity( '' );
 		} );
 	}
+	/*
+	 * -------------------------------------------------------------------
+	 * Repeating rows (email templates in Settings)
+	 * -------------------------------------------------------------------
+	 */
+
+	function renumberRepeat( container ) {
+		var name = container.getAttribute( 'data-name' );
+
+		container.querySelectorAll( ':scope > .kdna-grants-repeat__row' ).forEach( function ( row, index ) {
+			row.querySelectorAll( '[data-field]' ).forEach( function ( field ) {
+				field.name = name + '[' + index + '][' + field.getAttribute( 'data-field' ) + ']';
+			} );
+		} );
+	}
+
+	document.querySelectorAll( '.kdna-grants-repeat' ).forEach( function ( container ) {
+		container.addEventListener( 'click', function ( event ) {
+			if ( event.target.closest( '.kdna-grants-repeat__remove' ) ) {
+				event.target.closest( '.kdna-grants-repeat__row' ).remove();
+				renumberRepeat( container );
+			}
+		} );
+	} );
+
+	document.querySelectorAll( '.kdna-grants-repeat__add' ).forEach( function ( button ) {
+		button.addEventListener( 'click', function () {
+			var container = document.getElementById( button.getAttribute( 'data-target' ) );
+			var template = container.querySelector( '.kdna-grants-repeat__template' );
+			var row = template.content.firstElementChild.cloneNode( true );
+
+			container.insertBefore( row, template );
+			renumberRepeat( container );
+			row.querySelector( 'input' ).focus();
+		} );
+	} );
+
+	/*
+	 * -------------------------------------------------------------------
+	 * Close buttons on every KDNA Grants dialog
+	 * -------------------------------------------------------------------
+	 */
+
+	document.querySelectorAll( '.kdna-grants-dialog' ).forEach( function ( box ) {
+		box.querySelectorAll( '[data-close]' ).forEach( function ( button ) {
+			if ( box.id === 'kdna-grants-confirm-winner' ) {
+				return; // Has its own handler above.
+			}
+			button.addEventListener( 'click', function () {
+				box.dispatchEvent( new Event( 'kdna-close-request' ) );
+			} );
+		} );
+
+		box.addEventListener( 'kdna-close-request', function () {
+			box.close();
+		} );
+	} );
+
+	/*
+	 * -------------------------------------------------------------------
+	 * Email window
+	 * -------------------------------------------------------------------
+	 */
+
+	var compose = document.getElementById( 'kdna-grants-compose' );
+
+	if ( compose ) {
+		var composeForm = compose.querySelector( 'form' );
+		var subject = compose.querySelector( '#kdna-grants-compose-subject' );
+		var body = compose.querySelector( '#kdna-grants-compose-body' );
+		var status = compose.querySelector( '.kdna-grants-compose__status' );
+		var templatePicker = compose.querySelector( '#kdna-grants-compose-template' );
+		var draftBox = compose.querySelector( '.kdna-grants-compose__draft' );
+		var sendButton = compose.querySelector( '.kdna-grants-compose__send' );
+		var currentButton = null;
+
+		var setStatus = function ( text, type ) {
+			status.textContent = text || '';
+			status.className = 'kdna-grants-compose__status' + ( type ? ' is-' + type : '' );
+		};
+
+		var busy = function ( on ) {
+			compose.querySelectorAll( 'button, input, textarea, select' ).forEach( function ( el ) {
+				if ( ! el.hasAttribute( 'data-close' ) ) {
+					el.disabled = on;
+				}
+			} );
+		};
+
+		document.addEventListener( 'click', function ( event ) {
+			var button = event.target.closest( '.kdna-grants-contact' );
+			if ( ! button ) {
+				return;
+			}
+
+			currentButton = button;
+			composeForm.elements.application_id.value = button.getAttribute( 'data-application' );
+			compose.querySelector( '[data-fill="to"]' ).textContent = ( button.getAttribute( 'data-name' ) ? button.getAttribute( 'data-name' ) + ' ' : '' ) + '<' + button.getAttribute( 'data-email' ) + '>';
+			compose.querySelector( '[data-fill="business"]' ).textContent = button.getAttribute( 'data-business' );
+			subject.value = '';
+			body.value = '';
+			if ( templatePicker ) {
+				templatePicker.value = '';
+			}
+			if ( draftBox ) {
+				draftBox.hidden = true;
+				draftBox.querySelector( 'textarea' ).value = '';
+			}
+			setStatus( '' );
+			busy( false );
+			compose.showModal();
+			subject.focus();
+		} );
+
+		// Ask before throwing away a written message.
+		compose.addEventListener( 'kdna-close-request', function ( event ) {
+			event.stopImmediatePropagation();
+			// eslint-disable-next-line no-alert
+			if ( '' === body.value.trim() || window.confirm( data.i18n.confirmCloseDraft ) ) {
+				compose.close();
+			}
+		}, true );
+
+		compose.addEventListener( 'cancel', function ( event ) {
+			// eslint-disable-next-line no-alert
+			if ( '' !== body.value.trim() && ! window.confirm( data.i18n.confirmCloseDraft ) ) {
+				event.preventDefault();
+			}
+		} );
+
+		if ( templatePicker ) {
+			templatePicker.addEventListener( 'change', function () {
+				if ( '' === templatePicker.value ) {
+					return;
+				}
+				setStatus( data.i18n.loading );
+				post( {
+					action: 'kdna_grants_contact_template',
+					nonce: data.contactNonce,
+					application_id: composeForm.elements.application_id.value,
+					template: templatePicker.value
+				} ).then( function ( response ) {
+					if ( response.success ) {
+						subject.value = response.data.subject;
+						body.value = response.data.body;
+						setStatus( '' );
+					} else {
+						setStatus( response.data.message, 'error' );
+					}
+				} ).catch( function () {
+					setStatus( data.i18n.saveFailed, 'error' );
+				} );
+			} );
+		}
+
+		if ( draftBox ) {
+			compose.querySelector( '.kdna-grants-compose__draft-toggle' ).addEventListener( 'click', function () {
+				draftBox.hidden = ! draftBox.hidden;
+				if ( ! draftBox.hidden ) {
+					draftBox.querySelector( 'textarea' ).focus();
+				}
+			} );
+
+			compose.querySelector( '.kdna-grants-compose__draft-go' ).addEventListener( 'click', function () {
+				setStatus( data.i18n.drafting );
+				busy( true );
+				post( {
+					action: 'kdna_grants_contact_draft',
+					nonce: data.contactNonce,
+					application_id: composeForm.elements.application_id.value,
+					purpose: draftBox.querySelector( 'textarea' ).value
+				} ).then( function ( response ) {
+					busy( false );
+					if ( response.success ) {
+						subject.value = response.data.subject;
+						body.value = response.data.body;
+						draftBox.hidden = true;
+						setStatus( '' );
+						body.focus();
+					} else {
+						setStatus( response.data.message, 'error' );
+					}
+				} ).catch( function () {
+					busy( false );
+					setStatus( data.i18n.saveFailed, 'error' );
+				} );
+			} );
+		}
+
+		sendButton.addEventListener( 'click', function () {
+			setStatus( data.i18n.sending );
+			busy( true );
+			post( {
+				action: 'kdna_grants_contact_send',
+				nonce: data.contactNonce,
+				application_id: composeForm.elements.application_id.value,
+				subject: subject.value,
+				body: body.value
+			} ).then( function ( response ) {
+				busy( false );
+				if ( ! response.success ) {
+					setStatus( response.data.message, 'error' );
+					return;
+				}
+				setStatus( response.data.message, 'ok' );
+
+				// Show "Contacted" next to the button straight away.
+				if ( currentButton ) {
+					var marker = currentButton.parentNode.querySelector( '.kdna-grants-contacted' );
+					if ( ! marker ) {
+						marker = document.createElement( 'span' );
+						marker.className = 'kdna-grants-contacted';
+						currentButton.insertAdjacentText( 'afterend', ' ' );
+						currentButton.parentNode.insertBefore( marker, currentButton.nextSibling.nextSibling );
+					}
+					marker.textContent = response.data.label;
+				}
+
+				body.value = '';
+				setTimeout( function () {
+					compose.close();
+				}, 1200 );
+			} ).catch( function () {
+				busy( false );
+				setStatus( data.i18n.saveFailed, 'error' );
+			} );
+		} );
+	}
+
+	/*
+	 * -------------------------------------------------------------------
+	 * Accept offer box
+	 * -------------------------------------------------------------------
+	 */
+
+	var acceptBox = document.getElementById( 'kdna-grants-accept-offer' );
+
+	if ( acceptBox ) {
+		document.querySelectorAll( '.kdna-grants-offer-accept' ).forEach( function ( button ) {
+			button.addEventListener( 'click', function () {
+				acceptBox.querySelector( 'input[name="offer_id"]' ).value = button.getAttribute( 'data-offer' );
+				acceptBox.querySelector( '[data-fill="business"]' ).textContent = button.getAttribute( 'data-business' );
+				acceptBox.querySelector( '[data-fill="code"]' ).textContent = button.getAttribute( 'data-code' );
+				acceptBox.querySelector( 'textarea' ).value = '';
+				acceptBox.showModal();
+				acceptBox.querySelector( 'textarea' ).focus();
+			} );
+		} );
+	}
+
+	/*
+	 * -------------------------------------------------------------------
+	 * "Ask Claude now" on the judging screen
+	 * -------------------------------------------------------------------
+	 */
+
+	document.querySelectorAll( '.kdna-grants-assess' ).forEach( function ( button ) {
+		button.addEventListener( 'click', function () {
+			var label = button.parentNode.querySelector( '.kdna-grants-assess__status' );
+
+			button.disabled = true;
+			label.textContent = data.i18n.assessing;
+			label.className = 'kdna-grants-assess__status';
+
+			post( {
+				action: 'kdna_grants_claude_assess',
+				nonce: data.assessNonce,
+				application_id: button.getAttribute( 'data-application' )
+			} ).then( function ( response ) {
+				if ( response.success ) {
+					window.location.reload();
+					return;
+				}
+				button.disabled = false;
+				label.textContent = response.data.message;
+				label.classList.add( 'is-error' );
+			} ).catch( function () {
+				button.disabled = false;
+				label.textContent = data.i18n.saveFailed;
+				label.classList.add( 'is-error' );
+			} );
+		} );
+	} );
 } )();

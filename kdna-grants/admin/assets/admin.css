@@ -946,6 +946,265 @@
 	}
 }
 
+/* -------------------------------------------------------------------
+ * 1.1.0: Claude, emailing applicants and offers
+ * ------------------------------------------------------------------- */
+
+.kdna-grants-text-error,
+.is-error {
+	color: #b32d2e;
+}
+
+.is-ok {
+	color: #007017;
+}
+
+/* Interest rating dots */
+.kdna-grants-rating {
+	color: var(--kdna-grants-accent);
+	font-size: 14px;
+	letter-spacing: 2px;
+	white-space: nowrap;
+}
+
+.kdna-grants-rating__empty {
+	color: #dcdcde;
+}
+
+/* Claude's take on the judging screen */
+.kdna-grants-claude-take {
+	margin: 0 0 20px;
+	padding: 16px 18px;
+	border: 1px solid #c5d9ed;
+	border-radius: 6px;
+	background: #f6f9fc;
+}
+
+.kdna-grants-claude-take__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+
+.kdna-grants-claude-take__head .kdna-grants-card__title {
+	margin: 0;
+}
+
+.kdna-grants-claude-take p {
+	margin: 0 0 10px;
+}
+
+.kdna-grants-claude-take__lists {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.kdna-grants-claude-take__lists h3 {
+	margin: 0 0 4px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-claude-take__lists ul {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.kdna-grants-claude-take__meta {
+	font-size: 12px;
+}
+
+/* Claude's picks */
+.kdna-grants-picks__bar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px 20px;
+	margin: 12px 0 16px;
+}
+
+.kdna-grants-picks__bar p {
+	margin: 0;
+}
+
+.kdna-grants-picks__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+}
+
+.kdna-grants-overview__text {
+	max-width: 80ch;
+	font-size: 14px;
+}
+
+.kdna-grants-finalist__headline {
+	margin: 0 0 6px !important;
+	font-weight: 600;
+}
+
+.kdna-grants-table--picks td:nth-child(3) {
+	min-width: 320px;
+}
+
+/* Email button and contact marker */
+.kdna-grants-contact--link {
+	text-align: left;
+	word-break: break-all;
+}
+
+.kdna-grants-contacted {
+	display: inline-block;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #edfaef;
+	color: #007017;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Email window */
+.kdna-grants-compose {
+	width: min(680px, calc(100vw - 32px));
+}
+
+.kdna-grants-compose__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.kdna-grants-compose__head h2 {
+	margin: 0;
+}
+
+.kdna-grants-compose__close {
+	font-size: 24px;
+	line-height: 1;
+	text-decoration: none;
+}
+
+.kdna-grants-compose__to {
+	margin: 12px 0;
+}
+
+.kdna-grants-compose__tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.kdna-grants-compose__draft {
+	margin-bottom: 12px;
+	padding: 12px;
+	border-radius: 4px;
+	background: #f6f9fc;
+}
+
+.kdna-grants-compose__draft label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.kdna-grants-compose .large-text {
+	margin-bottom: 10px;
+}
+
+.kdna-grants-compose__status {
+	margin-right: auto;
+	align-self: center;
+}
+
+/* Offers */
+.kdna-grants-code {
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.kdna-grants-badge--offer-active {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-grants-badge--offer-accepted {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-badge--offer-declined,
+.kdna-grants-badge--offer-expired {
+	background: #f0f0f1;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-offer-note {
+	font-size: 12px;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-offer-note--accepted {
+	color: #007017;
+	font-weight: 600;
+}
+
+.kdna-grants-offer-brief {
+	font-style: italic;
+}
+
+/* Settings: repeating templates and notes */
+.kdna-grants-repeat__row {
+	margin-bottom: 12px;
+	padding: 12px;
+	border: 1px solid var(--kdna-grants-line);
+	border-radius: 4px;
+	background: var(--kdna-grants-soft);
+}
+
+.kdna-grants-repeat__row .large-text {
+	margin-top: 6px;
+}
+
+.kdna-grants-repeat__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+
+.kdna-grants-note {
+	margin-top: 16px;
+	padding: 12px 16px;
+	border-left: 4px solid var(--kdna-grants-accent);
+	background: #f6f9fc;
+}
+
+.kdna-grants-note p {
+	margin: 0 0 6px;
+}
+
+.kdna-grants-inline-check {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.kdna-grants-card .kdna-grants-check + .kdna-grants-row,
+.kdna-grants-card .kdna-grants-row + .kdna-grants-check,
+.kdna-grants-card .kdna-grants-check + .kdna-grants-check {
+	margin-top: 16px;
+}
+
 /* Respect the hidden attribute even where display is set above. */
 .kdna-grants-admin [hidden] {
 	display: none !important;

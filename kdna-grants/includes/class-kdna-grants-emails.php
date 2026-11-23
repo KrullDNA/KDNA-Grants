@@ -62,12 +62,17 @@ class KDNA_Grants_Emails {
 	 */
 	public static function merge_tags() {
 		return array(
-			'{first_name}'     => __( 'Applicant\'s first name', 'kdna-grants' ),
-			'{business_name}'  => __( 'Business name', 'kdna-grants' ),
-			'{round_name}'     => __( 'Round name', 'kdna-grants' ),
-			'{close_date}'     => __( 'Date the round closed', 'kdna-grants' ),
-			'{announce_date}'  => __( 'Winner announcement date', 'kdna-grants' ),
-			'{next_open_date}' => __( 'Date the next round opens', 'kdna-grants' ),
+			'{first_name}'       => __( 'Applicant\'s first name', 'kdna-grants' ),
+			'{business_name}'    => __( 'Business name', 'kdna-grants' ),
+			'{round_name}'       => __( 'Round name', 'kdna-grants' ),
+			'{close_date}'       => __( 'Date the round closed', 'kdna-grants' ),
+			'{announce_date}'    => __( 'Winner announcement date', 'kdna-grants' ),
+			'{next_open_date}'   => __( 'Date the next round opens', 'kdna-grants' ),
+			'{offer_code}'       => __( 'Their offer code (unsuccessful email)', 'kdna-grants' ),
+			'{offer_percent}'    => __( 'The offer discount, for example 25', 'kdna-grants' ),
+			'{offer_expiry}'     => __( 'Date the offer expires', 'kdna-grants' ),
+			'{offer_cap}'        => __( 'The offer cap, if you set one', 'kdna-grants' ),
+			'[offer]...[/offer]' => __( 'Wrap the offer wording in these, so it only shows to applicants who get an offer', 'kdna-grants' ),
 		);
 	}
 
@@ -104,13 +109,16 @@ class KDNA_Grants_Emails {
 	public static function merge_values( $application, $round ) {
 		$next = KDNA_Grants_Rounds::get_next_round();
 
-		return array(
-			'{first_name}'     => $application['first_name'],
-			'{business_name}'  => $application['business_name'],
-			'{round_name}'     => $round['name'],
-			'{close_date}'     => KDNA_Grants_Rounds::format( $round['closes_at'], false ),
-			'{announce_date}'  => KDNA_Grants_Rounds::format_date( $round['announce_date'] ),
-			'{next_open_date}' => $next ? KDNA_Grants_Rounds::format( $next['opens_at'], false ) : __( 'a date to be announced soon', 'kdna-grants' ),
+		return array_merge(
+			array(
+				'{first_name}'     => $application['first_name'],
+				'{business_name}'  => $application['business_name'],
+				'{round_name}'     => $round['name'],
+				'{close_date}'     => KDNA_Grants_Rounds::format( $round['closes_at'], false ),
+				'{announce_date}'  => KDNA_Grants_Rounds::format_date( $round['announce_date'] ),
+				'{next_open_date}' => $next ? KDNA_Grants_Rounds::format( $next['opens_at'], false ) : __( 'a date to be announced soon', 'kdna-grants' ),
+			),
+			KDNA_Grants_Offers::merge_values( $application )
 		);
 	}
 
@@ -122,8 +130,10 @@ class KDNA_Grants_Emails {
 	 * @return array 'subject' (plain text) and 'body' (HTML).
 	 */
 	public static function render( $template, $values ) {
-		$subject = strtr( $template['subject'], $values );
-		$body    = strtr( wpautop( $template['body'] ), array_map( 'esc_html', $values ) );
+		// [offer]...[/offer] sections only show when the applicant has an offer code.
+		$has_offer = ! empty( $values['{offer_code}'] );
+		$subject   = strtr( KDNA_Grants_Offers::apply_blocks( $template['subject'], $has_offer ), $values );
+		$body      = strtr( wpautop( KDNA_Grants_Offers::apply_blocks( $template['body'], $has_offer ) ), array_map( 'esc_html', $values ) );
 
 		return array(
 			'subject' => wp_strip_all_tags( $subject ),
@@ -132,22 +142,30 @@ class KDNA_Grants_Emails {
 	}
 
 	/**
-	 * Sends one email as HTML.
+	 * Sends one email as HTML, with replies going to Nick's address.
 	 *
-	 * @param string $to      Email address.
-	 * @param array  $email   'subject' and 'body'.
+	 * @param string $to       Email address.
+	 * @param array  $email    'subject' and 'body'.
+	 * @param string $reply_to Reply-To address, or '' for the Reply-To setting.
 	 * @return bool Whether wp_mail() accepted it.
 	 */
-	public static function send( $to, $email ) {
+	public static function send( $to, $email, $reply_to = '' ) {
 		if ( ! is_email( $to ) ) {
 			return false;
 		}
+
+		$reply_to = is_email( $reply_to ) ? $reply_to : KDNA_Grants_Contact::reply_to();
 
 		$html = '<!DOCTYPE html><html><body style="font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; color: #1d2327;">'
 			. $email['body']
 			. '</body></html>';
 
-		return (bool) wp_mail( $to, $email['subject'], $html, array( 'Content-Type: text/html; charset=UTF-8' ) );
+		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+		if ( is_email( $reply_to ) ) {
+			$headers[] = 'Reply-To: ' . $reply_to;
+		}
+
+		return (bool) wp_mail( $to, $email['subject'], $html, $headers );
 	}
 
 	/**
@@ -165,10 +183,14 @@ class KDNA_Grants_Emails {
 		$values = array(
 			'{first_name}'     => 'Sam',
 			'{business_name}'  => 'Brightside Bakery',
-			'{round_name}'     => __( 'Round 1, February 2027', 'kdna-grants' ),
+			'{round_name}'     => __( 'Grant 4 April to 4 May 2026', 'kdna-grants' ),
 			'{close_date}'     => wp_date( 'j F Y' ),
 			'{announce_date}'  => wp_date( 'j F Y', time() + 14 * DAY_IN_SECONDS ),
 			'{next_open_date}' => $next ? KDNA_Grants_Rounds::format( $next['opens_at'], false ) : wp_date( 'j F Y', time() + 60 * DAY_IN_SECONDS ),
+			'{offer_code}'     => 'KDNA-BRIGH-7Q4X',
+			'{offer_percent}'  => (string) absint( kdna_grants_get_setting( 'offer_percent', 25 ) ),
+			'{offer_expiry}'   => wp_date( 'j F Y', time() + absint( kdna_grants_get_setting( 'offer_days', 90 ) ) * DAY_IN_SECONDS ),
+			'{offer_cap}'      => (string) kdna_grants_get_setting( 'offer_cap', '' ),
 		);
 
 		$email            = self::render( $template, $values );

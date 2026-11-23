@@ -174,6 +174,9 @@ class KDNA_Grants_Rounds {
 		$row['winner_application_id'] = $row['winner_application_id'] ? (int) $row['winner_application_id'] : 0;
 		$row['is_test']               = (bool) $row['is_test'];
 		$row['decision_note']         = (string) $row['decision_note'];
+		$row['ai_status']             = (string) $row['ai_status'];
+		$row['ai_overview']           = $row['ai_overview'] ? (array) json_decode( $row['ai_overview'], true ) : array();
+		$row['ai_usage']              = $row['ai_usage'] ? (array) json_decode( $row['ai_usage'], true ) : array();
 		$row['announce_date']         = (string) $row['announce_date'];
 		$row['criteria']              = $row['criteria'] ? json_decode( $row['criteria'], true ) : null;
 		$row['activity_log']          = $row['activity_log'] ? (array) json_decode( $row['activity_log'], true ) : array();
@@ -373,7 +376,7 @@ class KDNA_Grants_Rounds {
 
 		$name = isset( $data['name'] ) ? trim( (string) $data['name'] ) : '';
 		if ( '' === $name ) {
-			$name = self::default_name( $data['opens_at'], $round_id );
+			$name = self::default_name( $data['opens_at'], $data['closes_at'] );
 		}
 
 		$row = array(
@@ -471,28 +474,21 @@ class KDNA_Grants_Rounds {
 	 */
 
 	/**
-	 * Suggests a round name such as "Round 3, April 2027".
+	 * Suggests a round name from its application dates, such as "Grant 4 April to 4 May 2026",
+	 * or "Grant 4 December 2026 to 4 January 2027" when the round crosses into a new year.
 	 *
-	 * @param string $opens_at UTC opening time.
-	 * @param int    $round_id The round being named, or 0 for a new round.
+	 * @param string $opens_at  UTC opening time.
+	 * @param string $closes_at UTC closing time.
 	 * @return string
 	 */
-	public static function default_name( $opens_at, $round_id = 0 ) {
-		global $wpdb;
-
-		$table = KDNA_Grants_Install::rounds_table();
-
-		if ( $round_id ) {
-			$number = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE is_test = 0 AND id <= %d", absint( $round_id ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		} else {
-			$number = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE is_test = 0" ) + 1; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		}
+	public static function default_name( $opens_at, $closes_at ) {
+		$same_year = self::to_site( $opens_at, 'Y' ) === self::to_site( $closes_at, 'Y' );
 
 		return sprintf(
-			/* translators: 1: round number, 2: month and year, for example "April 2027". */
-			__( 'Round %1$d, %2$s', 'kdna-grants' ),
-			max( 1, $number ),
-			self::to_site( $opens_at, 'F Y' )
+			/* translators: 1: opening date, 2: closing date. */
+			__( 'Grant %1$s to %2$s', 'kdna-grants' ),
+			self::to_site( $opens_at, $same_year ? 'j F' : 'j F Y' ),
+			self::to_site( $closes_at, 'j F Y' )
 		);
 	}
 
@@ -531,7 +527,7 @@ class KDNA_Grants_Rounds {
 			'opens'    => $opens->format( 'Y-m-d\TH:i' ),
 			'closes'   => $closes->format( 'Y-m-d\TH:i' ),
 			'announce' => $announce->format( 'Y-m-d' ),
-			'name'     => self::default_name( self::from_site( $opens->format( 'Y-m-d\TH:i' ) ) ),
+			'name'     => self::default_name( self::from_site( $opens->format( 'Y-m-d\TH:i' ) ), self::from_site( $closes->format( 'Y-m-d\TH:i' ) ) ),
 		);
 	}
 

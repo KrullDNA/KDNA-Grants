@@ -25,10 +25,12 @@ global $wpdb;
 // Remove the two KDNA Grants tables.
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}kdna_grants_applications" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}kdna_grants_rounds" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}kdna_grants_offers" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 // Remove settings.
 delete_option( 'kdna_grants_settings' );
 delete_option( 'kdna_grants_db_version' );
+delete_option( 'kdna_grants_claude_key' );
 
 // Remove the judge capability from every role.
 foreach ( wp_roles()->role_objects as $kdna_grants_role ) {
@@ -40,3 +42,5 @@ wp_unschedule_hook( 'kdna_grants_cron' );
 wp_unschedule_hook( 'kdna_grants_round_tick' );
 wp_unschedule_hook( 'kdna_grants_send_emails' );
 wp_unschedule_hook( 'kdna_grants_retention' );
+wp_unschedule_hook( 'kdna_grants_offers_daily' );
+wp_unschedule_hook( 'kdna_grants_claude_process' );

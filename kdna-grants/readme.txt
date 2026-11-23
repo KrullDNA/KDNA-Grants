@@ -4,7 +4,7 @@ Tags: grants, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,17 @@ KDNA Grants does not collect applications itself. KDNA Forms does that. KDNA Gra
 * Judging: read each application and score it against the published criteria, with an autosaving scorecard
 * Decision: rank applications, choose the winner and send the winner and unsuccessful emails in the background
 * History: every round, score and note kept on record, with CSV export
+* Claude: reads every application against your studio profile and suggests the most interesting briefs, with a round overview
+* Contact: email any applicant from the dashboard, with templates and Claude-written drafts
+* Offers: a discount on the first brief for unsuccessful applicants, one per business, tracked by hand
+
+= Claude =
+
+Add your Claude API key and studio profile in KDNA Grants > Settings > Claude. When a round closes, Claude reads every application in the background and writes a round overview on the Claude's picks tab. It only suggests: you score and choose the winner. Names, email addresses, phone numbers, addresses and ABNs are never sent to Claude. A developer can set the key in wp-config.php instead: `define( 'KDNA_GRANTS_CLAUDE_API_KEY', 'sk-ant-...' );`
+
+= Offers =
+
+When you choose a winner, qualifying unsuccessful applicants get a personal code. Put `{offer_code}`, `{offer_percent}` and `{offer_expiry}` in the unsuccessful email, inside `[offer]...[/offer]` so the wording only shows to people who get a code. Record the outcome on the Offers tab with Accept offer. Each business only ever gets one offer, matched by email, ABN or business name.
 
 Requires KDNA Forms 3.7.1 or newer. If KDNA Forms is not active, KDNA Grants shows a notice and does nothing else.
 
@@ -43,12 +54,21 @@ Test rounds never fire these actions.
 == Installation ==
 
 1. Install and activate KDNA Forms.
-2. Upload kdna-grants-1.0.0.zip from Plugins > Add New > Upload Plugin, then activate it.
+2. Upload the kdna-grants zip from Plugins > Add New > Upload Plugin, then activate it.
 3. Go to KDNA Grants > Settings, choose the grant application form and match its fields.
 4. Set up the applicant confirmation email as a Notification on the form in KDNA Forms.
 5. Go to KDNA Grants > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Claude's picks. Claude reads each application against your studio profile, rates how interesting the brief is, lists strengths, concerns and call questions, and writes a round overview with its top picks. Runs automatically when a round closes, or on demand.
+* New: "Claude's take" and "Ask Claude now" on the judging screen, and an Interest column on the Applications list.
+* New: email any applicant from the dashboard, with saved templates, "Draft with Claude", Reply-To set to your address, and a record of every message.
+* New: offers for unsuccessful applicants (25% off the first brief, valid for 90 days by default), with an Offers tab to accept, decline or undo, automatic expiry, and one offer per business.
+* New: {offer_code}, {offer_percent}, {offer_expiry} and {offer_cap} merge tags and [offer]...[/offer] sections in the unsuccessful email.
+* Changed: new rounds are named from their dates, for example "Grant 4 April to 4 May 2026".
+* Changed: all outcome emails now set Reply-To to your address.
 
 = 1.0.0 =
 * First release.

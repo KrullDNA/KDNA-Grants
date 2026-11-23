@@ -60,7 +60,7 @@ $kdna_grants_back = add_query_arg( 'page', KDNA_Grants_Admin::ROUNDS_PAGE, admin
 				<label for="kdna-grants-round-name" class="kdna-grants-row__label"><?php esc_html_e( 'Round name', 'kdna-grants' ); ?></label>
 				<div class="kdna-grants-row__control">
 					<input type="text" name="name" id="kdna-grants-round-name" class="regular-text" value="<?php echo esc_attr( $values['name'] ); ?>" <?php disabled( $is_locked ); ?> />
-					<p class="description"><?php esc_html_e( 'Leave blank to name it automatically, for example "Round 1, February 2027".', 'kdna-grants' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Leave blank to name it automatically, for example "Grant 4 April to 4 May 2026".', 'kdna-grants' ); ?></p>
 				</div>
 			</div>
 

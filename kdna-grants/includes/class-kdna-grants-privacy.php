@@ -145,6 +145,8 @@ class KDNA_Grants_Privacy {
 				__( 'Notes', 'kdna-grants' )             => $application['notes'],
 				__( 'Shortlisted', 'kdna-grants' )       => $application['shortlisted'] ? __( 'Yes', 'kdna-grants' ) : __( 'No', 'kdna-grants' ),
 				__( 'Outcome', 'kdna-grants' )           => $application['outcome'],
+				__( 'Emails sent from the dashboard', 'kdna-grants' ) => implode( '; ', wp_list_pluck( $application['contact_log'], 'subject' ) ),
+				__( 'Claude summary', 'kdna-grants' )    => isset( $application['ai_assessment']['summary'] ) ? $application['ai_assessment']['summary'] : '',
 			);
 
 			$rows = array();
@@ -165,6 +167,36 @@ class KDNA_Grants_Privacy {
 			);
 		}
 
+		foreach ( KDNA_Grants_Offers::find_matching( $email, '', '', false ) as $offer ) {
+			$items[] = array(
+				'group_id'    => 'kdna-grants-offers',
+				'group_label' => __( 'KDNA Grants offers', 'kdna-grants' ),
+				'item_id'     => 'kdna-grants-offer-' . $offer['id'],
+				'data'        => array(
+					array(
+						'name'  => __( 'Offer code', 'kdna-grants' ),
+						'value' => $offer['code'],
+					),
+					array(
+						'name'  => __( 'Discount', 'kdna-grants' ),
+						'value' => $offer['percent'] . '%',
+					),
+					array(
+						'name'  => __( 'Sent', 'kdna-grants' ),
+						'value' => KDNA_Grants_Rounds::format( $offer['issued_at'], false ),
+					),
+					array(
+						'name'  => __( 'Expires', 'kdna-grants' ),
+						'value' => KDNA_Grants_Rounds::format( $offer['expires_at'], false ),
+					),
+					array(
+						'name'  => __( 'Status', 'kdna-grants' ),
+						'value' => $offer['status'],
+					),
+				),
+			);
+		}
+
 		return array(
 			'data' => $items,
 			'done' => true,
@@ -179,10 +211,17 @@ class KDNA_Grants_Privacy {
 	 * @return array
 	 */
 	public static function erase( $email, $page = 1 ) {
+		global $wpdb;
+
 		$applications = self::applications_for_email( $email );
 
 		foreach ( $applications as $application ) {
 			self::delete_application( $application );
+		}
+
+		$offers = array_merge( KDNA_Grants_Offers::find_matching( $email, '', '', false ), KDNA_Grants_Offers::find_matching( $email, '', '', true ) );
+		foreach ( $offers as $offer ) {
+			$wpdb->delete( KDNA_Grants_Install::offers_table(), array( 'id' => $offer['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		}
 
 		$messages = array();
@@ -191,7 +230,7 @@ class KDNA_Grants_Privacy {
 		}
 
 		return array(
-			'items_removed'  => (bool) $applications,
+			'items_removed'  => (bool) $applications || (bool) $offers,
 			'items_retained' => false,
 			'messages'       => $messages,
 			'done'           => true,
@@ -257,6 +296,10 @@ class KDNA_Grants_Privacy {
 
 		foreach ( $ids as $round_id ) {
 			KDNA_Grants_Applications::delete_for_round( $round_id );
+
+			// Offers that weren't used go too. Used offers are kept as a business record, so the
+			// client still gets no further discount if they apply again.
+			$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . KDNA_Grants_Install::offers_table() . ' WHERE round_id = %d AND status <> %s', (int) $round_id, KDNA_Grants_Offers::STATUS_ACCEPTED ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery
 			$wpdb->delete( $rounds, array( 'id' => (int) $round_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		}
 

@@ -26,6 +26,16 @@ class KDNA_Grants_Admin {
 	const ROUNDS_PAGE = 'kdna-grants-rounds';
 
 	/**
+	 * Page slug of the Claude's picks screen.
+	 */
+	const PICKS_PAGE = 'kdna-grants-picks';
+
+	/**
+	 * Page slug of the Offers screen.
+	 */
+	const OFFERS_PAGE = 'kdna-grants-offers';
+
+	/**
 	 * Page slug of the Settings screen.
 	 */
 	const SETTINGS_PAGE = 'kdna-grants-settings';
@@ -57,6 +67,27 @@ class KDNA_Grants_Admin {
 	private $applications;
 
 	/**
+	 * The Claude's picks screen.
+	 *
+	 * @var KDNA_Grants_Admin_Picks
+	 */
+	private $picks;
+
+	/**
+	 * The Offers screen.
+	 *
+	 * @var KDNA_Grants_Admin_Offers
+	 */
+	private $offers;
+
+	/**
+	 * The dashboard email window.
+	 *
+	 * @var KDNA_Grants_Admin_Contact
+	 */
+	private $contact;
+
+	/**
 	 * Hooks into WordPress. If KDNA Forms isn't available, only the notice is shown.
 	 */
 	public function register() {
@@ -67,8 +98,14 @@ class KDNA_Grants_Admin {
 
 		$this->rounds       = new KDNA_Grants_Admin_Rounds();
 		$this->applications = new KDNA_Grants_Admin_Applications();
+		$this->picks        = new KDNA_Grants_Admin_Picks();
+		$this->offers       = new KDNA_Grants_Admin_Offers();
+		$this->contact      = new KDNA_Grants_Admin_Contact();
 		$this->rounds->register();
 		$this->applications->register();
+		$this->picks->register();
+		$this->offers->register();
+		$this->contact->register();
 
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -146,6 +183,24 @@ class KDNA_Grants_Admin {
 
 		$this->screen_hooks[] = add_submenu_page(
 			self::APPLICATIONS_PAGE,
+			__( 'Claude\'s picks', 'kdna-grants' ),
+			__( 'Claude\'s picks', 'kdna-grants' ),
+			KDNA_GRANTS_CAP,
+			self::PICKS_PAGE,
+			array( $this->picks, 'render' )
+		);
+
+		$this->screen_hooks[] = add_submenu_page(
+			self::APPLICATIONS_PAGE,
+			__( 'Offers', 'kdna-grants' ),
+			__( 'Offers', 'kdna-grants' ),
+			'manage_options',
+			self::OFFERS_PAGE,
+			array( $this->offers, 'render' )
+		);
+
+		$this->screen_hooks[] = add_submenu_page(
+			self::APPLICATIONS_PAGE,
 			__( 'Rounds', 'kdna-grants' ),
 			__( 'Rounds', 'kdna-grants' ),
 			'manage_options',
@@ -190,17 +245,27 @@ class KDNA_Grants_Admin {
 			'kdna-grants-admin',
 			'kdnaGrantsSettings',
 			array(
-				'fields'     => $is_settings ? KDNA_Grants_Forms_Bridge::get_all_mappable_fields() : array(),
-				'targets'    => $targets,
-				'editUrl'    => admin_url( 'admin.php?page=kdna_edit_forms&id=' ),
-				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-				'scoreNonce' => wp_create_nonce( KDNA_Grants_Admin_Applications::SAVE_SCORE_ACTION ),
-				'testNonce'  => wp_create_nonce( 'kdna_grants_test_email' ),
-				'i18n'       => array(
+				'fields'       => $is_settings ? KDNA_Grants_Forms_Bridge::get_all_mappable_fields() : array(),
+				'targets'      => $targets,
+				'editUrl'      => admin_url( 'admin.php?page=kdna_edit_forms&id=' ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'scoreNonce'   => wp_create_nonce( KDNA_Grants_Admin_Applications::SAVE_SCORE_ACTION ),
+				'testNonce'    => wp_create_nonce( 'kdna_grants_test_email' ),
+				'contactNonce' => wp_create_nonce( KDNA_Grants_Admin_Contact::NONCE ),
+				'assessNonce'  => wp_create_nonce( KDNA_Grants_Admin_Picks::ASSESS_ACTION ),
+				'i18n'         => array(
 					'saving'             => __( 'Saving…', 'kdna-grants' ),
 					'saved'              => __( 'Saved', 'kdna-grants' ),
 					'saveFailed'         => __( 'Not saved. Please try again.', 'kdna-grants' ),
 					'sending'            => __( 'Sending…', 'kdna-grants' ),
+					'confirmReassess'    => __( 'Ask Claude to read every application in this round again? This replaces its current notes and costs a few dollars.', 'kdna-grants' ),
+					'confirmDecline'     => __( 'Mark this offer as declined? The client won\'t get another offer if they apply again.', 'kdna-grants' ),
+					'confirmUndo'        => __( 'Undo this? The offer goes back to active (or expired, if its date has passed).', 'kdna-grants' ),
+					'confirmCloseDraft'  => __( 'Close without sending? Your message will be lost.', 'kdna-grants' ),
+					'drafting'           => __( 'Claude is writing a draft. This can take up to a minute…', 'kdna-grants' ),
+					'assessing'          => __( 'Claude is reading this application. This can take up to a minute…', 'kdna-grants' ),
+					'loading'            => __( 'Loading…', 'kdna-grants' ),
+					'sent'               => __( 'Sent', 'kdna-grants' ),
 					'confirmReopen'      => __( 'Reopen judging? Scores can be changed again and a new winner chosen. Emails already sent can\'t be unsent, and if you choose a winner again, the winner and unsuccessful emails are sent again. This is recorded in the round history.', 'kdna-grants' ),
 					'reasonNeeded'       => __( 'Please give a short reason.', 'kdna-grants' ),
 					'removeCriterion'    => __( 'Remove', 'kdna-grants' ),
@@ -333,6 +398,46 @@ class KDNA_Grants_Admin {
 		// Data retention: 0 keeps records, otherwise 1 to 120 months.
 		$retention                    = isset( $_POST['retention_months'] ) ? absint( wp_unslash( $_POST['retention_months'] ) ) : 24;
 		$settings['retention_months'] = min( 120, $retention );
+
+		// Claude.
+		$settings['claude_enabled']      = ! empty( $_POST['claude_enabled'] );
+		$settings['claude_auto']         = ! empty( $_POST['claude_auto'] );
+		$settings['claude_include_logo'] = ! empty( $_POST['claude_include_logo'] );
+		$settings['claude_profile']      = isset( $_POST['claude_profile'] ) ? sanitize_textarea_field( wp_unslash( $_POST['claude_profile'] ) ) : '';
+
+		// The API key is only replaced when a new one is typed, and is kept out of the main settings.
+		$new_key = isset( $_POST['claude_api_key'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['claude_api_key'] ) ) ) : '';
+		if ( '' !== $new_key ) {
+			update_option( KDNA_Grants_Claude::KEY_OPTION, $new_key, false );
+		}
+		if ( ! empty( $_POST['claude_remove_key'] ) ) {
+			delete_option( KDNA_Grants_Claude::KEY_OPTION );
+		}
+
+		// Contacting applicants.
+		$reply_to             = isset( $_POST['reply_to'] ) ? sanitize_email( wp_unslash( $_POST['reply_to'] ) ) : '';
+		$settings['reply_to'] = is_email( $reply_to ) ? $reply_to : '';
+
+		$compose = array();
+		$posted  = isset( $_POST['compose_templates'] ) && is_array( $_POST['compose_templates'] ) ? wp_unslash( $_POST['compose_templates'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitised below.
+		foreach ( $posted as $template ) {
+			$name = isset( $template['name'] ) ? sanitize_text_field( $template['name'] ) : '';
+			if ( '' === $name ) {
+				continue;
+			}
+			$compose[] = array(
+				'name'    => $name,
+				'subject' => isset( $template['subject'] ) ? sanitize_text_field( $template['subject'] ) : '',
+				'body'    => isset( $template['body'] ) ? sanitize_textarea_field( $template['body'] ) : '',
+			);
+		}
+		$settings['compose_templates'] = $compose;
+
+		// Offers.
+		$settings['offers_enabled'] = ! empty( $_POST['offers_enabled'] );
+		$settings['offer_percent']  = isset( $_POST['offer_percent'] ) ? min( 100, max( 1, absint( wp_unslash( $_POST['offer_percent'] ) ) ) ) : 25;
+		$settings['offer_days']     = isset( $_POST['offer_days'] ) ? min( 3650, max( 1, absint( wp_unslash( $_POST['offer_days'] ) ) ) ) : 90;
+		$settings['offer_cap']      = isset( $_POST['offer_cap'] ) ? sanitize_text_field( wp_unslash( $_POST['offer_cap'] ) ) : '';
 
 		$settings['delete_data_on_uninstall'] = ! empty( $_POST['delete_data_on_uninstall'] );
 
@@ -525,6 +630,19 @@ class KDNA_Grants_Admin {
 		}
 
 		// The applicant confirmation email is sent by KDNA Forms.
+		// Claude switched on without a key.
+		if ( ! empty( $settings['claude_enabled'] ) && '' === KDNA_Grants_Claude::get_api_key() ) {
+			$warnings[] = __( 'Claude is switched on but has no API key yet. Add it on the Claude tab.', 'kdna-grants' );
+		}
+
+		// Offers switched on, but the unsuccessful email doesn't mention the code.
+		if ( ! empty( $settings['offers_enabled'] ) ) {
+			$unsuccessful = KDNA_Grants_Emails::get_template( 'unsuccessful' );
+			if ( false === strpos( $unsuccessful['body'] . $unsuccessful['subject'], '{offer_code}' ) ) {
+				$warnings[] = __( 'Offers are switched on, but the unsuccessful email doesn\'t include {offer_code}, so applicants won\'t see their code. Add it on the Emails and messages tab, ideally inside [offer]...[/offer].', 'kdna-grants' );
+			}
+		}
+
 		if ( ! KDNA_Grants_Forms_Bridge::has_applicant_notification( $form_id ) ) {
 			$warnings[] = __( 'This form does not seem to email the applicant yet. The confirmation email is sent by KDNA Forms, so add a Notification to the form that is sent to the applicant\'s email field.', 'kdna-grants' );
 		}
@@ -575,6 +693,11 @@ class KDNA_Grants_Admin {
 			'winner_chosen'     => array( 'success', __( 'Winner chosen. The round is decided and the emails are sending in the background. Their status shows in the Email column.', 'kdna-grants' ) ),
 			'judging_reopened'  => array( 'success', __( 'Judging reopened. Scores can be changed again.', 'kdna-grants' ) ),
 			'email_queued'      => array( 'success', __( 'Email queued to send again.', 'kdna-grants' ) ),
+			'claude_queued'     => array( 'success', __( 'Claude is on it. It works in the background, one application at a time, so refresh this page in a few minutes.', 'kdna-grants' ) ),
+			'claude_off'        => array( 'error', __( 'Claude isn\'t switched on. Add your API key in Settings > Claude.', 'kdna-grants' ) ),
+			'offer_accepted'    => array( 'success', __( 'Offer accepted. No further discounts will be offered to this client.', 'kdna-grants' ) ),
+			'offer_declined'    => array( 'success', __( 'Offer marked as declined.', 'kdna-grants' ) ),
+			'offer_undone'      => array( 'success', __( 'Done. The offer is back to how it was.', 'kdna-grants' ) ),
 		);
 
 		if ( 'error' === $code ) {

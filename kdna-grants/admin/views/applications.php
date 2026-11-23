@@ -159,12 +159,13 @@ $kdna_grants_is_admin = current_user_can( 'manage_options' );
 								</a>
 							</th>
 							<th scope="col"><?php esc_html_e( 'Shortlisted', 'kdna-grants' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Interest', 'kdna-grants' ); ?></th>
 							<th scope="col"><?php esc_html_e( 'Email', 'kdna-grants' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php if ( ! $applications ) : ?>
-							<tr><td colspan="9"><?php esc_html_e( 'No applications match this filter.', 'kdna-grants' ); ?></td></tr>
+							<tr><td colspan="10"><?php esc_html_e( 'No applications match this filter.', 'kdna-grants' ); ?></td></tr>
 						<?php endif; ?>
 						<?php foreach ( $applications as $kdna_grants_app ) : ?>
 							<?php $kdna_grants_scored = KDNA_Grants_Judging::is_scored( $kdna_grants_app, $criteria ); ?>
@@ -175,6 +176,13 @@ $kdna_grants_is_admin = current_user_can( 'manage_options' );
 										<span class="kdna-grants-badge kdna-grants-badge--winner"><?php esc_html_e( 'Winner', 'kdna-grants' ); ?></span>
 									<?php endif; ?>
 									<span class="kdna-grants-table__sub"><?php echo esc_html( trim( $kdna_grants_app['first_name'] . ' ' . $kdna_grants_app['last_name'] ) ); ?></span>
+									<span class="kdna-grants-table__sub"><?php echo KDNA_Grants_Admin_Contact::button( $kdna_grants_app ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?></span>
+									<?php
+									$kdna_grants_offer_note = $kdna_grants_is_admin ? KDNA_Grants_Admin_Offers::summary( $kdna_grants_app ) : '';
+									if ( $kdna_grants_offer_note ) {
+										echo '<span class="kdna-grants-table__sub">' . $kdna_grants_offer_note . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside.
+									}
+									?>
 								</td>
 								<td><?php echo esc_html( $kdna_grants_app['industry'] ); ?></td>
 								<td><?php echo esc_html( $kdna_grants_app['staff'] ); ?></td>
@@ -204,6 +212,14 @@ $kdna_grants_is_admin = current_user_can( 'manage_options' );
 									<?php endif; ?>
 								</td>
 								<td><?php echo $kdna_grants_app['shortlisted'] ? '<span class="dashicons dashicons-star-filled kdna-grants-star" aria-hidden="true"></span><span class="screen-reader-text">' . esc_html__( 'Yes', 'kdna-grants' ) . '</span>' : ''; ?></td>
+								<td class="kdna-grants-nowrap">
+									<?php
+									$kdna_grants_rating = ! empty( $kdna_grants_app['ai_assessment']['interest_rating'] )
+										? KDNA_Grants_Admin_Picks::rating( $kdna_grants_app['ai_assessment']['interest_rating'] )
+										: '<span class="kdna-grants-muted" aria-hidden="true">&ndash;</span>';
+									echo $kdna_grants_rating; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside.
+									?>
+								</td>
 								<td class="kdna-grants-nowrap">
 									<?php include KDNA_GRANTS_PATH . 'admin/views/email-status.php'; ?>
 								</td>

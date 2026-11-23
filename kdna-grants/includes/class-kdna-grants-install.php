@@ -46,6 +46,16 @@ class KDNA_Grants_Install {
 		return $wpdb->prefix . 'kdna_grants_applications';
 	}
 
+	/**
+	 * Full name of the offers table, including the site's table prefix.
+	 *
+	 * @return string
+	 */
+	public static function offers_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'kdna_grants_offers';
+	}
+
 	/*
 	 * -----------------------------------------------------------------------
 	 * Activation and upgrades
@@ -98,6 +108,10 @@ class KDNA_Grants_Install {
 			decision_note text,
 			criteria longtext,
 			activity_log longtext,
+			ai_status varchar(20) NOT NULL DEFAULT '',
+			ai_overview longtext,
+			ai_overview_at datetime DEFAULT NULL,
+			ai_usage longtext,
 			is_test tinyint(1) unsigned NOT NULL DEFAULT 0,
 			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -126,6 +140,11 @@ class KDNA_Grants_Install {
 			shortlisted tinyint(1) unsigned NOT NULL DEFAULT 0,
 			outcome varchar(20) NOT NULL DEFAULT 'pending',
 			email_status varchar(20) NOT NULL DEFAULT '',
+			ai_status varchar(20) NOT NULL DEFAULT '',
+			ai_assessment longtext,
+			ai_assessed_at datetime DEFAULT NULL,
+			ai_error text,
+			contact_log longtext,
 			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
@@ -137,7 +156,39 @@ class KDNA_Grants_Install {
 		) {$charset_collate};";
 
 		dbDelta( $sql_rounds );
+		// Offers: the 25% first-brief discount given to unsuccessful applicants. One per business, ever.
+		$offers     = self::offers_table();
+		$sql_offers = "CREATE TABLE {$offers} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			application_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			round_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			code varchar(40) NOT NULL DEFAULT '',
+			first_name varchar(191) NOT NULL DEFAULT '',
+			email varchar(191) NOT NULL DEFAULT '',
+			abn varchar(20) NOT NULL DEFAULT '',
+			business_name varchar(191) NOT NULL DEFAULT '',
+			percent smallint(5) unsigned NOT NULL DEFAULT 0,
+			cap varchar(50) NOT NULL DEFAULT '',
+			status varchar(20) NOT NULL DEFAULT 'active',
+			issued_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			expires_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			closed_at datetime DEFAULT NULL,
+			closed_by varchar(191) NOT NULL DEFAULT '',
+			note text,
+			is_test tinyint(1) unsigned NOT NULL DEFAULT 0,
+			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY code (code),
+			KEY round_id (round_id),
+			KEY application_id (application_id),
+			KEY email (email),
+			KEY abn (abn),
+			KEY status (status)
+		) {$charset_collate};";
+
 		dbDelta( $sql_applications );
+		dbDelta( $sql_offers );
 
 		update_option( self::DB_VERSION_OPTION, KDNA_GRANTS_DB_VERSION, false );
 	}
@@ -254,6 +305,22 @@ class KDNA_Grants_Install {
 			'closed_message'           => __( 'Applications for this round have closed. The next round opens on {next_open_date}.', 'kdna-grants' ),
 			'closed_message_none'      => __( 'Applications are closed for now. Follow KDNA for news of the next round.', 'kdna-grants' ),
 
+			// 1.1.0: Claude. The API key is stored separately (see KDNA_Grants_Claude::get_api_key()).
+			'claude_enabled'           => false,
+			'claude_auto'              => true,
+			'claude_include_logo'      => false,
+			'claude_profile'           => '',
+
+			// 1.1.0: contacting applicants from the dashboard.
+			'reply_to'                 => '',
+			'compose_templates'        => self::default_compose_templates(),
+
+			// 1.1.0: offers for unsuccessful applicants.
+			'offers_enabled'           => true,
+			'offer_percent'            => 25,
+			'offer_days'               => 90,
+			'offer_cap'                => '',
+
 			// Stage 4: privacy. Records are removed this many months after a round is decided (0 keeps them).
 			'retention_months'         => 24,
 
@@ -284,7 +351,33 @@ class KDNA_Grants_Install {
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'Thank you for applying for the KDNA Website Grant, {round_name}, and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-grants' ) . '</p>'
 					. '<p>' . __( 'You\'re very welcome to apply again. The next round opens on {next_open_date}.', 'kdna-grants' ) . '</p>'
+					. '[offer]<p>' . __( 'We\'d still love to help {business_name}. As a thank you for applying, you can have {offer_percent}% off your first brief with KDNA, whether that\'s a logo, a website, a presentation or a mix. Just quote {offer_code} when you get in touch. This offer is valid until {offer_expiry} and applies to your first brief only; later work is at our standard rates.', 'kdna-grants' ) . '</p>[/offer]'
 					. '<p>' . __( 'Thank you again, and all the best,', 'kdna-grants' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-grants' ) . '</p>',
+			),
+		);
+	}
+
+	/**
+	 * Default reusable messages for the dashboard email window.
+	 *
+	 * @return array List of array( 'name', 'subject', 'body' ).
+	 */
+	public static function default_compose_templates() {
+		return array(
+			array(
+				'name'    => __( 'Shortlist call invitation', 'kdna-grants' ),
+				'subject' => __( 'Your KDNA Website Grant application, {business_name}', 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThank you for applying for the KDNA Website Grant. I really enjoyed reading about {business_name}, and you're on my shortlist for {round_name}.\n\nWould you be free for a 20-minute call this week so I can learn a little more? Just reply with a couple of times that suit you.\n\nNick Krull, KDNA", 'kdna-grants' ),
+			),
+			array(
+				'name'    => __( 'A quick question', 'kdna-grants' ),
+				'subject' => __( 'A quick question about your grant application', 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nThanks for applying for the KDNA Website Grant. I'm reading through applications for {round_name} and had a quick question about {business_name}:\n\n\n\nNick Krull, KDNA", 'kdna-grants' ),
+			),
+			array(
+				'name'    => __( 'Offer reminder', 'kdna-grants' ),
+				'subject' => __( 'Your {offer_percent}% KDNA offer, {business_name}', 'kdna-grants' ),
+				'body'    => __( "Hi {first_name},\n\nJust a friendly reminder that your {offer_percent}% discount on your first brief with KDNA is valid until {offer_expiry}. Your code is {offer_code}.\n\nIf you'd like to talk about a logo, website or anything else for {business_name}, just reply to this email.\n\nNick Krull, KDNA", 'kdna-grants' ),
 			),
 		);
 	}

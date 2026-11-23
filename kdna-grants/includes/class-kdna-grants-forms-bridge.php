@@ -300,9 +300,11 @@ class KDNA_Grants_Forms_Bridge {
 			}
 
 			$answers[] = array(
-				'type'  => 'answer',
-				'label' => self::field_label( $field ),
-				'html'  => (string) $display,
+				'type'       => 'answer',
+				'label'      => self::field_label( $field ),
+				'html'       => (string) $display,
+				'field_id'   => (string) $field->id,
+				'field_type' => $type,
 			);
 		}
 
@@ -317,6 +319,56 @@ class KDNA_Grants_Forms_Bridge {
 		}
 
 		return $tidy;
+	}
+
+	/**
+	 * The business answers from an entry as plain text, for Claude to read.
+	 *
+	 * Personal contact details are left out: name, email, phone and address
+	 * fields, uploaded files, and the fields matched to first name, last name,
+	 * email and ABN in Settings. Claude never sees who the applicant is.
+	 *
+	 * @param array    $entry       The KDNA Forms entry.
+	 * @param string[] $exclude_ids Field or part IDs to leave out (from the field mapping).
+	 * @return array List of array( 'label' => question, 'text' => answer ), in form order. Section headings have empty text.
+	 */
+	public static function get_business_answers( $entry, $exclude_ids = array() ) {
+		$private_types = array( 'name', 'email', 'phone', 'address', 'fileupload', 'consent', 'signature' );
+		$exclude_base  = array();
+
+		foreach ( (array) $exclude_ids as $id ) {
+			$id = (string) $id;
+			if ( '' !== $id ) {
+				$exclude_base[] = strtok( $id, '.' );
+			}
+		}
+
+		$answers = array();
+		foreach ( self::get_entry_answers( $entry ) as $answer ) {
+			if ( 'section' === $answer['type'] ) {
+				$answers[] = array(
+					'label' => $answer['label'],
+					'text'  => '',
+				);
+				continue;
+			}
+
+			if ( in_array( $answer['field_type'], $private_types, true ) || in_array( $answer['field_id'], $exclude_base, true ) ) {
+				continue;
+			}
+
+			$html = preg_replace( '#<(br|/p|/li|/div)[^>]*>#i', "\n", $answer['html'] );
+			$text = trim( html_entity_decode( wp_strip_all_tags( $html ), ENT_QUOTES, 'UTF-8' ) );
+
+			if ( '' !== $text ) {
+				$answers[] = array(
+					'label' => $answer['label'],
+					'text'  => $text,
+				);
+			}
+		}
+
+		return $answers;
 	}
 
 	/**
