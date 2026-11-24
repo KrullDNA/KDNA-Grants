@@ -342,13 +342,6 @@ class KDNA_Launchpad_Form {
 				'choices'    => $choices( array( __( 'Yes', 'kdna-launchpad' ), __( 'Some', 'kdna-launchpad' ), __( 'Not yet', 'kdna-launchpad' ) ) ),
 			),
 			array(
-				'id'         => 22,
-				'type'       => 'radio',
-				'label'      => __( 'Do you have your logo and brand colours?', 'kdna-launchpad' ),
-				'isRequired' => true,
-				'choices'    => $choices( array( __( 'Yes', 'kdna-launchpad' ), __( 'No', 'kdna-launchpad' ) ) ),
-			),
-			array(
 				'id'      => 23,
 				'type'    => 'radio',
 				'label'   => __( 'Do you already have a domain name and hosting?', 'kdna-launchpad' ),
