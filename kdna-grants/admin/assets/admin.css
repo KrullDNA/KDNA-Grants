@@ -1,0 +1,1221 @@
+/**
+ * KDNA Launchpad admin styles.
+ * Loaded only on KDNA Launchpad admin screens.
+ */
+
+.kdna-grants-admin {
+	--kdna-grants-ink: #1d2327;
+	--kdna-grants-muted: #646970;
+	--kdna-grants-line: #dcdcde;
+	--kdna-grants-surface: #ffffff;
+	--kdna-grants-soft: #f6f7f7;
+	--kdna-grants-accent: #2271b1;
+	--kdna-grants-warn-bg: #fcf9e8;
+	--kdna-grants-warn-line: #dba617;
+	--kdna-grants-ok-bg: #edfaef;
+	--kdna-grants-ok-line: #00a32a;
+	max-width: 960px;
+}
+
+.kdna-grants-admin__title {
+	margin-bottom: 16px;
+}
+
+/* Still to do / ready boxes */
+.kdna-grants-admin__attention,
+.kdna-grants-admin__ready {
+	margin: 16px 0;
+	padding: 12px 16px;
+	border-left: 4px solid var(--kdna-grants-warn-line);
+	background: var(--kdna-grants-warn-bg);
+}
+
+.kdna-grants-admin__attention h2 {
+	margin: 0 0 6px;
+	font-size: 14px;
+}
+
+.kdna-grants-admin__attention ul {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.kdna-grants-admin__ready {
+	border-left-color: var(--kdna-grants-ok-line);
+	background: var(--kdna-grants-ok-bg);
+}
+
+.kdna-grants-admin__ready p {
+	margin: 0;
+}
+
+/* Cards */
+.kdna-grants-card {
+	margin: 0 0 20px;
+	padding: 20px 24px;
+	background: var(--kdna-grants-surface);
+	border: 1px solid var(--kdna-grants-line);
+	border-radius: 6px;
+}
+
+.kdna-grants-card__title {
+	margin: 0 0 6px;
+	font-size: 16px;
+}
+
+.kdna-grants-card__intro,
+.kdna-grants-card__empty {
+	margin: 0 0 16px;
+	color: var(--kdna-grants-muted);
+	max-width: 70ch;
+}
+
+.kdna-grants-card__empty {
+	margin: 0;
+	padding: 16px;
+	background: var(--kdna-grants-soft);
+	border-radius: 4px;
+}
+
+/* Label and control rows */
+.kdna-grants-row {
+	display: grid;
+	grid-template-columns: 220px 1fr;
+	gap: 16px;
+	align-items: start;
+}
+
+.kdna-grants-row__label {
+	padding-top: 6px;
+	font-weight: 600;
+}
+
+.kdna-grants-row__control select {
+	min-width: 320px;
+	max-width: 100%;
+}
+
+.kdna-grants-row__link {
+	display: inline-block;
+	margin-left: 10px;
+	line-height: 30px;
+}
+
+/* Field mapping table */
+.kdna-grants-map {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.kdna-grants-map th,
+.kdna-grants-map td {
+	padding: 12px 8px;
+	border-top: 1px solid var(--kdna-grants-line);
+	text-align: left;
+	vertical-align: top;
+}
+
+.kdna-grants-map thead th {
+	border-top: 0;
+	padding-top: 0;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.kdna-grants-map tbody th {
+	width: 40%;
+}
+
+.kdna-grants-map tbody th label {
+	display: block;
+	font-weight: 600;
+}
+
+.kdna-grants-map__help {
+	display: block;
+	margin-top: 4px;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.kdna-grants-map__select {
+	width: 100%;
+	max-width: 360px;
+}
+
+.kdna-grants-map__select.is-empty {
+	border-color: var(--kdna-grants-warn-line);
+}
+
+/* Checkbox setting */
+.kdna-grants-check {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+.kdna-grants-check input {
+	margin-top: 2px;
+}
+
+.kdna-grants-check .description {
+	display: block;
+	margin-top: 4px;
+	max-width: 70ch;
+}
+
+.kdna-grants-admin__meta {
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+}
+
+/* Small screens */
+@media (max-width: 782px) {
+	.kdna-grants-row {
+		grid-template-columns: 1fr;
+		gap: 6px;
+	}
+
+	.kdna-grants-row__control select {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.kdna-grants-row__link {
+		margin: 8px 0 0;
+	}
+
+	.kdna-grants-map thead {
+		display: none;
+	}
+
+	.kdna-grants-map tbody th,
+	.kdna-grants-map td {
+		display: block;
+		width: auto;
+		border-top: 0;
+		padding: 4px 0;
+	}
+
+	.kdna-grants-map tbody tr {
+		display: block;
+		padding: 12px 0;
+		border-top: 1px solid var(--kdna-grants-line);
+	}
+
+	.kdna-grants-map__select {
+		max-width: none;
+	}
+}
+
+/* Wider screens for tables */
+.kdna-grants-admin--wide,
+.kdna-grants-admin:has(.kdna-grants-table) {
+	max-width: none;
+}
+
+.kdna-grants-admin__summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	align-items: center;
+	margin: 12px 0 16px;
+}
+
+.kdna-grants-admin__summary p {
+	margin: 0;
+}
+
+.kdna-grants-admin__counts {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-card__status {
+	margin-top: 0;
+}
+
+.kdna-grants-card__note {
+	margin: 16px 0 0;
+}
+
+.kdna-grants-card--test {
+	margin-top: 32px;
+	background: var(--kdna-grants-soft);
+}
+
+.kdna-grants-card .kdna-grants-row + .kdna-grants-row {
+	margin-top: 16px;
+}
+
+.kdna-grants-list {
+	margin: 0 0 8px;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+/* Round picker */
+.kdna-grants-toolbar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 12px 0 0;
+}
+
+.kdna-grants-toolbar label {
+	font-weight: 600;
+}
+
+/* Tables */
+.kdna-grants-table {
+	margin-bottom: 20px;
+}
+
+.kdna-grants-table td,
+.kdna-grants-table th {
+	vertical-align: top;
+}
+
+.kdna-grants-table__num {
+	text-align: right;
+}
+
+.kdna-grants-table__actions {
+	white-space: nowrap;
+}
+
+.kdna-grants-table__actions > * + * {
+	margin-left: 10px;
+}
+
+.kdna-grants-nowrap {
+	white-space: nowrap;
+}
+
+.kdna-grants-inline-form {
+	display: inline;
+}
+
+.kdna-grants-link-danger {
+	color: #b32d2e !important;
+}
+
+/* Status badges */
+.kdna-grants-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #f0f0f1;
+	color: var(--kdna-grants-ink);
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.kdna-grants-badge--open {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-badge--scheduled {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-grants-badge--judging {
+	background: #fcf9e8;
+	color: #8a6100;
+}
+
+.kdna-grants-badge--decided {
+	background: #1d2327;
+	color: #ffffff;
+}
+
+.kdna-grants-badge--test {
+	margin-left: 6px;
+	background: #f6f7f7;
+	border: 1px dashed #8c8f94;
+	color: var(--kdna-grants-muted);
+}
+
+/* Eligibility flags */
+.kdna-grants-eligibility {
+	min-width: 260px;
+}
+
+.kdna-grants-flags {
+	margin: 0 0 8px;
+	padding: 0;
+	list-style: none;
+}
+
+.kdna-grants-flags li {
+	margin: 0 0 6px;
+}
+
+.kdna-grants-flag {
+	display: inline-block;
+	margin-right: 6px;
+	padding: 1px 8px;
+	border-radius: 3px;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.kdna-grants-flag--ok {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-flag--cleared {
+	background: #f0f0f1;
+	color: var(--kdna-grants-muted);
+	text-decoration: line-through;
+}
+
+.kdna-grants-flag__reason {
+	font-size: 13px;
+}
+
+.kdna-grants-flags li.is-cleared .kdna-grants-flag__reason {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-flag__cleared {
+	display: block;
+	margin-top: 2px;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+}
+
+@media (max-width: 782px) {
+	.kdna-grants-table--applications thead {
+		display: none;
+	}
+
+	.kdna-grants-table--applications tr,
+	.kdna-grants-table--applications td {
+		display: block;
+	}
+}
+
+/* -------------------------------------------------------------------
+ * Stage 3: judging
+ * ------------------------------------------------------------------- */
+
+.kdna-grants-muted {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-table__sub {
+	display: block;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+}
+
+.kdna-grants-filters {
+	float: none;
+	margin: 0 0 8px;
+}
+
+.kdna-grants-star {
+	color: #dba617;
+}
+
+.kdna-grants-badge--winner {
+	margin-left: 6px;
+	background: #1d2327;
+	color: #ffffff;
+}
+
+/* Email status */
+.kdna-grants-email {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #f0f0f1;
+}
+
+.kdna-grants-email--sent {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-email--queued {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-grants-email--failed {
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+/* Decision panel */
+.kdna-grants-panel {
+	margin: 0 0 20px;
+	padding: 16px 20px;
+	background: var(--kdna-grants-surface);
+	border: 1px solid var(--kdna-grants-line);
+	border-left: 4px solid var(--kdna-grants-accent);
+	border-radius: 4px;
+}
+
+.kdna-grants-panel p {
+	margin: 0 0 8px;
+}
+
+.kdna-grants-panel p:last-child {
+	margin-bottom: 0;
+}
+
+.kdna-grants-panel h2 {
+	margin: 0 0 6px;
+	font-size: 16px;
+}
+
+.kdna-grants-panel--choose {
+	border-left-color: var(--kdna-grants-ok-line);
+}
+
+.kdna-grants-panel--decided {
+	border-left-color: #1d2327;
+}
+
+.kdna-grants-panel__intro {
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-progress {
+	height: 6px;
+	margin-top: 10px;
+	max-width: 420px;
+	background: #f0f0f1;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.kdna-grants-progress span {
+	display: block;
+	height: 100%;
+	background: var(--kdna-grants-accent);
+}
+
+.kdna-grants-finalists {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.kdna-grants-finalist {
+	position: relative;
+	padding: 16px;
+	border: 1px solid var(--kdna-grants-line);
+	border-radius: 6px;
+	background: var(--kdna-grants-soft);
+}
+
+.kdna-grants-finalist.is-top {
+	border-color: var(--kdna-grants-ok-line);
+	background: #f6fcf7;
+}
+
+.kdna-grants-finalist__rank {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	color: var(--kdna-grants-muted);
+	font-size: 22px;
+	font-weight: 600;
+}
+
+.kdna-grants-finalist__name {
+	margin: 0 32px 4px 0;
+	font-size: 15px;
+}
+
+.kdna-grants-finalist__total {
+	margin: 0 0 10px !important;
+}
+
+.kdna-grants-finalist__total strong {
+	font-size: 24px;
+}
+
+.kdna-grants-finalist__scores {
+	margin: 0 0 14px;
+}
+
+.kdna-grants-finalist__scores div {
+	display: flex;
+	justify-content: space-between;
+	padding: 3px 0;
+	border-top: 1px solid var(--kdna-grants-line);
+}
+
+.kdna-grants-finalist__scores dt,
+.kdna-grants-finalist__scores dd {
+	margin: 0;
+}
+
+.kdna-grants-finalist__scores .is-tiebreak dt::after {
+	content: " (tie-break)";
+	color: var(--kdna-grants-muted);
+	font-size: 11px;
+}
+
+/* Confirmation box */
+.kdna-grants-dialog {
+	width: min(560px, calc(100vw - 32px));
+	padding: 24px;
+	border: 0;
+	border-radius: 8px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.kdna-grants-dialog::backdrop {
+	background: rgba(29, 35, 39, 0.6);
+}
+
+.kdna-grants-dialog h2 {
+	margin-top: 0;
+}
+
+.kdna-grants-dialog__reason {
+	margin: 16px 0;
+	padding: 12px;
+	background: var(--kdna-grants-warn-bg);
+	border-left: 4px solid var(--kdna-grants-warn-line);
+}
+
+.kdna-grants-dialog__reason .description {
+	margin: 4px 0 8px;
+}
+
+.kdna-grants-dialog__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 20px;
+}
+
+/* Round history */
+.kdna-grants-log {
+	margin: -8px 0 20px;
+}
+
+.kdna-grants-log summary {
+	cursor: pointer;
+	color: var(--kdna-grants-accent);
+}
+
+.kdna-grants-log ul {
+	margin: 8px 0 0 18px;
+	list-style: disc;
+}
+
+/* Single application */
+.kdna-grants-single__top {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.kdna-grants-single__back {
+	text-decoration: none;
+}
+
+.kdna-grants-single__nav {
+	display: flex;
+	gap: 6px;
+}
+
+.kdna-grants-single__title {
+	margin: 4px 0 12px;
+}
+
+.kdna-grants-single__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	gap: 20px;
+	align-items: start;
+}
+
+.kdna-grants-single__side {
+	position: sticky;
+	top: 46px;
+}
+
+.kdna-grants-side-card {
+	padding: 16px 20px;
+	margin-bottom: 16px;
+}
+
+.kdna-grants-single__logo {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.kdna-grants-single__logo img {
+	display: block;
+	max-width: 240px;
+	max-height: 140px;
+	padding: 8px;
+	border: 1px solid var(--kdna-grants-line);
+	border-radius: 4px;
+	background: #ffffff;
+	object-fit: contain;
+}
+
+.kdna-grants-answers {
+	margin: 0;
+}
+
+.kdna-grants-answers__item {
+	padding: 12px 0;
+	border-top: 1px solid var(--kdna-grants-line);
+}
+
+.kdna-grants-answers__item dt {
+	margin-bottom: 4px;
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.kdna-grants-answers__item dd {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+
+.kdna-grants-answers__item dd ul {
+	margin: 0;
+	list-style: disc;
+	padding-left: 18px;
+}
+
+.kdna-grants-answers__section {
+	margin: 20px 0 0;
+	padding: 8px 0 4px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.kdna-grants-single__meta {
+	margin: 16px 0 0;
+	padding-top: 12px;
+	border-top: 1px solid var(--kdna-grants-line);
+}
+
+/* Scorecard */
+.kdna-grants-scorecard__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.kdna-grants-scorecard__saved {
+	color: var(--kdna-grants-muted);
+	font-size: 12px;
+}
+
+.kdna-grants-scorecard__saved.is-ok {
+	color: #007017;
+}
+
+.kdna-grants-scorecard__saved.is-error {
+	color: #b32d2e;
+}
+
+.kdna-grants-scorecard__locked {
+	padding: 8px 10px;
+	background: var(--kdna-grants-soft);
+	border-radius: 4px;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-criterion {
+	margin: 0 0 14px;
+	padding: 0;
+	border: 0;
+}
+
+.kdna-grants-criterion legend {
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.kdna-grants-criterion__tag {
+	margin-left: 6px;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #f0f0f1;
+	color: var(--kdna-grants-muted);
+	font-size: 11px;
+	font-weight: 500;
+}
+
+.kdna-grants-criterion__buttons {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 6px;
+}
+
+.kdna-grants-score {
+	height: 40px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #ffffff;
+	color: var(--kdna-grants-ink);
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.kdna-grants-score:hover:not(:disabled) {
+	border-color: var(--kdna-grants-accent);
+	color: var(--kdna-grants-accent);
+}
+
+.kdna-grants-score:focus-visible {
+	outline: 2px solid var(--kdna-grants-accent);
+	outline-offset: 2px;
+}
+
+.kdna-grants-score.is-selected {
+	border-color: var(--kdna-grants-accent);
+	background: var(--kdna-grants-accent);
+	color: #ffffff;
+}
+
+.kdna-grants-score:disabled {
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+.kdna-grants-scorecard__total {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin: 4px 0 16px;
+	padding: 12px 0;
+	border-top: 1px solid var(--kdna-grants-line);
+	border-bottom: 1px solid var(--kdna-grants-line);
+}
+
+.kdna-grants-scorecard__total strong {
+	font-size: 22px;
+}
+
+.kdna-grants-scorecard__label {
+	display: block;
+	margin: 0 0 4px;
+	font-weight: 600;
+}
+
+.kdna-grants-scorecard__notes {
+	width: 100%;
+	margin-bottom: 14px;
+}
+
+/* Toggle switch */
+.kdna-grants-switch {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.kdna-grants-switch input {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+}
+
+.kdna-grants-switch__track {
+	position: relative;
+	width: 38px;
+	height: 22px;
+	border-radius: 11px;
+	background: #c3c4c7;
+	transition: background-color 0.15s;
+}
+
+.kdna-grants-switch__track::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #ffffff;
+	transition: transform 0.15s;
+}
+
+.kdna-grants-switch input:checked + .kdna-grants-switch__track {
+	background: var(--kdna-grants-accent);
+}
+
+.kdna-grants-switch input:checked + .kdna-grants-switch__track::after {
+	transform: translateX(16px);
+}
+
+.kdna-grants-switch input:focus-visible + .kdna-grants-switch__track {
+	outline: 2px solid var(--kdna-grants-accent);
+	outline-offset: 2px;
+}
+
+/* Settings: tabs, criteria, emails */
+.kdna-grants-tabs {
+	margin-bottom: 20px;
+}
+
+.kdna-grants-criteria {
+	margin: 0 0 12px;
+	padding-left: 24px;
+}
+
+.kdna-grants-criteria__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.kdna-grants-criteria__tools {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.kdna-grants-email-card .wp-editor-wrap {
+	margin-bottom: 12px;
+}
+
+.kdna-grants-email-card__subject {
+	margin-bottom: 12px;
+}
+
+.kdna-grants-email-card__test {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.kdna-grants-email-card__result.is-ok {
+	color: #007017;
+}
+
+.kdna-grants-email-card__result.is-error {
+	color: #b32d2e;
+}
+
+@media (max-width: 1100px) {
+	.kdna-grants-single__layout {
+		grid-template-columns: 1fr;
+	}
+
+	.kdna-grants-single__side {
+		position: static;
+	}
+}
+
+/* -------------------------------------------------------------------
+ * 1.1.0: Claude, emailing applicants and offers
+ * ------------------------------------------------------------------- */
+
+.kdna-grants-text-error,
+.is-error {
+	color: #b32d2e;
+}
+
+.is-ok {
+	color: #007017;
+}
+
+/* Interest rating dots */
+.kdna-grants-rating {
+	color: var(--kdna-grants-accent);
+	font-size: 14px;
+	letter-spacing: 2px;
+	white-space: nowrap;
+}
+
+.kdna-grants-rating__empty {
+	color: #dcdcde;
+}
+
+/* Claude's take on the judging screen */
+.kdna-grants-claude-take {
+	margin: 0 0 20px;
+	padding: 16px 18px;
+	border: 1px solid #c5d9ed;
+	border-radius: 6px;
+	background: #f6f9fc;
+}
+
+.kdna-grants-claude-take__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+
+.kdna-grants-claude-take__head .kdna-grants-card__title {
+	margin: 0;
+}
+
+.kdna-grants-claude-take p {
+	margin: 0 0 10px;
+}
+
+.kdna-grants-claude-take__lists {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.kdna-grants-claude-take__lists h3 {
+	margin: 0 0 4px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-claude-take__lists ul {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.kdna-grants-claude-take__meta {
+	font-size: 12px;
+}
+
+/* Claude's picks */
+.kdna-grants-picks__bar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px 20px;
+	margin: 12px 0 16px;
+}
+
+.kdna-grants-picks__bar p {
+	margin: 0;
+}
+
+.kdna-grants-picks__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+}
+
+.kdna-grants-overview__text {
+	max-width: 80ch;
+	font-size: 14px;
+}
+
+.kdna-grants-finalist__headline {
+	margin: 0 0 6px !important;
+	font-weight: 600;
+}
+
+.kdna-grants-table--picks td:nth-child(3) {
+	min-width: 320px;
+}
+
+/* Email button and contact marker */
+.kdna-grants-contact--link {
+	text-align: left;
+	word-break: break-all;
+}
+
+.kdna-grants-contacted {
+	display: inline-block;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #edfaef;
+	color: #007017;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Email window */
+.kdna-grants-compose {
+	width: min(680px, calc(100vw - 32px));
+}
+
+.kdna-grants-compose__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.kdna-grants-compose__head h2 {
+	margin: 0;
+}
+
+.kdna-grants-compose__close {
+	font-size: 24px;
+	line-height: 1;
+	text-decoration: none;
+}
+
+.kdna-grants-compose__to {
+	margin: 12px 0;
+}
+
+.kdna-grants-compose__tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.kdna-grants-compose__draft {
+	margin-bottom: 12px;
+	padding: 12px;
+	border-radius: 4px;
+	background: #f6f9fc;
+}
+
+.kdna-grants-compose__draft label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.kdna-grants-compose .large-text {
+	margin-bottom: 10px;
+}
+
+.kdna-grants-compose__status {
+	margin-right: auto;
+	align-self: center;
+}
+
+/* Offers */
+.kdna-grants-code {
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.kdna-grants-badge--offer-active {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-grants-badge--offer-accepted {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-grants-badge--offer-declined,
+.kdna-grants-badge--offer-expired {
+	background: #f0f0f1;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-offer-note {
+	font-size: 12px;
+	color: var(--kdna-grants-muted);
+}
+
+.kdna-grants-offer-note--accepted {
+	color: #007017;
+	font-weight: 600;
+}
+
+.kdna-grants-offer-brief {
+	font-style: italic;
+}
+
+/* Settings: repeating templates and notes */
+.kdna-grants-repeat__row {
+	margin-bottom: 12px;
+	padding: 12px;
+	border: 1px solid var(--kdna-grants-line);
+	border-radius: 4px;
+	background: var(--kdna-grants-soft);
+}
+
+.kdna-grants-repeat__row .large-text {
+	margin-top: 6px;
+}
+
+.kdna-grants-repeat__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+
+.kdna-grants-note {
+	margin-top: 16px;
+	padding: 12px 16px;
+	border-left: 4px solid var(--kdna-grants-accent);
+	background: #f6f9fc;
+}
+
+.kdna-grants-note p {
+	margin: 0 0 6px;
+}
+
+.kdna-grants-inline-check {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.kdna-grants-card .kdna-grants-check + .kdna-grants-row,
+.kdna-grants-card .kdna-grants-row + .kdna-grants-check,
+.kdna-grants-card .kdna-grants-check + .kdna-grants-check {
+	margin-top: 16px;
+}
+
+/* 1.1.1: scope notes from Claude */
+.kdna-grants-scope {
+	display: block;
+	margin-top: 4px;
+	padding: 2px 8px;
+	border-left: 3px solid var(--kdna-grants-warn-line);
+	background: var(--kdna-grants-warn-bg);
+	font-size: 12px;
+}
+
+/* Respect the hidden attribute even where display is set above. */
+.kdna-grants-admin [hidden] {
+	display: none !important;
+}

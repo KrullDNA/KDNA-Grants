@@ -1,0 +1,67 @@
+/**
+ * KDNA Grants front end: the grant application area.
+ *
+ * Light default styling so it looks tidy with the shortcode. Everything here can
+ * be restyled from the Elementor widget. The form itself is styled by KDNA Forms.
+ * No selectors rely on Elementor's own wrapper divs.
+ */
+
+.kdna-grants-application {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.kdna-grants-application *,
+.kdna-grants-application *::before,
+.kdna-grants-application *::after {
+	box-sizing: inherit;
+}
+
+/* Countdown */
+.kdna-grants-countdown {
+	align-self: stretch;
+	padding: 12px 16px;
+	border-radius: 6px;
+	background: #f3f4f6;
+	color: #1f2937;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.kdna-grants-countdown__time {
+	color: inherit;
+}
+
+/* Closed message */
+.kdna-grants-closed {
+	padding: 32px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #f9fafb;
+	color: #374151;
+	text-align: center;
+}
+
+.kdna-grants-closed__heading {
+	margin: 0 0 8px;
+	color: #111827;
+}
+
+.kdna-grants-closed__message p {
+	margin: 0;
+}
+
+.kdna-grants-closed__message p + p {
+	margin-top: 0.75em;
+}
+
+.kdna-grants-application__notice {
+	margin: 0;
+	padding: 16px;
+	border: 1px dashed #9ca3af;
+	border-radius: 6px;
+	color: #4b5563;
+	text-align: center;
+}
