@@ -66,7 +66,7 @@ class KDNA_Launchpad_Admin_Contact {
 			(int) $application['id'],
 			esc_attr( $application['email'] ),
 			esc_attr( trim( $application['first_name'] . ' ' . $application['last_name'] ) ),
-			esc_attr( $application['business_name'] ),
+			esc_attr( $application['display_name'] ),
 			$label
 		);
 

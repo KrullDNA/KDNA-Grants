@@ -81,7 +81,7 @@ $kdna_launchpad_state = $decision['state'];
 				<div class="kdna-launchpad-finalist<?php echo 0 === $kdna_launchpad_rank ? ' is-top' : ''; ?>">
 					<div class="kdna-launchpad-finalist__rank"><?php echo esc_html( $kdna_launchpad_rank + 1 ); ?></div>
 					<h3 class="kdna-launchpad-finalist__name">
-						<a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['business_name'] ); ?></a>
+						<a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['display_name'] ); ?></a>
 					</h3>
 					<p class="kdna-launchpad-finalist__total">
 						<strong><?php echo esc_html( KDNA_Launchpad_Judging::total( $kdna_launchpad_app['scores'], $criteria ) ); ?></strong> / <?php echo esc_html( $max_total ); ?>
@@ -97,7 +97,7 @@ $kdna_launchpad_state = $decision['state'];
 					<?php if ( current_user_can( 'manage_options' ) ) : ?>
 						<button type="button" class="button <?php echo 0 === $kdna_launchpad_rank ? 'button-primary' : ''; ?> kdna-launchpad-choose"
 							data-application="<?php echo esc_attr( $kdna_launchpad_app['id'] ); ?>"
-							data-business="<?php echo esc_attr( $kdna_launchpad_app['business_name'] ); ?>"
+							data-business="<?php echo esc_attr( $kdna_launchpad_app['display_name'] ); ?>"
 							data-email="<?php echo esc_attr( $kdna_launchpad_app['email'] ); ?>"
 							data-top="<?php echo 0 === $kdna_launchpad_rank ? '1' : '0'; ?>">
 							<?php esc_html_e( 'Choose as winner', 'kdna-launchpad' ); ?>
@@ -164,7 +164,7 @@ $kdna_launchpad_state = $decision['state'];
 					? sprintf(
 						/* translators: %s: business name. */
 						__( 'Winner: %s', 'kdna-launchpad' ),
-						$winner['business_name']
+						$winner['display_name']
 					)
 					: __( 'Decided', 'kdna-launchpad' )
 			);

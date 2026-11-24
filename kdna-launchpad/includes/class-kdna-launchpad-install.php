@@ -173,8 +173,11 @@ class KDNA_Launchpad_Install {
 			last_name varchar(191) NOT NULL DEFAULT '',
 			email varchar(191) NOT NULL DEFAULT '',
 			business_name varchar(191) NOT NULL DEFAULT '',
+			trading_as varchar(191) NOT NULL DEFAULT '',
 			industry varchar(191) NOT NULL DEFAULT '',
 			abn varchar(20) NOT NULL DEFAULT '',
+			abn_name varchar(191) NOT NULL DEFAULT '',
+			abn_state varchar(10) NOT NULL DEFAULT '',
 			staff varchar(100) NOT NULL DEFAULT '',
 			eligibility_flags longtext,
 			scores longtext,
@@ -277,6 +280,12 @@ class KDNA_Launchpad_Install {
 				'types'    => array(),
 				'required' => true,
 			),
+			'trading_as'    => array(
+				'label'    => __( 'Trading as (optional)', 'kdna-launchpad' ),
+				'help'     => __( 'Used in place of the business name everywhere you and the applicant see it, when they fill it in.', 'kdna-launchpad' ),
+				'types'    => array(),
+				'required' => false,
+			),
 			'industry'      => array(
 				'label'    => __( 'Industry (optional)', 'kdna-launchpad' ),
 				'help'     => __( 'Shown on the applications list. Leave unmatched if the form doesn\'t ask for it.', 'kdna-launchpad' ),
@@ -343,6 +352,10 @@ class KDNA_Launchpad_Install {
 
 			// Stage 3: emails. The applicant confirmation email is sent by KDNA Forms.
 			'emails'                   => self::default_emails(),
+
+			// 1.3.0: the terms page linked from the application form's tick box.
+			'terms_url'                => '',
+			'word_limits'              => array(),
 
 			// Stage 4: the message shown in place of the form between rounds.
 			'closed_message'           => __( 'Applications for this round have closed. The next round opens on {next_open_date}.', 'kdna-launchpad' ),

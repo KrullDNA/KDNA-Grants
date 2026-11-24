@@ -124,7 +124,16 @@ class KDNA_Launchpad_Applications {
 			return;
 		}
 
-		$application_id = self::create( $round['id'], $entry_id, self::mapped_values( $entry, $form ) );
+		$values = self::mapped_values( $entry, $form );
+
+		// Keep the registered name and state from the official ABN Lookup, when it's set up.
+		$abn = KDNA_Launchpad_Abn::lookup( $values['abn'] );
+		if ( ! is_wp_error( $abn ) ) {
+			$values['abn_name']  = $abn['entity_name'];
+			$values['abn_state'] = $abn['state'];
+		}
+
+		$application_id = self::create( $round['id'], $entry_id, $values );
 
 		if ( ! $application_id ) {
 			return;
@@ -153,7 +162,7 @@ class KDNA_Launchpad_Applications {
 		$map    = (array) kdna_launchpad_get_setting( 'field_map', array() );
 		$values = array();
 
-		foreach ( array( 'first_name', 'last_name', 'email', 'business_name', 'industry', 'abn', 'staff' ) as $key ) {
+		foreach ( array( 'first_name', 'last_name', 'email', 'business_name', 'trading_as', 'industry', 'abn', 'staff' ) as $key ) {
 			$field_id       = isset( $map[ $key ] ) ? (string) $map[ $key ] : '';
 			$values[ $key ] = '' === $field_id ? '' : KDNA_Launchpad_Forms_Bridge::get_entry_value( $entry, $field_id, $form );
 		}
@@ -189,6 +198,9 @@ class KDNA_Launchpad_Applications {
 				'last_name'         => self::clip( $values, 'last_name' ),
 				'email'             => self::clip( $values, 'email', 191, 'sanitize_email' ),
 				'business_name'     => self::clip( $values, 'business_name' ),
+				'trading_as'        => self::clip( $values, 'trading_as' ),
+				'abn_name'          => self::clip( $values, 'abn_name' ),
+				'abn_state'         => self::clip( $values, 'abn_state', 10 ),
 				'industry'          => self::clip( $values, 'industry' ),
 				'abn'               => self::clip( $values, 'abn', 20 ),
 				'staff'             => self::clip( $values, 'staff', 100 ),
@@ -350,6 +362,10 @@ class KDNA_Launchpad_Applications {
 		}
 
 		$row['notes']             = (string) $row['notes'];
+		$row['trading_as']        = isset( $row['trading_as'] ) ? (string) $row['trading_as'] : '';
+		$row['abn_name']          = isset( $row['abn_name'] ) ? (string) $row['abn_name'] : '';
+		$row['abn_state']         = isset( $row['abn_state'] ) ? (string) $row['abn_state'] : '';
+		$row['display_name']      = '' !== $row['trading_as'] ? $row['trading_as'] : (string) $row['business_name'];
 		$row['ai_status']         = (string) $row['ai_status'];
 		$row['ai_error']          = (string) $row['ai_error'];
 		$row['ai_assessment']     = $row['ai_assessment'] ? (array) json_decode( $row['ai_assessment'], true ) : array();

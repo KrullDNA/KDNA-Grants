@@ -137,6 +137,80 @@ class KDNA_Launchpad_Forms_Bridge {
 	}
 
 	/**
+	 * Lets a callback check one field when the form is submitted, and show its own error under it.
+	 *
+	 * The callback receives true or false (whether KDNA Forms found the field valid so far) and
+	 * the submitted value as text, and returns true, or the error message to show.
+	 *
+	 * @param int        $form_id  The KDNA Forms form ID.
+	 * @param string|int $field_id The field ID (a part ID such as "1.3" uses its field, "1").
+	 * @param callable   $callback Called with ( bool $is_valid, string $value ), returns true or a message.
+	 */
+	public static function on_field_validation( $form_id, $field_id, $callback ) {
+		$base = strtok( (string) $field_id, '.' );
+
+		add_filter(
+			'kdnaform_field_validation_' . absint( $form_id ) . '_' . absint( $base ),
+			function ( $result, $value ) use ( $callback ) {
+				$text   = is_array( $value ) ? implode( ' ', array_map( 'strval', array_filter( $value, 'is_scalar' ) ) ) : (string) $value;
+				$answer = call_user_func( $callback, ! empty( $result['is_valid'] ), $text );
+
+				if ( true !== $answer ) {
+					$result = array(
+						'is_valid' => false,
+						'message'  => (string) $answer,
+					);
+				}
+
+				return $result;
+			},
+			50,
+			2
+		);
+	}
+
+	/**
+	 * Adds a merge tag of Launchpad's own to KDNA Forms emails and messages, for example {launchpad_business_name}.
+	 *
+	 * @param string   $tag      The tag, including the curly brackets.
+	 * @param callable $callback Called with ( array $entry, array $form ), returns the text to put in its place.
+	 */
+	public static function add_merge_tag( $tag, $callback ) {
+		add_filter(
+			'kdnaform_replace_merge_tags',
+			function ( $text, $form, $entry, $url_encode = false, $esc_html = false ) use ( $tag, $callback ) {
+				if ( false === strpos( (string) $text, $tag ) || ! is_array( $entry ) ) {
+					return $text;
+				}
+
+				$value = (string) call_user_func( $callback, $entry, $form );
+				$value = $esc_html ? esc_html( $value ) : $value;
+				$value = $url_encode ? rawurlencode( $value ) : $value;
+
+				return str_replace( $tag, $value, $text );
+			},
+			10,
+			5
+		);
+	}
+
+	/**
+	 * Creates a new form in KDNA Forms.
+	 *
+	 * @param array $form The form: title, fields, notifications, confirmations.
+	 * @return int|WP_Error The new form ID.
+	 */
+	public static function create_form( $form ) {
+		if ( ! self::is_available() ) {
+			return new WP_Error( 'unavailable', __( 'KDNA Forms is not active.', 'kdna-launchpad' ) );
+		}
+
+		$form_id = KDNAAPI::add_form( $form );
+
+		return is_wp_error( $form_id ) ? $form_id : absint( $form_id );
+	}
+
+	/**
 	 * Lets a callback change the error heading KDNA Forms shows when a submission is refused.
 	 *
 	 * @param int      $form_id  The KDNA Forms form ID.

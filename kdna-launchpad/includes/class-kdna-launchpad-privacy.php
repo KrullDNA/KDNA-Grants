@@ -136,6 +136,7 @@ class KDNA_Launchpad_Privacy {
 				__( 'Last name', 'kdna-launchpad' )      => $application['last_name'],
 				__( 'Email', 'kdna-launchpad' )          => $application['email'],
 				__( 'Business name', 'kdna-launchpad' )  => $application['business_name'],
+				__( 'Trading as', 'kdna-launchpad' )     => $application['trading_as'],
 				__( 'Industry', 'kdna-launchpad' )       => $application['industry'],
 				__( 'ABN', 'kdna-launchpad' )            => $application['abn'],
 				__( 'Staff', 'kdna-launchpad' )          => $application['staff'],
@@ -251,9 +252,9 @@ class KDNA_Launchpad_Privacy {
 		if ( $round && $round['winner_application_id'] === $application['id'] ) {
 			$log = $round['activity_log'];
 
-			if ( '' !== $application['business_name'] ) {
+			if ( '' !== $application['display_name'] ) {
 				foreach ( $log as &$entry ) {
-					$entry['message'] = str_replace( $application['business_name'], __( '[removed]', 'kdna-launchpad' ), $entry['message'] );
+					$entry['message'] = str_replace( $application['display_name'], __( '[removed]', 'kdna-launchpad' ), $entry['message'] );
 				}
 				unset( $entry );
 			}

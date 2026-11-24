@@ -429,13 +429,13 @@ class KDNA_Launchpad_Judging {
 				? sprintf(
 					/* translators: 1: business name, 2: total score. */
 					__( 'Chose %1$s as the winner (top score, %2$d).', 'kdna-launchpad' ),
-					$winner['business_name'],
+					$winner['display_name'],
 					$total
 				)
 				: sprintf(
 					/* translators: 1: business name, 2: total score, 3: reason. */
 					__( 'Chose %1$s as the winner (score %2$d, not the top score). Reason: %3$s', 'kdna-launchpad' ),
-					$winner['business_name'],
+					$winner['display_name'],
 					$total,
 					$reason
 				)

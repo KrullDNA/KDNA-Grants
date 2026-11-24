@@ -186,6 +186,28 @@ class KDNA_Launchpad_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'form_template',
+			array(
+				'label'       => esc_html__( 'Form template', 'kdna-launchpad' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '',
+				'options'     => self::template_options(),
+				'separator'   => 'before',
+				'description' => esc_html__( 'Style the form in an Elementor template with the KDNA Forms widget, then choose it here. It shows only while applications are open. Leave as "Plain form" to show the form with its default styling.', 'kdna-launchpad' ),
+			)
+		);
+
+		$this->add_control(
+			'template_warning',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => esc_html__( 'This template doesn\'t contain the Launchpad form chosen in Launchpad > Settings. Add a KDNA Forms widget with that form to the template, or applications won\'t be captured.', 'kdna-launchpad' ),
+				'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning',
+				'condition'       => array( 'form_template' => self::templates_without_form() ),
+			)
+		);
+
+		$this->add_control(
 			'show_form_title',
 			array(
 				'label'        => esc_html__( 'Show form title', 'kdna-launchpad' ),
@@ -616,6 +638,7 @@ class KDNA_Launchpad_Widget extends Widget_Base {
 				'countdown'        => isset( $settings['show_countdown'] ) && 'yes' === $settings['show_countdown'],
 				'countdown_label'  => isset( $settings['countdown_label'] ) ? $settings['countdown_label'] : '',
 				'closed_heading'   => isset( $settings['closed_heading'] ) ? $settings['closed_heading'] : '',
+				'template_id'      => isset( $settings['form_template'] ) ? absint( $settings['form_template'] ) : 0,
 				'show_title'       => isset( $settings['show_form_title'] ) && 'yes' === $settings['show_form_title'],
 				'show_description' => isset( $settings['show_form_description'] ) && 'yes' === $settings['show_form_description'],
 				'preview'          => self::is_editor() && ! empty( $settings['preview_state'] ) ? $settings['preview_state'] : null,
@@ -623,6 +646,47 @@ class KDNA_Launchpad_Widget extends Widget_Base {
 		);
 
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside; the form HTML comes from KDNA Forms.
+	}
+
+	/**
+	 * Saved Elementor templates, for the Form template dropdown.
+	 *
+	 * @return array Template ID => title.
+	 */
+	private static function template_options() {
+		$options   = array( '' => esc_html__( 'Plain form (default styling)', 'kdna-launchpad' ) );
+		$templates = get_posts(
+			array(
+				'post_type'      => 'elementor_library',
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			)
+		);
+
+		foreach ( $templates as $template ) {
+			$options[ (string) $template->ID ] = '' !== $template->post_title ? $template->post_title : sprintf( /* translators: %d: template ID. */ __( 'Template %d', 'kdna-launchpad' ), $template->ID );
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Templates that don't contain a KDNA Forms widget showing the Launchpad form, for the warning.
+	 *
+	 * @return string[] Template IDs.
+	 */
+	private static function templates_without_form() {
+		$missing = array();
+
+		foreach ( array_keys( self::template_options() ) as $template_id ) {
+			if ( '' !== (string) $template_id && ! KDNA_Launchpad_Frontend::template_has_form( (int) $template_id ) ) {
+				$missing[] = (string) $template_id;
+			}
+		}
+
+		return $missing ? $missing : array( '__none__' );
 	}
 
 	/**

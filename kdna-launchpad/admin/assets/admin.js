@@ -29,6 +29,7 @@
 		last_name: [ '(last)', 'last name', 'surname', 'last' ],
 		email: [ 'email', 'e-mail' ],
 		business_name: [ 'business name', 'company name', 'business', 'company', 'organisation' ],
+		trading_as: [ 'trading as', 'trading name' ],
 		industry: [ 'industry', 'sector', 'type of business' ],
 		abn: [ 'abn', 'australian business number' ],
 		staff: [ 'staff', 'employees', 'team size', 'team' ],
@@ -58,6 +59,16 @@
 
 			// eslint-disable-next-line no-alert
 			if ( ! window.confirm( message ) ) {
+				event.preventDefault();
+			}
+		} );
+	} );
+
+	// Buttons that ask first, such as "Create a new Launchpad form".
+	document.querySelectorAll( '[data-confirm-click]' ).forEach( function ( button ) {
+		button.addEventListener( 'click', function ( event ) {
+			// eslint-disable-next-line no-alert
+			if ( ! window.confirm( data.i18n.confirmNewForm ) ) {
 				event.preventDefault();
 			}
 		} );

@@ -158,20 +158,20 @@ class KDNA_Launchpad_Offers {
 	/**
 	 * Every offer that belongs to the same business as these details, matched by email, ABN or business name.
 	 *
-	 * @param string $email         Email address.
-	 * @param string $abn           ABN.
-	 * @param string $business_name Business name.
-	 * @param bool   $is_test       Look at test offers (true) or real ones (false).
+	 * @param string          $email         Email address.
+	 * @param string          $abn           ABN.
+	 * @param string|string[] $business_name Business name, or several (the business name and trading name).
+	 * @param bool            $is_test       Look at test offers (true) or real ones (false).
 	 * @return array[]
 	 */
 	public static function find_matching( $email, $abn, $business_name, $is_test = false ) {
 		global $wpdb;
 
-		$email    = strtolower( trim( (string) $email ) );
-		$abn      = KDNA_Launchpad_Eligibility::abn_digits( $abn );
-		$business = self::normalise( $business_name );
+		$email = strtolower( trim( (string) $email ) );
+		$abn   = KDNA_Launchpad_Eligibility::abn_digits( $abn );
+		$names = array_filter( array_map( array( __CLASS__, 'normalise' ), (array) $business_name ) );
 
-		if ( '' === $email && '' === $abn && '' === $business ) {
+		if ( '' === $email && '' === $abn && ! $names ) {
 			return array();
 		}
 
@@ -182,7 +182,7 @@ class KDNA_Launchpad_Offers {
 		foreach ( (array) $rows as $row ) {
 			$same = ( '' !== $email && strtolower( $row['email'] ) === $email )
 				|| ( '' !== $abn && KDNA_Launchpad_Eligibility::abn_digits( $row['abn'] ) === $abn )
-				|| ( '' !== $business && self::normalise( $row['business_name'] ) === $business );
+				|| in_array( self::normalise( $row['business_name'] ), $names, true );
 
 			if ( $same ) {
 				$found[] = self::prepare( $row );
@@ -201,7 +201,7 @@ class KDNA_Launchpad_Offers {
 	public static function get_for_application( $application ) {
 		$round   = KDNA_Launchpad_Rounds::get( $application['round_id'] );
 		$is_test = $round && $round['is_test'];
-		$matches = self::find_matching( $application['email'], $application['abn'], $application['business_name'], $is_test );
+		$matches = self::find_matching( $application['email'], $application['abn'], array( $application['business_name'], $application['trading_as'] ), $is_test );
 
 		foreach ( $matches as $offer ) {
 			if ( $offer['round_id'] === $application['round_id'] ) {
@@ -279,7 +279,7 @@ class KDNA_Launchpad_Offers {
 			}
 
 			// One per business: anything matching, in this round or any earlier one, means no new code.
-			if ( self::find_matching( $application['email'], $application['abn'], $application['business_name'], $round['is_test'] ) ) {
+			if ( self::find_matching( $application['email'], $application['abn'], array( $application['business_name'], $application['trading_as'] ), $round['is_test'] ) ) {
 				continue;
 			}
 
@@ -288,11 +288,11 @@ class KDNA_Launchpad_Offers {
 				array(
 					'application_id' => $application['id'],
 					'round_id'       => $round_id,
-					'code'           => self::new_code( $application['business_name'] ),
+					'code'           => self::new_code( $application['display_name'] ),
 					'first_name'     => $application['first_name'],
 					'email'          => $application['email'],
 					'abn'            => $application['abn'],
-					'business_name'  => $application['business_name'],
+					'business_name'  => $application['display_name'],
 					'percent'        => $percent,
 					'cap'            => $cap,
 					'status'         => self::STATUS_ACTIVE,

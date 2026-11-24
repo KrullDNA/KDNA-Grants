@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $kdna_launchpad_app  = $application;
 $kdna_launchpad_from = 'single';
-$kdna_launchpad_name = '' !== $application['business_name'] ? $application['business_name'] : __( '(no business name)', 'kdna-launchpad' );
+$kdna_launchpad_name = '' !== $application['display_name'] ? $application['display_name'] : __( '(no business name)', 'kdna-launchpad' );
 
 /**
  * Makes links in an answer clickable and opens them in a new tab.
@@ -170,6 +170,7 @@ $kdna_launchpad_links = function ( $html ) {
 						__( 'Name', 'kdna-launchpad' )     => trim( $application['first_name'] . ' ' . $application['last_name'] ),
 						__( 'Email', 'kdna-launchpad' )    => $application['email'],
 						__( 'Business name', 'kdna-launchpad' ) => $application['business_name'],
+						__( 'Trading as', 'kdna-launchpad' ) => $application['trading_as'],
 						__( 'Industry', 'kdna-launchpad' ) => $application['industry'],
 						__( 'ABN', 'kdna-launchpad' )      => KDNA_Launchpad_Eligibility::format_abn( $application['abn'] ),
 						__( 'Staff', 'kdna-launchpad' )    => $application['staff'],
@@ -239,6 +240,21 @@ $kdna_launchpad_links = function ( $html ) {
 
 			<div class="kdna-launchpad-card kdna-launchpad-side-card">
 				<h2 class="kdna-launchpad-card__title"><?php esc_html_e( 'Eligibility', 'kdna-launchpad' ); ?></h2>
+				<?php if ( '' !== $application['abn_name'] ) : ?>
+					<p class="kdna-launchpad-abn-registered">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: ABN, 2: registered name, 3: state. */
+								__( 'ABN %1$s is registered to %2$s%3$s.', 'kdna-launchpad' ),
+								KDNA_Launchpad_Eligibility::format_abn( $application['abn'] ),
+								$application['abn_name'],
+								$application['abn_state'] ? ' (' . $application['abn_state'] . ')' : ''
+							)
+						);
+						?>
+					</p>
+				<?php endif; ?>
 				<?php if ( ! $application['eligibility_flags'] ) : ?>
 					<span class="kdna-launchpad-flag kdna-launchpad-flag--ok"><?php esc_html_e( 'Eligible', 'kdna-launchpad' ); ?></span>
 				<?php else : ?>

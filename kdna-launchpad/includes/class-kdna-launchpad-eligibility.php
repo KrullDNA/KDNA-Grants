@@ -335,8 +335,8 @@ class KDNA_Launchpad_Eligibility {
 		$lines = preg_split( '/\r\n|\r|\n/', (string) kdna_launchpad_get_setting( 'existing_clients', '' ) );
 		$lines = array_merge( (array) $lines, (array) $extra_clients );
 
-		$email_domain  = self::email_domain( $application['email'] );
-		$business_name = self::normalise_business( $application['business_name'] );
+		$email_domain   = self::email_domain( $application['email'] );
+		$business_names = array_filter( array( self::normalise_business( $application['business_name'] ), self::normalise_business( isset( $application['trading_as'] ) ? $application['trading_as'] : '' ) ) );
 
 		foreach ( $lines as $line ) {
 			$line = trim( (string) $line );
@@ -360,7 +360,7 @@ class KDNA_Launchpad_Eligibility {
 			}
 
 			$name = self::normalise_business( $line );
-			if ( '' !== $name && $name === $business_name ) {
+			if ( '' !== $name && in_array( $name, $business_names, true ) ) {
 				return sprintf(
 					/* translators: %s: the client name from the list. */
 					__( 'Business name matches "%s" on your existing client list.', 'kdna-launchpad' ),
@@ -471,7 +471,7 @@ class KDNA_Launchpad_Eligibility {
 			/* translators: 1: "ABN" or "email", 2: business name of the earlier application, 3: its date. */
 			__( 'Same %1$s as an earlier application in this round (%2$s, %3$s).', 'kdna-launchpad' ),
 			$match['by'],
-			'' !== $match['application']['business_name'] ? $match['application']['business_name'] : __( 'no business name', 'kdna-launchpad' ),
+			'' !== $match['application']['display_name'] ? $match['application']['display_name'] : __( 'no business name', 'kdna-launchpad' ),
 			KDNA_Launchpad_Rounds::format( $match['application']['created_at'], false )
 		);
 	}

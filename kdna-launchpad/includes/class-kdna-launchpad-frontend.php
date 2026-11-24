@@ -229,6 +229,7 @@ class KDNA_Launchpad_Frontend {
 				'countdown'        => true,
 				'countdown_label'  => self::default_countdown_label(),
 				'closed_heading'   => self::default_closed_heading(),
+				'template_id'      => 0,
 				'show_title'       => false,
 				'show_description' => false,
 				'preview'          => null,
@@ -244,7 +245,11 @@ class KDNA_Launchpad_Frontend {
 				$html .= self::countdown_html( $state['closes'], $args['countdown_label'] );
 			}
 
-			$form = KDNA_Launchpad_Forms_Bridge::render_form( kdna_launchpad_get_setting( 'form_id', 0 ), $args['show_title'], $args['show_description'] );
+			// A styled Elementor template (with the KDNA Forms widget) if one is chosen, otherwise the plain form.
+			$form = $args['template_id'] ? self::render_template( $args['template_id'] ) : '';
+			if ( '' === $form ) {
+				$form = KDNA_Launchpad_Forms_Bridge::render_form( kdna_launchpad_get_setting( 'form_id', 0 ), $args['show_title'], $args['show_description'] );
+			}
 
 			if ( '' === $form ) {
 				$form = current_user_can( 'manage_options' ) || $args['preview']
@@ -264,6 +269,51 @@ class KDNA_Launchpad_Frontend {
 			. $heading
 			. '<div class="kdna-launchpad-closed__message">' . wpautop( esc_html( self::closed_message( $state['next_opens'] ) ) ) . '</div>'
 			. '</div></div>';
+	}
+
+	/**
+	 * An Elementor template's content, with its styles. '' if Elementor isn't active or the template is missing.
+	 *
+	 * @param int $template_id Template ID.
+	 * @return string
+	 */
+	private static function render_template( $template_id ) {
+		if ( ! class_exists( '\Elementor\Plugin' ) || 'elementor_library' !== get_post_type( $template_id ) ) {
+			return '';
+		}
+
+		return (string) \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( (int) $template_id, true );
+	}
+
+	/**
+	 * True when an Elementor template contains a KDNA Forms widget showing the Launchpad form.
+	 *
+	 * @param int $template_id Template ID.
+	 * @return bool
+	 */
+	public static function template_has_form( $template_id ) {
+		$form_id = absint( kdna_launchpad_get_setting( 'form_id', 0 ) );
+		$data    = json_decode( (string) get_post_meta( $template_id, '_elementor_data', true ), true );
+
+		if ( ! $form_id || ! is_array( $data ) ) {
+			return false;
+		}
+
+		$found = false;
+		$walk  = function ( $elements ) use ( &$walk, &$found, $form_id ) {
+			foreach ( (array) $elements as $element ) {
+				if ( isset( $element['widgetType'] ) && 'kdna-forms' === $element['widgetType'] && isset( $element['settings']['form_id'] ) && absint( $element['settings']['form_id'] ) === $form_id ) {
+					$found = true;
+					return;
+				}
+				if ( ! empty( $element['elements'] ) ) {
+					$walk( $element['elements'] );
+				}
+			}
+		};
+		$walk( $data );
+
+		return $found;
 	}
 
 	/**

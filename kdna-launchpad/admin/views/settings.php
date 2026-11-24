@@ -24,6 +24,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap kdna-launchpad-admin">
 	<h1 class="kdna-launchpad-admin__title"><?php esc_html_e( 'Launchpad Settings', 'kdna-launchpad' ); ?></h1>
 
+	<?php KDNA_Launchpad_Admin::render_message(); ?>
+
 	<?php if ( $saved ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'kdna-launchpad' ); ?></p></div>
 	<?php endif; ?>
@@ -59,6 +61,48 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</nav>
 
 		<div class="kdna-launchpad-tab-panel" data-panel="form">
+		<!-- Launchpad form builder -->
+		<div class="kdna-launchpad-card kdna-launchpad-card--builder">
+			<h2 class="kdna-launchpad-card__title"><?php esc_html_e( 'The Launchpad form', 'kdna-launchpad' ); ?></h2>
+			<?php if ( $form_found ) : ?>
+				<p class="kdna-launchpad-card__intro">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %s: form title. */
+							__( 'Launchpad is using "%s". KDNA Forms looks after the form itself: spam protection, secure logo uploads, entries and the applicant\'s confirmation email.', 'kdna-launchpad' ),
+							$forms[ $form_id ]
+						)
+					);
+					?>
+				</p>
+				<p>
+					<a class="button" href="<?php echo esc_url( KDNA_Launchpad_Forms_Bridge::get_form_edit_url( $form_id ) ); ?>"><?php esc_html_e( 'Edit questions in KDNA Forms', 'kdna-launchpad' ); ?></a>
+					<a class="button-link" href="<?php echo esc_url( KDNA_Launchpad_Forms_Bridge::get_form_notifications_url( $form_id ) ); ?>"><?php esc_html_e( 'Edit the confirmation email', 'kdna-launchpad' ); ?></a>
+				</p>
+			<?php else : ?>
+				<p class="kdna-launchpad-card__intro"><?php esc_html_e( 'One click builds the complete application form in KDNA Forms: the questions in order, the ABN lookup, word limits, the terms tick box and the applicant\'s confirmation email. Everything is matched for you.', 'kdna-launchpad' ); ?></p>
+			<?php endif; ?>
+
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-terms-url" class="kdna-launchpad-row__label"><?php esc_html_e( 'Terms and conditions page', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<input type="url" name="terms_url" id="kdna-launchpad-terms-url" class="regular-text" value="<?php echo esc_attr( $settings['terms_url'] ); ?>" placeholder="<?php echo esc_attr( home_url( '/launchpad-terms/' ) ); ?>" />
+					<p class="description"><?php esc_html_e( 'The address of your terms page. The form\'s "I agree to the terms" tick box links to it.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<?php if ( $form_found ) : ?>
+				<details class="kdna-launchpad-builder__again">
+					<summary><?php esc_html_e( 'Start again with a fresh Launchpad form', 'kdna-launchpad' ); ?></summary>
+					<p class="description"><?php esc_html_e( 'Builds a brand-new form and switches Launchpad to it. Your current form and its entries stay in KDNA Forms.', 'kdna-launchpad' ); ?></p>
+					<button type="submit" name="create_form" value="1" class="button" data-confirm-click="newform"><?php esc_html_e( 'Create a new Launchpad form', 'kdna-launchpad' ); ?></button>
+				</details>
+			<?php else : ?>
+				<p><button type="submit" name="create_form" value="1" class="button button-primary"><?php esc_html_e( 'Create the Launchpad form', 'kdna-launchpad' ); ?></button></p>
+			<?php endif; ?>
+		</div>
+
 		<!-- Application form -->
 		<div class="kdna-launchpad-card">
 			<h2 class="kdna-launchpad-card__title"><?php esc_html_e( 'Application form', 'kdna-launchpad' ); ?></h2>
@@ -82,7 +126,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						id="kdna-launchpad-edit-form"
 						class="kdna-launchpad-row__link"
 						<?php echo $form_found ? '' : 'hidden'; ?>>
-						<?php esc_html_e( 'Edit this form in KDNA Forms', 'kdna-launchpad' ); ?>
+						<?php esc_html_e( 'Edit questions in KDNA Forms', 'kdna-launchpad' ); ?>
 					</a>
 					<p class="description">
 						<?php esc_html_e( 'The applicant confirmation email is sent by KDNA Forms. Set it up as a Notification on this form, sent to the applicant\'s email field.', 'kdna-launchpad' ); ?>
@@ -155,6 +199,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="number" name="round_gap_months" id="kdna-launchpad-gap" min="1" max="12" step="1" class="small-text" value="<?php echo esc_attr( $settings['round_gap_months'] ); ?>" />
 					<?php esc_html_e( 'months', 'kdna-launchpad' ); ?>
 					<p class="description"><?php esc_html_e( '"Create next round" fills in dates this many months after the last round.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+		</div>
+
+		<!-- ABN Lookup -->
+		<div class="kdna-launchpad-card">
+			<h2 class="kdna-launchpad-card__title"><?php esc_html_e( 'ABN Lookup', 'kdna-launchpad' ); ?></h2>
+			<p class="kdna-launchpad-card__intro"><?php esc_html_e( 'With a free ABN Lookup key (called a GUID) from the Australian Business Register, the form looks up each ABN as it\'s typed: the business name fills itself in, registered trading names are offered, and ABNs that don\'t exist or have been cancelled can\'t be submitted. Without a key, ABNs are still checked with the official checksum.', 'kdna-launchpad' ); ?></p>
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-abr-guid" class="kdna-launchpad-row__label"><?php esc_html_e( 'ABN Lookup key (GUID)', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<?php if ( defined( 'KDNA_LAUNCHPAD_ABR_GUID' ) && KDNA_LAUNCHPAD_ABR_GUID ) : ?>
+						<p><?php esc_html_e( 'Set in wp-config.php (KDNA_LAUNCHPAD_ABR_GUID).', 'kdna-launchpad' ); ?></p>
+					<?php else : ?>
+						<?php $kdna_launchpad_guid = KDNA_Launchpad_Abn::get_guid(); ?>
+						<input type="text" name="abr_guid" id="kdna-launchpad-abr-guid" class="regular-text code" autocomplete="off" value="" placeholder="<?php echo $kdna_launchpad_guid ? esc_attr( sprintf( /* translators: %s: last four characters. */ __( 'Saved, ends in %s. Type a new key to replace it.', 'kdna-launchpad' ), substr( $kdna_launchpad_guid, -4 ) ) ) : esc_attr__( 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 'kdna-launchpad' ); ?>" />
+						<?php if ( $kdna_launchpad_guid ) : ?>
+							<label class="kdna-launchpad-inline-check"><input type="checkbox" name="abr_remove_guid" value="1" /> <?php esc_html_e( 'Remove saved key', 'kdna-launchpad' ); ?></label>
+						<?php endif; ?>
+						<p class="description"><?php esc_html_e( 'Register for free by searching for "ABN Lookup web services registration" on the Australian Business Register website. They email you the key.', 'kdna-launchpad' ); ?></p>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

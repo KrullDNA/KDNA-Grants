@@ -64,7 +64,7 @@ class KDNA_Launchpad_Contact {
 
 		return array(
 			'{first_name}'    => '' !== $application['first_name'] ? $application['first_name'] : __( 'there', 'kdna-launchpad' ),
-			'{business_name}' => $application['business_name'],
+			'{business_name}' => $application['display_name'],
 			'{round_name}'    => $round ? $round['name'] : '',
 			'{offer_code}'    => $offer ? $offer['code'] : '',
 			'{offer_percent}' => $offer ? (string) $offer['percent'] : (string) absint( kdna_launchpad_get_setting( 'offer_percent', 25 ) ),

@@ -112,7 +112,7 @@ class KDNA_Launchpad_Emails {
 		return array_merge(
 			array(
 				'{first_name}'     => $application['first_name'],
-				'{business_name}'  => $application['business_name'],
+				'{business_name}'  => $application['display_name'],
 				'{round_name}'     => $round['name'],
 				'{close_date}'     => KDNA_Launchpad_Rounds::format( $round['closes_at'], false ),
 				'{announce_date}'  => KDNA_Launchpad_Rounds::format_date( $round['announce_date'] ),

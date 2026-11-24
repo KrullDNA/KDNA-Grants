@@ -341,6 +341,12 @@ class KDNA_Launchpad_Claude {
 
 		$text  = "<application>\n";
 		$text .= 'Business name: ' . $application['business_name'] . "\n";
+		if ( '' !== $application['trading_as'] ) {
+			$text .= 'Trading as: ' . $application['trading_as'] . "\n";
+		}
+		if ( '' !== $application['abn_name'] ) {
+			$text .= 'Registered on the Australian Business Register as: ' . $application['abn_name'] . ( $application['abn_state'] ? ' (' . $application['abn_state'] . ')' : '' ) . "\n";
+		}
 		if ( '' !== $application['industry'] ) {
 			$text .= 'Industry: ' . $application['industry'] . "\n";
 		}
@@ -566,7 +572,7 @@ class KDNA_Launchpad_Claude {
 			}
 
 			$summaries .= '<application id="' . $application['id'] . "\">\n"
-				. 'Business: ' . $application['business_name'] . ( $application['industry'] ? ' (' . $application['industry'] . ')' : '' ) . "\n"
+				. 'Business: ' . $application['display_name'] . ( $application['industry'] ? ' (' . $application['industry'] . ')' : '' ) . "\n"
 				. 'Eligibility: ' . ( $flags ? 'flagged: ' . implode( '; ', $flags ) : 'eligible' ) . "\n"
 				. 'Interest rating: ' . $a['interest_rating'] . '/5. ' . $a['interest_reason'] . "\n"
 				. 'Summary: ' . $a['summary'] . "\n"

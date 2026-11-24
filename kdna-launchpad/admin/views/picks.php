@@ -155,7 +155,7 @@ $kdna_launchpad_usage    = $round ? $round['ai_usage'] : array();
 								<div class="kdna-launchpad-finalist<?php echo 0 === $kdna_launchpad_rank ? ' is-top' : ''; ?>">
 									<div class="kdna-launchpad-finalist__rank"><?php echo esc_html( $kdna_launchpad_rank + 1 ); ?></div>
 									<h3 class="kdna-launchpad-finalist__name">
-										<a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['business_name'] ); ?></a>
+										<a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['display_name'] ); ?></a>
 										<?php if ( $winner && $winner['id'] === $kdna_launchpad_app['id'] ) : ?>
 											<span class="kdna-launchpad-badge kdna-launchpad-badge--winner"><?php esc_html_e( 'Your winner', 'kdna-launchpad' ); ?></span>
 										<?php endif; ?>
@@ -176,7 +176,7 @@ $kdna_launchpad_usage    = $round ? $round['ai_usage'] : array();
 								sprintf(
 									/* translators: %s: business name. */
 									__( 'Your winner, %s, wasn\'t in Claude\'s top picks this round. Worth a look at your studio profile if that keeps happening.', 'kdna-launchpad' ),
-									$winner['business_name']
+									$winner['display_name']
 								)
 							);
 							?>
@@ -219,7 +219,7 @@ $kdna_launchpad_usage    = $round ? $round['ai_usage'] : array();
 						<?php foreach ( $assessed as $kdna_launchpad_app ) : ?>
 							<tr>
 								<td>
-									<strong><a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['business_name'] ); ?></a></strong>
+									<strong><a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( $kdna_launchpad_app['display_name'] ); ?></a></strong>
 									<?php if ( 'winner' === $kdna_launchpad_app['outcome'] ) : ?>
 										<span class="kdna-launchpad-badge kdna-launchpad-badge--winner"><?php esc_html_e( 'Winner', 'kdna-launchpad' ); ?></span>
 									<?php endif; ?>

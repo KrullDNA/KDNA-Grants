@@ -171,7 +171,7 @@ $kdna_launchpad_is_admin = current_user_can( 'manage_options' );
 							<?php $kdna_launchpad_scored = KDNA_Launchpad_Judging::is_scored( $kdna_launchpad_app, $criteria ); ?>
 							<tr>
 								<td>
-									<strong><a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( '' !== $kdna_launchpad_app['business_name'] ? $kdna_launchpad_app['business_name'] : __( '(no business name)', 'kdna-launchpad' ) ); ?></a></strong>
+									<strong><a href="<?php echo esc_url( KDNA_Launchpad_Admin_Applications::single_url( $kdna_launchpad_app['id'] ) ); ?>"><?php echo esc_html( '' !== $kdna_launchpad_app['display_name'] ? $kdna_launchpad_app['display_name'] : __( '(no business name)', 'kdna-launchpad' ) ); ?></a></strong>
 									<?php if ( 'winner' === $kdna_launchpad_app['outcome'] ) : ?>
 										<span class="kdna-launchpad-badge kdna-launchpad-badge--winner"><?php esc_html_e( 'Winner', 'kdna-launchpad' ); ?></span>
 									<?php endif; ?>

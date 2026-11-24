@@ -258,6 +258,7 @@ class KDNA_Launchpad_Admin {
 					'saved'              => __( 'Saved', 'kdna-launchpad' ),
 					'saveFailed'         => __( 'Not saved. Please try again.', 'kdna-launchpad' ),
 					'sending'            => __( 'Sending…', 'kdna-launchpad' ),
+					'confirmNewForm'     => __( 'Build a brand-new Launchpad form and switch to it? Your current form and its entries stay in KDNA Forms.', 'kdna-launchpad' ),
 					'confirmReassess'    => __( 'Ask Claude to read every application in this round again? This replaces its current notes and costs a few dollars.', 'kdna-launchpad' ),
 					'confirmDecline'     => __( 'Mark this offer as declined? The client won\'t get another offer if they apply again.', 'kdna-launchpad' ),
 					'confirmUndo'        => __( 'Undo this? The offer goes back to active (or expired, if its date has passed).', 'kdna-launchpad' ),
@@ -399,6 +400,17 @@ class KDNA_Launchpad_Admin {
 		$retention                    = isset( $_POST['retention_months'] ) ? absint( wp_unslash( $_POST['retention_months'] ) ) : 24;
 		$settings['retention_months'] = min( 120, $retention );
 
+		// Terms page and the ABN Lookup key (kept out of the main settings).
+		$settings['terms_url'] = isset( $_POST['terms_url'] ) ? esc_url_raw( wp_unslash( $_POST['terms_url'] ) ) : '';
+
+		$new_guid = isset( $_POST['abr_guid'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['abr_guid'] ) ) ) : '';
+		if ( '' !== $new_guid ) {
+			update_option( KDNA_Launchpad_Abn::GUID_OPTION, $new_guid, false );
+		}
+		if ( ! empty( $_POST['abr_remove_guid'] ) ) {
+			delete_option( KDNA_Launchpad_Abn::GUID_OPTION );
+		}
+
 		// Claude.
 		$settings['claude_enabled']      = ! empty( $_POST['claude_enabled'] );
 		$settings['claude_auto']         = ! empty( $_POST['claude_auto'] );
@@ -444,6 +456,18 @@ class KDNA_Launchpad_Admin {
 		update_option( KDNA_LAUNCHPAD_OPTION, $settings, false );
 
 		$tab = isset( $_POST['tab'] ) ? sanitize_key( wp_unslash( $_POST['tab'] ) ) : '';
+
+		// "Create the Launchpad form": build it in KDNA Forms and switch Launchpad to it.
+		if ( ! empty( $_POST['create_form'] ) ) {
+			$created = KDNA_Launchpad_Form::create( $settings['terms_url'] );
+
+			if ( is_wp_error( $created ) ) {
+				set_transient( 'kdna_launchpad_error_' . get_current_user_id(), $created->get_error_message(), MINUTE_IN_SECONDS );
+				self::redirect( self::SETTINGS_PAGE, 'error' );
+			}
+
+			self::redirect( self::SETTINGS_PAGE, 'form_created' );
+		}
 
 		wp_safe_redirect( add_query_arg( 'kdna_launchpad_saved', '1', admin_url( 'admin.php?page=' . self::SETTINGS_PAGE ) ) . ( $tab ? '#' . $tab : '' ) );
 		exit;
@@ -693,6 +717,7 @@ class KDNA_Launchpad_Admin {
 			'winner_chosen'     => array( 'success', __( 'Winner chosen. The round is decided and the emails are sending in the background. Their status shows in the Email column.', 'kdna-launchpad' ) ),
 			'judging_reopened'  => array( 'success', __( 'Judging reopened. Scores can be changed again.', 'kdna-launchpad' ) ),
 			'email_queued'      => array( 'success', __( 'Email queued to send again.', 'kdna-launchpad' ) ),
+			'form_created'      => array( 'success', __( 'Your Launchpad form is ready in KDNA Forms, with every field matched. Next, style it in an Elementor template and choose that template in the Launchpad Application widget.', 'kdna-launchpad' ) ),
 			'claude_queued'     => array( 'success', __( 'Claude is on it. It works in the background, one application at a time, so refresh this page in a few minutes.', 'kdna-launchpad' ) ),
 			'claude_off'        => array( 'error', __( 'Claude isn\'t switched on. Add your API key in Settings > Claude.', 'kdna-launchpad' ) ),
 			'offer_accepted'    => array( 'success', __( 'Offer accepted. No further discounts will be offered to this client.', 'kdna-launchpad' ) ),

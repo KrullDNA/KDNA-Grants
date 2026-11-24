@@ -3,7 +3,7 @@
  * Plugin Name:       KDNA Launchpad
  * Plugin URI:        https://krulldna.com
  * Description:       Runs KDNA Launchpad, KDNA's quarterly free website program, on top of KDNA Forms: rounds, eligibility checks, judging, the winner decision and a full history.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Krull Design & Advertising (KDNA)
@@ -31,8 +31,8 @@ kdna_update_client_register( __FILE__, 'kdna-launchpad' );
  * ---------------------------------------------------------------------------
  */
 
-define( 'KDNA_LAUNCHPAD_VERSION', '1.2.0' );
-define( 'KDNA_LAUNCHPAD_DB_VERSION', '1.1.0' );
+define( 'KDNA_LAUNCHPAD_VERSION', '1.3.0' );
+define( 'KDNA_LAUNCHPAD_DB_VERSION', '1.3.0' );
 define( 'KDNA_LAUNCHPAD_FILE', __FILE__ );
 define( 'KDNA_LAUNCHPAD_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KDNA_LAUNCHPAD_URL', plugin_dir_url( __FILE__ ) );
@@ -66,6 +66,8 @@ require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-frontend.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-offers.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-claude.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-contact.php';
+require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-abn.php';
+require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-form.php';
 require_once KDNA_LAUNCHPAD_PATH . 'admin/class-kdna-launchpad-admin.php';
 require_once KDNA_LAUNCHPAD_PATH . 'admin/class-kdna-launchpad-admin-rounds.php';
 require_once KDNA_LAUNCHPAD_PATH . 'admin/class-kdna-launchpad-admin-applications.php';
@@ -154,6 +156,8 @@ function kdna_launchpad_boot() {
 	KDNA_Launchpad_Frontend::register();
 	KDNA_Launchpad_Offers::register();
 	KDNA_Launchpad_Claude::register();
+	KDNA_Launchpad_Abn::register();
+	KDNA_Launchpad_Form::register();
 
 	/**
 	 * Fires once KDNA Launchpad is fully running with KDNA Forms.

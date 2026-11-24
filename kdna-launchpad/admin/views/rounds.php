@@ -125,7 +125,7 @@ $kdna_launchpad_new_url = add_query_arg(
 						<td><?php echo esc_html( KDNA_Launchpad_Rounds::format_date( $kdna_launchpad_round['announce_date'] ) ); ?></td>
 						<td><?php echo KDNA_Launchpad_Admin::status_badge( $kdna_launchpad_round['status'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?></td>
 						<td class="kdna-launchpad-table__num"><a href="<?php echo esc_url( $kdna_launchpad_apps_url ); ?>"><?php echo esc_html( number_format_i18n( $kdna_launchpad_count ) ); ?></a></td>
-						<td><?php echo $kdna_launchpad_winner ? esc_html( $kdna_launchpad_winner['business_name'] ) : '<span aria-hidden="true">&ndash;</span>'; ?></td>
+						<td><?php echo $kdna_launchpad_winner ? esc_html( $kdna_launchpad_winner['display_name'] ) : '<span aria-hidden="true">&ndash;</span>'; ?></td>
 						<td class="kdna-launchpad-table__actions">
 							<a href="<?php echo esc_url( $kdna_launchpad_apps_url ); ?>"><?php esc_html_e( 'Applications', 'kdna-launchpad' ); ?></a>
 							<?php if ( $kdna_launchpad_count ) : ?>

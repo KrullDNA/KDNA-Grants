@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,15 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.0 =
+* New: "Create the Launchpad form" in Launchpad > Settings builds the complete application form in KDNA Forms with one click: the agreed questions, word limits, the terms tick box, a "new application" email to you and the applicant's confirmation email. Every field is matched automatically.
+* New: official ABN Lookup. The form opens with the ABN; as it's typed, the business name fills itself in ("Looking up your business name…" while it checks), registered trading names are offered for "Trading as", and ABNs that fail the checksum, aren't registered or are cancelled can't be submitted. Needs a free ABN Lookup key (GUID) from the Australian Business Register; without one, ABNs are still checked with the official checksum.
+* New: "Trading as" field. Launchpad shows the trading name everywhere when one is given, and checks both names for existing clients, duplicates and offers. The registered name and state from ABN Lookup are kept with each application.
+* New: live word counts and word limits on the longer answers.
+* New: "Form template" in the Launchpad Application widget. Style the form in an Elementor template with the KDNA Forms widget, then choose it here. The widget warns you if the template doesn't contain the Launchpad form.
+* New: {launchpad_business_name} merge tag for KDNA Forms emails (the trading name if given, otherwise the business name).
+* New: "Edit questions in KDNA Forms" and "Edit the confirmation email" links in Settings.
 
 = 1.2.0 =
 * Changed: everything is now KDNA Launchpad, including the plugin folder (kdna-launchpad), database tables, settings, shortcode ([kdna_launchpad]) and Elementor widget. This is a fresh install, not an update of earlier test builds.
