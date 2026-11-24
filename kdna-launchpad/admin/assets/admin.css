@@ -1,0 +1,1221 @@
+/**
+ * KDNA Launchpad admin styles.
+ * Loaded only on KDNA Launchpad admin screens.
+ */
+
+.kdna-launchpad-admin {
+	--kdna-launchpad-ink: #1d2327;
+	--kdna-launchpad-muted: #646970;
+	--kdna-launchpad-line: #dcdcde;
+	--kdna-launchpad-surface: #ffffff;
+	--kdna-launchpad-soft: #f6f7f7;
+	--kdna-launchpad-accent: #2271b1;
+	--kdna-launchpad-warn-bg: #fcf9e8;
+	--kdna-launchpad-warn-line: #dba617;
+	--kdna-launchpad-ok-bg: #edfaef;
+	--kdna-launchpad-ok-line: #00a32a;
+	max-width: 960px;
+}
+
+.kdna-launchpad-admin__title {
+	margin-bottom: 16px;
+}
+
+/* Still to do / ready boxes */
+.kdna-launchpad-admin__attention,
+.kdna-launchpad-admin__ready {
+	margin: 16px 0;
+	padding: 12px 16px;
+	border-left: 4px solid var(--kdna-launchpad-warn-line);
+	background: var(--kdna-launchpad-warn-bg);
+}
+
+.kdna-launchpad-admin__attention h2 {
+	margin: 0 0 6px;
+	font-size: 14px;
+}
+
+.kdna-launchpad-admin__attention ul {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.kdna-launchpad-admin__ready {
+	border-left-color: var(--kdna-launchpad-ok-line);
+	background: var(--kdna-launchpad-ok-bg);
+}
+
+.kdna-launchpad-admin__ready p {
+	margin: 0;
+}
+
+/* Cards */
+.kdna-launchpad-card {
+	margin: 0 0 20px;
+	padding: 20px 24px;
+	background: var(--kdna-launchpad-surface);
+	border: 1px solid var(--kdna-launchpad-line);
+	border-radius: 6px;
+}
+
+.kdna-launchpad-card__title {
+	margin: 0 0 6px;
+	font-size: 16px;
+}
+
+.kdna-launchpad-card__intro,
+.kdna-launchpad-card__empty {
+	margin: 0 0 16px;
+	color: var(--kdna-launchpad-muted);
+	max-width: 70ch;
+}
+
+.kdna-launchpad-card__empty {
+	margin: 0;
+	padding: 16px;
+	background: var(--kdna-launchpad-soft);
+	border-radius: 4px;
+}
+
+/* Label and control rows */
+.kdna-launchpad-row {
+	display: grid;
+	grid-template-columns: 220px 1fr;
+	gap: 16px;
+	align-items: start;
+}
+
+.kdna-launchpad-row__label {
+	padding-top: 6px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-row__control select {
+	min-width: 320px;
+	max-width: 100%;
+}
+
+.kdna-launchpad-row__link {
+	display: inline-block;
+	margin-left: 10px;
+	line-height: 30px;
+}
+
+/* Field mapping table */
+.kdna-launchpad-map {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.kdna-launchpad-map th,
+.kdna-launchpad-map td {
+	padding: 12px 8px;
+	border-top: 1px solid var(--kdna-launchpad-line);
+	text-align: left;
+	vertical-align: top;
+}
+
+.kdna-launchpad-map thead th {
+	border-top: 0;
+	padding-top: 0;
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.kdna-launchpad-map tbody th {
+	width: 40%;
+}
+
+.kdna-launchpad-map tbody th label {
+	display: block;
+	font-weight: 600;
+}
+
+.kdna-launchpad-map__help {
+	display: block;
+	margin-top: 4px;
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.kdna-launchpad-map__select {
+	width: 100%;
+	max-width: 360px;
+}
+
+.kdna-launchpad-map__select.is-empty {
+	border-color: var(--kdna-launchpad-warn-line);
+}
+
+/* Checkbox setting */
+.kdna-launchpad-check {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+.kdna-launchpad-check input {
+	margin-top: 2px;
+}
+
+.kdna-launchpad-check .description {
+	display: block;
+	margin-top: 4px;
+	max-width: 70ch;
+}
+
+.kdna-launchpad-admin__meta {
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+}
+
+/* Small screens */
+@media (max-width: 782px) {
+	.kdna-launchpad-row {
+		grid-template-columns: 1fr;
+		gap: 6px;
+	}
+
+	.kdna-launchpad-row__control select {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.kdna-launchpad-row__link {
+		margin: 8px 0 0;
+	}
+
+	.kdna-launchpad-map thead {
+		display: none;
+	}
+
+	.kdna-launchpad-map tbody th,
+	.kdna-launchpad-map td {
+		display: block;
+		width: auto;
+		border-top: 0;
+		padding: 4px 0;
+	}
+
+	.kdna-launchpad-map tbody tr {
+		display: block;
+		padding: 12px 0;
+		border-top: 1px solid var(--kdna-launchpad-line);
+	}
+
+	.kdna-launchpad-map__select {
+		max-width: none;
+	}
+}
+
+/* Wider screens for tables */
+.kdna-launchpad-admin--wide,
+.kdna-launchpad-admin:has(.kdna-launchpad-table) {
+	max-width: none;
+}
+
+.kdna-launchpad-admin__summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	align-items: center;
+	margin: 12px 0 16px;
+}
+
+.kdna-launchpad-admin__summary p {
+	margin: 0;
+}
+
+.kdna-launchpad-admin__counts {
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-card__status {
+	margin-top: 0;
+}
+
+.kdna-launchpad-card__note {
+	margin: 16px 0 0;
+}
+
+.kdna-launchpad-card--test {
+	margin-top: 32px;
+	background: var(--kdna-launchpad-soft);
+}
+
+.kdna-launchpad-card .kdna-launchpad-row + .kdna-launchpad-row {
+	margin-top: 16px;
+}
+
+.kdna-launchpad-list {
+	margin: 0 0 8px;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+/* Round picker */
+.kdna-launchpad-toolbar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 12px 0 0;
+}
+
+.kdna-launchpad-toolbar label {
+	font-weight: 600;
+}
+
+/* Tables */
+.kdna-launchpad-table {
+	margin-bottom: 20px;
+}
+
+.kdna-launchpad-table td,
+.kdna-launchpad-table th {
+	vertical-align: top;
+}
+
+.kdna-launchpad-table__num {
+	text-align: right;
+}
+
+.kdna-launchpad-table__actions {
+	white-space: nowrap;
+}
+
+.kdna-launchpad-table__actions > * + * {
+	margin-left: 10px;
+}
+
+.kdna-launchpad-nowrap {
+	white-space: nowrap;
+}
+
+.kdna-launchpad-inline-form {
+	display: inline;
+}
+
+.kdna-launchpad-link-danger {
+	color: #b32d2e !important;
+}
+
+/* Status badges */
+.kdna-launchpad-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #f0f0f1;
+	color: var(--kdna-launchpad-ink);
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.kdna-launchpad-badge--open {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-launchpad-badge--scheduled {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-launchpad-badge--judging {
+	background: #fcf9e8;
+	color: #8a6100;
+}
+
+.kdna-launchpad-badge--decided {
+	background: #1d2327;
+	color: #ffffff;
+}
+
+.kdna-launchpad-badge--test {
+	margin-left: 6px;
+	background: #f6f7f7;
+	border: 1px dashed #8c8f94;
+	color: var(--kdna-launchpad-muted);
+}
+
+/* Eligibility flags */
+.kdna-launchpad-eligibility {
+	min-width: 260px;
+}
+
+.kdna-launchpad-flags {
+	margin: 0 0 8px;
+	padding: 0;
+	list-style: none;
+}
+
+.kdna-launchpad-flags li {
+	margin: 0 0 6px;
+}
+
+.kdna-launchpad-flag {
+	display: inline-block;
+	margin-right: 6px;
+	padding: 1px 8px;
+	border-radius: 3px;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-flag--ok {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-launchpad-flag--cleared {
+	background: #f0f0f1;
+	color: var(--kdna-launchpad-muted);
+	text-decoration: line-through;
+}
+
+.kdna-launchpad-flag__reason {
+	font-size: 13px;
+}
+
+.kdna-launchpad-flags li.is-cleared .kdna-launchpad-flag__reason {
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-flag__cleared {
+	display: block;
+	margin-top: 2px;
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+}
+
+@media (max-width: 782px) {
+	.kdna-launchpad-table--applications thead {
+		display: none;
+	}
+
+	.kdna-launchpad-table--applications tr,
+	.kdna-launchpad-table--applications td {
+		display: block;
+	}
+}
+
+/* -------------------------------------------------------------------
+ * Stage 3: judging
+ * ------------------------------------------------------------------- */
+
+.kdna-launchpad-muted {
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-table__sub {
+	display: block;
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+}
+
+.kdna-launchpad-filters {
+	float: none;
+	margin: 0 0 8px;
+}
+
+.kdna-launchpad-star {
+	color: #dba617;
+}
+
+.kdna-launchpad-badge--winner {
+	margin-left: 6px;
+	background: #1d2327;
+	color: #ffffff;
+}
+
+/* Email status */
+.kdna-launchpad-email {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #f0f0f1;
+}
+
+.kdna-launchpad-email--sent {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-launchpad-email--queued {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-launchpad-email--failed {
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+/* Decision panel */
+.kdna-launchpad-panel {
+	margin: 0 0 20px;
+	padding: 16px 20px;
+	background: var(--kdna-launchpad-surface);
+	border: 1px solid var(--kdna-launchpad-line);
+	border-left: 4px solid var(--kdna-launchpad-accent);
+	border-radius: 4px;
+}
+
+.kdna-launchpad-panel p {
+	margin: 0 0 8px;
+}
+
+.kdna-launchpad-panel p:last-child {
+	margin-bottom: 0;
+}
+
+.kdna-launchpad-panel h2 {
+	margin: 0 0 6px;
+	font-size: 16px;
+}
+
+.kdna-launchpad-panel--choose {
+	border-left-color: var(--kdna-launchpad-ok-line);
+}
+
+.kdna-launchpad-panel--decided {
+	border-left-color: #1d2327;
+}
+
+.kdna-launchpad-panel__intro {
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-progress {
+	height: 6px;
+	margin-top: 10px;
+	max-width: 420px;
+	background: #f0f0f1;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.kdna-launchpad-progress span {
+	display: block;
+	height: 100%;
+	background: var(--kdna-launchpad-accent);
+}
+
+.kdna-launchpad-finalists {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.kdna-launchpad-finalist {
+	position: relative;
+	padding: 16px;
+	border: 1px solid var(--kdna-launchpad-line);
+	border-radius: 6px;
+	background: var(--kdna-launchpad-soft);
+}
+
+.kdna-launchpad-finalist.is-top {
+	border-color: var(--kdna-launchpad-ok-line);
+	background: #f6fcf7;
+}
+
+.kdna-launchpad-finalist__rank {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	color: var(--kdna-launchpad-muted);
+	font-size: 22px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-finalist__name {
+	margin: 0 32px 4px 0;
+	font-size: 15px;
+}
+
+.kdna-launchpad-finalist__total {
+	margin: 0 0 10px !important;
+}
+
+.kdna-launchpad-finalist__total strong {
+	font-size: 24px;
+}
+
+.kdna-launchpad-finalist__scores {
+	margin: 0 0 14px;
+}
+
+.kdna-launchpad-finalist__scores div {
+	display: flex;
+	justify-content: space-between;
+	padding: 3px 0;
+	border-top: 1px solid var(--kdna-launchpad-line);
+}
+
+.kdna-launchpad-finalist__scores dt,
+.kdna-launchpad-finalist__scores dd {
+	margin: 0;
+}
+
+.kdna-launchpad-finalist__scores .is-tiebreak dt::after {
+	content: " (tie-break)";
+	color: var(--kdna-launchpad-muted);
+	font-size: 11px;
+}
+
+/* Confirmation box */
+.kdna-launchpad-dialog {
+	width: min(560px, calc(100vw - 32px));
+	padding: 24px;
+	border: 0;
+	border-radius: 8px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.kdna-launchpad-dialog::backdrop {
+	background: rgba(29, 35, 39, 0.6);
+}
+
+.kdna-launchpad-dialog h2 {
+	margin-top: 0;
+}
+
+.kdna-launchpad-dialog__reason {
+	margin: 16px 0;
+	padding: 12px;
+	background: var(--kdna-launchpad-warn-bg);
+	border-left: 4px solid var(--kdna-launchpad-warn-line);
+}
+
+.kdna-launchpad-dialog__reason .description {
+	margin: 4px 0 8px;
+}
+
+.kdna-launchpad-dialog__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 20px;
+}
+
+/* Round history */
+.kdna-launchpad-log {
+	margin: -8px 0 20px;
+}
+
+.kdna-launchpad-log summary {
+	cursor: pointer;
+	color: var(--kdna-launchpad-accent);
+}
+
+.kdna-launchpad-log ul {
+	margin: 8px 0 0 18px;
+	list-style: disc;
+}
+
+/* Single application */
+.kdna-launchpad-single__top {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.kdna-launchpad-single__back {
+	text-decoration: none;
+}
+
+.kdna-launchpad-single__nav {
+	display: flex;
+	gap: 6px;
+}
+
+.kdna-launchpad-single__title {
+	margin: 4px 0 12px;
+}
+
+.kdna-launchpad-single__layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	gap: 20px;
+	align-items: start;
+}
+
+.kdna-launchpad-single__side {
+	position: sticky;
+	top: 46px;
+}
+
+.kdna-launchpad-side-card {
+	padding: 16px 20px;
+	margin-bottom: 16px;
+}
+
+.kdna-launchpad-single__logo {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.kdna-launchpad-single__logo img {
+	display: block;
+	max-width: 240px;
+	max-height: 140px;
+	padding: 8px;
+	border: 1px solid var(--kdna-launchpad-line);
+	border-radius: 4px;
+	background: #ffffff;
+	object-fit: contain;
+}
+
+.kdna-launchpad-answers {
+	margin: 0;
+}
+
+.kdna-launchpad-answers__item {
+	padding: 12px 0;
+	border-top: 1px solid var(--kdna-launchpad-line);
+}
+
+.kdna-launchpad-answers__item dt {
+	margin-bottom: 4px;
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.kdna-launchpad-answers__item dd {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+
+.kdna-launchpad-answers__item dd ul {
+	margin: 0;
+	list-style: disc;
+	padding-left: 18px;
+}
+
+.kdna-launchpad-answers__section {
+	margin: 20px 0 0;
+	padding: 8px 0 4px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-single__meta {
+	margin: 16px 0 0;
+	padding-top: 12px;
+	border-top: 1px solid var(--kdna-launchpad-line);
+}
+
+/* Scorecard */
+.kdna-launchpad-scorecard__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.kdna-launchpad-scorecard__saved {
+	color: var(--kdna-launchpad-muted);
+	font-size: 12px;
+}
+
+.kdna-launchpad-scorecard__saved.is-ok {
+	color: #007017;
+}
+
+.kdna-launchpad-scorecard__saved.is-error {
+	color: #b32d2e;
+}
+
+.kdna-launchpad-scorecard__locked {
+	padding: 8px 10px;
+	background: var(--kdna-launchpad-soft);
+	border-radius: 4px;
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-criterion {
+	margin: 0 0 14px;
+	padding: 0;
+	border: 0;
+}
+
+.kdna-launchpad-criterion legend {
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-criterion__tag {
+	margin-left: 6px;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #f0f0f1;
+	color: var(--kdna-launchpad-muted);
+	font-size: 11px;
+	font-weight: 500;
+}
+
+.kdna-launchpad-criterion__buttons {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 6px;
+}
+
+.kdna-launchpad-score {
+	height: 40px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #ffffff;
+	color: var(--kdna-launchpad-ink);
+	font-size: 15px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.kdna-launchpad-score:hover:not(:disabled) {
+	border-color: var(--kdna-launchpad-accent);
+	color: var(--kdna-launchpad-accent);
+}
+
+.kdna-launchpad-score:focus-visible {
+	outline: 2px solid var(--kdna-launchpad-accent);
+	outline-offset: 2px;
+}
+
+.kdna-launchpad-score.is-selected {
+	border-color: var(--kdna-launchpad-accent);
+	background: var(--kdna-launchpad-accent);
+	color: #ffffff;
+}
+
+.kdna-launchpad-score:disabled {
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+.kdna-launchpad-scorecard__total {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin: 4px 0 16px;
+	padding: 12px 0;
+	border-top: 1px solid var(--kdna-launchpad-line);
+	border-bottom: 1px solid var(--kdna-launchpad-line);
+}
+
+.kdna-launchpad-scorecard__total strong {
+	font-size: 22px;
+}
+
+.kdna-launchpad-scorecard__label {
+	display: block;
+	margin: 0 0 4px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-scorecard__notes {
+	width: 100%;
+	margin-bottom: 14px;
+}
+
+/* Toggle switch */
+.kdna-launchpad-switch {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.kdna-launchpad-switch input {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+}
+
+.kdna-launchpad-switch__track {
+	position: relative;
+	width: 38px;
+	height: 22px;
+	border-radius: 11px;
+	background: #c3c4c7;
+	transition: background-color 0.15s;
+}
+
+.kdna-launchpad-switch__track::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #ffffff;
+	transition: transform 0.15s;
+}
+
+.kdna-launchpad-switch input:checked + .kdna-launchpad-switch__track {
+	background: var(--kdna-launchpad-accent);
+}
+
+.kdna-launchpad-switch input:checked + .kdna-launchpad-switch__track::after {
+	transform: translateX(16px);
+}
+
+.kdna-launchpad-switch input:focus-visible + .kdna-launchpad-switch__track {
+	outline: 2px solid var(--kdna-launchpad-accent);
+	outline-offset: 2px;
+}
+
+/* Settings: tabs, criteria, emails */
+.kdna-launchpad-tabs {
+	margin-bottom: 20px;
+}
+
+.kdna-launchpad-criteria {
+	margin: 0 0 12px;
+	padding-left: 24px;
+}
+
+.kdna-launchpad-criteria__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.kdna-launchpad-criteria__tools {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.kdna-launchpad-email-card .wp-editor-wrap {
+	margin-bottom: 12px;
+}
+
+.kdna-launchpad-email-card__subject {
+	margin-bottom: 12px;
+}
+
+.kdna-launchpad-email-card__test {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.kdna-launchpad-email-card__result.is-ok {
+	color: #007017;
+}
+
+.kdna-launchpad-email-card__result.is-error {
+	color: #b32d2e;
+}
+
+@media (max-width: 1100px) {
+	.kdna-launchpad-single__layout {
+		grid-template-columns: 1fr;
+	}
+
+	.kdna-launchpad-single__side {
+		position: static;
+	}
+}
+
+/* -------------------------------------------------------------------
+ * 1.1.0: Claude, emailing applicants and offers
+ * ------------------------------------------------------------------- */
+
+.kdna-launchpad-text-error,
+.is-error {
+	color: #b32d2e;
+}
+
+.is-ok {
+	color: #007017;
+}
+
+/* Interest rating dots */
+.kdna-launchpad-rating {
+	color: var(--kdna-launchpad-accent);
+	font-size: 14px;
+	letter-spacing: 2px;
+	white-space: nowrap;
+}
+
+.kdna-launchpad-rating__empty {
+	color: #dcdcde;
+}
+
+/* Claude's take on the judging screen */
+.kdna-launchpad-claude-take {
+	margin: 0 0 20px;
+	padding: 16px 18px;
+	border: 1px solid #c5d9ed;
+	border-radius: 6px;
+	background: #f6f9fc;
+}
+
+.kdna-launchpad-claude-take__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+
+.kdna-launchpad-claude-take__head .kdna-launchpad-card__title {
+	margin: 0;
+}
+
+.kdna-launchpad-claude-take p {
+	margin: 0 0 10px;
+}
+
+.kdna-launchpad-claude-take__lists {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.kdna-launchpad-claude-take__lists h3 {
+	margin: 0 0 4px;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-claude-take__lists ul {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.kdna-launchpad-claude-take__meta {
+	font-size: 12px;
+}
+
+/* Claude's picks */
+.kdna-launchpad-picks__bar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px 20px;
+	margin: 12px 0 16px;
+}
+
+.kdna-launchpad-picks__bar p {
+	margin: 0;
+}
+
+.kdna-launchpad-picks__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+}
+
+.kdna-launchpad-overview__text {
+	max-width: 80ch;
+	font-size: 14px;
+}
+
+.kdna-launchpad-finalist__headline {
+	margin: 0 0 6px !important;
+	font-weight: 600;
+}
+
+.kdna-launchpad-table--picks td:nth-child(3) {
+	min-width: 320px;
+}
+
+/* Email button and contact marker */
+.kdna-launchpad-contact--link {
+	text-align: left;
+	word-break: break-all;
+}
+
+.kdna-launchpad-contacted {
+	display: inline-block;
+	padding: 0 6px;
+	border-radius: 3px;
+	background: #edfaef;
+	color: #007017;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Email window */
+.kdna-launchpad-compose {
+	width: min(680px, calc(100vw - 32px));
+}
+
+.kdna-launchpad-compose__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.kdna-launchpad-compose__head h2 {
+	margin: 0;
+}
+
+.kdna-launchpad-compose__close {
+	font-size: 24px;
+	line-height: 1;
+	text-decoration: none;
+}
+
+.kdna-launchpad-compose__to {
+	margin: 12px 0;
+}
+
+.kdna-launchpad-compose__tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.kdna-launchpad-compose__draft {
+	margin-bottom: 12px;
+	padding: 12px;
+	border-radius: 4px;
+	background: #f6f9fc;
+}
+
+.kdna-launchpad-compose__draft label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.kdna-launchpad-compose .large-text {
+	margin-bottom: 10px;
+}
+
+.kdna-launchpad-compose__status {
+	margin-right: auto;
+	align-self: center;
+}
+
+/* Offers */
+.kdna-launchpad-code {
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.kdna-launchpad-badge--offer-active {
+	background: #f0f6fc;
+	color: #135e96;
+}
+
+.kdna-launchpad-badge--offer-accepted {
+	background: #edfaef;
+	color: #007017;
+}
+
+.kdna-launchpad-badge--offer-declined,
+.kdna-launchpad-badge--offer-expired {
+	background: #f0f0f1;
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-offer-note {
+	font-size: 12px;
+	color: var(--kdna-launchpad-muted);
+}
+
+.kdna-launchpad-offer-note--accepted {
+	color: #007017;
+	font-weight: 600;
+}
+
+.kdna-launchpad-offer-brief {
+	font-style: italic;
+}
+
+/* Settings: repeating templates and notes */
+.kdna-launchpad-repeat__row {
+	margin-bottom: 12px;
+	padding: 12px;
+	border: 1px solid var(--kdna-launchpad-line);
+	border-radius: 4px;
+	background: var(--kdna-launchpad-soft);
+}
+
+.kdna-launchpad-repeat__row .large-text {
+	margin-top: 6px;
+}
+
+.kdna-launchpad-repeat__head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+
+.kdna-launchpad-note {
+	margin-top: 16px;
+	padding: 12px 16px;
+	border-left: 4px solid var(--kdna-launchpad-accent);
+	background: #f6f9fc;
+}
+
+.kdna-launchpad-note p {
+	margin: 0 0 6px;
+}
+
+.kdna-launchpad-inline-check {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.kdna-launchpad-card .kdna-launchpad-check + .kdna-launchpad-row,
+.kdna-launchpad-card .kdna-launchpad-row + .kdna-launchpad-check,
+.kdna-launchpad-card .kdna-launchpad-check + .kdna-launchpad-check {
+	margin-top: 16px;
+}
+
+/* 1.1.1: scope notes from Claude */
+.kdna-launchpad-scope {
+	display: block;
+	margin-top: 4px;
+	padding: 2px 8px;
+	border-left: 3px solid var(--kdna-launchpad-warn-line);
+	background: var(--kdna-launchpad-warn-bg);
+	font-size: 12px;
+}
+
+/* Respect the hidden attribute even where display is set above. */
+.kdna-launchpad-admin [hidden] {
+	display: none !important;
+}
