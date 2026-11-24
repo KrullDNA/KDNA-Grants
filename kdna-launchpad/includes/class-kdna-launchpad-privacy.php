@@ -130,23 +130,23 @@ class KDNA_Launchpad_Privacy {
 			}
 
 			$data = array(
-				__( 'Round', 'kdna-launchpad' )             => $round ? $round['name'] : '',
-				__( 'Applied', 'kdna-launchpad' )           => KDNA_Launchpad_Rounds::format( $application['created_at'] ),
-				__( 'First name', 'kdna-launchpad' )        => $application['first_name'],
-				__( 'Last name', 'kdna-launchpad' )         => $application['last_name'],
-				__( 'Email', 'kdna-launchpad' )             => $application['email'],
-				__( 'Business name', 'kdna-launchpad' )     => $application['business_name'],
-				__( 'Industry', 'kdna-launchpad' )          => $application['industry'],
-				__( 'ABN', 'kdna-launchpad' )               => $application['abn'],
-				__( 'Staff', 'kdna-launchpad' )             => $application['staff'],
+				__( 'Round', 'kdna-launchpad' )          => $round ? $round['name'] : '',
+				__( 'Applied', 'kdna-launchpad' )        => KDNA_Launchpad_Rounds::format( $application['created_at'] ),
+				__( 'First name', 'kdna-launchpad' )     => $application['first_name'],
+				__( 'Last name', 'kdna-launchpad' )      => $application['last_name'],
+				__( 'Email', 'kdna-launchpad' )          => $application['email'],
+				__( 'Business name', 'kdna-launchpad' )  => $application['business_name'],
+				__( 'Industry', 'kdna-launchpad' )       => $application['industry'],
+				__( 'ABN', 'kdna-launchpad' )            => $application['abn'],
+				__( 'Staff', 'kdna-launchpad' )          => $application['staff'],
 				__( 'Eligibility flags', 'kdna-launchpad' ) => implode( '; ', $flags ),
-				__( 'Scores', 'kdna-launchpad' )            => implode( ', ', $scores ),
-				__( 'Total score', 'kdna-launchpad' )       => (string) $application['total_score'],
-				__( 'Notes', 'kdna-launchpad' )             => $application['notes'],
-				__( 'Shortlisted', 'kdna-launchpad' )       => $application['shortlisted'] ? __( 'Yes', 'kdna-launchpad' ) : __( 'No', 'kdna-launchpad' ),
-				__( 'Outcome', 'kdna-launchpad' )           => $application['outcome'],
+				__( 'Scores', 'kdna-launchpad' )         => implode( ', ', $scores ),
+				__( 'Total score', 'kdna-launchpad' )    => (string) $application['total_score'],
+				__( 'Notes', 'kdna-launchpad' )          => $application['notes'],
+				__( 'Shortlisted', 'kdna-launchpad' )    => $application['shortlisted'] ? __( 'Yes', 'kdna-launchpad' ) : __( 'No', 'kdna-launchpad' ),
+				__( 'Outcome', 'kdna-launchpad' )        => $application['outcome'],
 				__( 'Emails sent from the dashboard', 'kdna-launchpad' ) => implode( '; ', wp_list_pluck( $application['contact_log'], 'subject' ) ),
-				__( 'Claude summary', 'kdna-launchpad' )    => isset( $application['ai_assessment']['summary'] ) ? $application['ai_assessment']['summary'] : '',
+				__( 'Claude summary', 'kdna-launchpad' ) => isset( $application['ai_assessment']['summary'] ) ? $application['ai_assessment']['summary'] : '',
 			);
 
 			$rows = array();
