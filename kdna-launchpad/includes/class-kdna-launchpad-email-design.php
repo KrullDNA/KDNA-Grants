@@ -53,6 +53,7 @@ class KDNA_Launchpad_Email_Design {
 			'text'       => '#111111',
 			'link'       => '#111111',
 			'footer'     => "Krull Design & Advertising\nkrulldna.com",
+			'heading_ls' => 0,
 		);
 	}
 
@@ -93,6 +94,7 @@ class KDNA_Launchpad_Email_Design {
 			'text'       => $colour( 'text' ),
 			'link'       => $colour( 'link' ),
 			'footer'     => isset( $posted['footer'] ) ? wp_kses_post( $posted['footer'] ) : '',
+			'heading_ls' => isset( $posted['heading_ls'] ) && is_numeric( $posted['heading_ls'] ) ? round( min( 10, max( -5, (float) $posted['heading_ls'] ) ), 2 ) : 0,
 		);
 	}
 
@@ -244,7 +246,7 @@ class KDNA_Launchpad_Email_Design {
 			. 'img { border: 0; line-height: 100%; outline: none; text-decoration: none; }'
 			. '.kdna-email-content p { margin: 0 0 16px; }'
 			. '.kdna-email-content a { color: ' . $design['link'] . '; text-decoration: underline; }'
-			. '.kdna-email-content h1, .kdna-email-content h2 { margin: 0 0 20px; font-size: 24px; line-height: 1.3; font-weight: 500; }'
+			. '.kdna-email-content h1, .kdna-email-content h2 { margin: 0 0 20px; font-size: 24px; line-height: 1.3; font-weight: 500; letter-spacing: ' . self::letter_spacing( $design ) . '; }'
 			. '.kdna-email-content h3 { margin: 0 0 12px; line-height: 1.3; }'
 			. '@media only screen and (max-width: 620px) { .kdna-email-card { padding: 28px 22px !important; } }'
 			. '</style>'
@@ -286,7 +288,19 @@ class KDNA_Launchpad_Email_Design {
 	 * @return string
 	 */
 	public static function heading_style( $design ) {
-		return 'margin: 0 0 20px; font-family: ' . self::font_stack( $design ) . '; font-size: 24px; line-height: 1.3; font-weight: 500; color: ' . $design['text'] . ';';
+		return 'margin: 0 0 20px; font-family: ' . self::font_stack( $design ) . '; font-size: 24px; line-height: 1.3; font-weight: 500; letter-spacing: ' . self::letter_spacing( $design ) . '; color: ' . $design['text'] . ';';
+	}
+
+	/**
+	 * Heading letter spacing for CSS, in pixels, for example "-0.5px". Outlook supports pixels.
+	 *
+	 * @param array $design Design settings.
+	 * @return string
+	 */
+	public static function letter_spacing( $design ) {
+		$value = isset( $design['heading_ls'] ) && is_numeric( $design['heading_ls'] ) ? (float) $design['heading_ls'] : 0;
+
+		return 0.0 === $value ? 'normal' : rtrim( rtrim( number_format( $value, 2, '.', '' ), '0' ), '.' ) . 'px';
 	}
 
 	/**

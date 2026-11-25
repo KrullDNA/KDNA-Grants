@@ -355,6 +355,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 
 			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-heading-ls" class="kdna-launchpad-row__label"><?php esc_html_e( 'Heading letter spacing', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<input type="number" step="0.1" min="-5" max="10" name="email_design[heading_ls]" id="kdna-launchpad-heading-ls" class="small-text" value="<?php echo esc_attr( $kdna_launchpad_design['heading_ls'] ); ?>" /> px
+					<p class="description"><?php esc_html_e( 'For the 24px headings. 0 is normal, a minus number tightens, for example -0.5. Works in Outlook too.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
 				<span class="kdna-launchpad-row__label"><?php esc_html_e( 'Colours', 'kdna-launchpad' ); ?></span>
 				<div class="kdna-launchpad-row__control kdna-launchpad-colours">
 					<label><input type="color" name="email_design[background]" value="<?php echo esc_attr( $kdna_launchpad_design['background'] ); ?>" /> <?php esc_html_e( 'Background', 'kdna-launchpad' ); ?></label>
