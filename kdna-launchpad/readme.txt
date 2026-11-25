@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.11
+Stable tag: 1.3.12
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.12 =
+* Email headings are now centred by default, with a Centre or Left choice in Email design.
 
 = 1.3.11 =
 * Fixed: the "Preview the winner email" button now shows the email heading. Sent emails already included it.

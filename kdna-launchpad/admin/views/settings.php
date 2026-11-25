@@ -355,9 +355,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 
 			<div class="kdna-launchpad-row">
-				<label for="kdna-launchpad-heading-ls" class="kdna-launchpad-row__label"><?php esc_html_e( 'Heading letter spacing', 'kdna-launchpad' ); ?></label>
+				<label for="kdna-launchpad-heading-ls" class="kdna-launchpad-row__label"><?php esc_html_e( 'Heading spacing and position', 'kdna-launchpad' ); ?></label>
 				<div class="kdna-launchpad-row__control">
 					<input type="number" step="0.1" min="-5" max="10" name="email_design[heading_ls]" id="kdna-launchpad-heading-ls" class="small-text" value="<?php echo esc_attr( $kdna_launchpad_design['heading_ls'] ); ?>" /> px
+					<select name="email_design[heading_al]" class="kdna-launchpad-select-auto" aria-label="<?php esc_attr_e( 'Heading position', 'kdna-launchpad' ); ?>">
+						<option value="center" <?php selected( $kdna_launchpad_design['heading_al'], 'center' ); ?>><?php esc_html_e( 'Centre', 'kdna-launchpad' ); ?></option>
+						<option value="left" <?php selected( $kdna_launchpad_design['heading_al'], 'left' ); ?>><?php esc_html_e( 'Left', 'kdna-launchpad' ); ?></option>
+					</select>
 					<p class="description"><?php esc_html_e( 'For the 24px headings. 0 is normal, a minus number tightens, for example -0.5. Works in Outlook too.', 'kdna-launchpad' ); ?></p>
 				</div>
 			</div>
