@@ -244,6 +244,16 @@ class KDNA_Launchpad_Abn {
 		wp_enqueue_script( 'kdna-launchpad-abn', KDNA_LAUNCHPAD_URL . 'assets/js/kdna-launchpad-abn.js', array(), KDNA_LAUNCHPAD_VERSION, true );
 		wp_enqueue_style( 'kdna-launchpad-abn', KDNA_LAUNCHPAD_URL . 'assets/css/kdna-launchpad-abn.css', array(), KDNA_LAUNCHPAD_VERSION );
 
+		// iPhones and iPads zoom into any field with text smaller than 16px, pushing the form off
+		// screen. Only there (the @supports test matches iOS Safari), the form's fields use 16px.
+		$wrapper = '#kform_wrapper_' . $form_id;
+		$fields  = array(
+			$wrapper . ' input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="hidden"])',
+			$wrapper . ' select',
+			$wrapper . ' textarea',
+		);
+		wp_add_inline_style( 'kdna-launchpad-abn', '@supports (-webkit-touch-callout: none) { ' . implode( ', ', $fields ) . ' { font-size: 16px !important; } }' );
+
 		wp_localize_script(
 			'kdna-launchpad-abn',
 			'kdnaLaunchpadAbn',

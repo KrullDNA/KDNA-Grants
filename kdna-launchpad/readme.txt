@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.13
+Stable tag: 1.3.14
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.14 =
+* Fixed: iPhones and iPads no longer zoom in when you tap a field on the Launchpad form. The form's fields use 16px text on those devices only, so the desktop design is unchanged.
 
 = 1.3.13 =
 * New: visual editors (bold, italic, lists and links) in the dashboard email window and in the "Emailing applicants" templates in Settings. Existing templates and Claude drafts are turned into paragraphs automatically.
