@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.6 =
+* The email logo is now centred and 100px wide by default (both can be changed in Email design), and always uses the full-size image so it stays sharp.
 
 = 1.3.5 =
 * New: email design. Every Launchpad email, and the application form's confirmation and "new application" emails, now use a designed layout with your logo, a Google Font with fallbacks (Arial for Gmail and Outlook), your colours and a footer. Set it up in Settings > Emails and messages > Email design, with a preview button.

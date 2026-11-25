@@ -45,8 +45,8 @@ class KDNA_Launchpad_Email_Design {
 	public static function defaults() {
 		return array(
 			'logo_id'    => 0,
-			'logo_width' => 160,
-			'logo_align' => 'left',
+			'logo_width' => 100,
+			'logo_align' => 'center',
 			'font'       => 'Inter',
 			'fallback'   => 'sans',
 			'background' => '#f4f4f5',
@@ -86,7 +86,7 @@ class KDNA_Launchpad_Email_Design {
 		return array(
 			'logo_id'    => isset( $posted['logo_id'] ) ? absint( $posted['logo_id'] ) : 0,
 			'logo_width' => isset( $posted['logo_width'] ) ? min( 560, max( 40, absint( $posted['logo_width'] ) ) ) : $defaults['logo_width'],
-			'logo_align' => isset( $posted['logo_align'] ) && 'center' === $posted['logo_align'] ? 'center' : 'left',
+			'logo_align' => isset( $posted['logo_align'] ) && 'left' === $posted['logo_align'] ? 'left' : 'center',
 			'font'       => trim( preg_replace( '/\s+/', ' ', $font ) ),
 			'fallback'   => isset( $posted['fallback'] ) && array_key_exists( $posted['fallback'], self::fallbacks() ) ? $posted['fallback'] : 'sans',
 			'background' => $colour( 'background' ),
@@ -113,10 +113,8 @@ class KDNA_Launchpad_Email_Design {
 			return '';
 		}
 
-		// Twice the display width, so the logo is sharp on high-resolution screens.
-		$image = wp_get_attachment_image_src( $id, array( absint( $design['logo_width'] ) * 2, 0 ) );
-
-		return $image ? (string) $image[0] : (string) wp_get_attachment_url( $id );
+		// The original upload, so the logo stays sharp on high-resolution screens. The email sets its display width.
+		return (string) wp_get_attachment_url( $id );
 	}
 
 	/**
