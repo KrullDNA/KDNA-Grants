@@ -547,6 +547,103 @@
 	}
 	/*
 	 * -------------------------------------------------------------------
+	 * Visual editors (the email window and the email templates)
+	 *
+	 * WordPress loads its editor scripts at the very end of the page, so
+	 * editors are set up once the page has finished loading.
+	 * -------------------------------------------------------------------
+	 */
+
+	var richCount = 0;
+
+	function initRich( textarea ) {
+		if ( ! textarea.id ) {
+			richCount++;
+			textarea.id = 'kdna-launchpad-rich-' + richCount;
+		}
+
+		if ( ! window.wp || ! window.wp.editor || ! window.wp.editor.initialize || textarea.getAttribute( 'data-rich' ) ) {
+			return;
+		}
+		textarea.setAttribute( 'data-rich', '1' );
+
+		window.wp.editor.initialize( textarea.id, {
+			tinymce: {
+				wpautop: true,
+				plugins: 'lists,paste,wordpress,wpautoresize',
+				toolbar1: 'bold,italic,bullist,numlist,kdnalink,unlink,undo,redo',
+				toolbar2: '',
+				min_height: 180,
+				setup: function ( editor ) {
+					// A simple link button. WordPress's own link window can't open inside the email window.
+					editor.addButton( 'kdnalink', {
+						icon: 'link',
+						tooltip: data.i18n.linkButton,
+						onclick: function () {
+							var current = editor.dom.getAttrib( editor.selection.getNode(), 'href' );
+							// eslint-disable-next-line no-alert
+							var url = window.prompt( data.i18n.linkPrompt, current || 'https://' );
+							if ( url && 'https://' !== url ) {
+								editor.execCommand( 'mceInsertLink', false, url );
+							}
+						}
+					} );
+				}
+			},
+			quicktags: { buttons: 'strong,em,link,ul,ol,li' },
+			mediaButtons: false
+		} );
+	}
+
+	function removeRich( textarea ) {
+		if ( textarea.id && window.wp && window.wp.editor && window.wp.editor.remove && textarea.getAttribute( 'data-rich' ) ) {
+			window.wp.editor.remove( textarea.id );
+			textarea.removeAttribute( 'data-rich' );
+		}
+	}
+
+	function richEditor( textarea ) {
+		var editor = window.tinymce && textarea.id ? window.tinymce.get( textarea.id ) : null;
+		return editor && ! editor.isHidden() ? editor : null;
+	}
+
+	function getRich( textarea ) {
+		var editor = richEditor( textarea );
+		return editor ? editor.getContent() : textarea.value;
+	}
+
+	function setRich( textarea, html ) {
+		var editor = richEditor( textarea );
+		textarea.value = html;
+		if ( editor ) {
+			editor.setContent( html );
+		}
+	}
+
+	function richIsEmpty( textarea ) {
+		return '' === getRich( textarea ).replace( /<[^>]*>/g, '' ).replace( /&nbsp;/g, ' ' ).trim();
+	}
+
+	window.addEventListener( 'load', function () {
+		document.querySelectorAll( 'textarea.kdna-launchpad-rich' ).forEach( function ( textarea ) {
+			// The email window's editor is set up when the window first opens.
+			if ( ! textarea.closest( 'template' ) && ! textarea.closest( 'dialog' ) ) {
+				initRich( textarea );
+			}
+		} );
+	} );
+
+	// Copy every editor's content into its form field before Settings is saved.
+	document.querySelectorAll( 'form' ).forEach( function ( form ) {
+		form.addEventListener( 'submit', function () {
+			if ( window.tinymce ) {
+				window.tinymce.triggerSave();
+			}
+		} );
+	} );
+
+	/*
+	 * -------------------------------------------------------------------
 	 * Repeating rows (email templates in Settings)
 	 * -------------------------------------------------------------------
 	 */
@@ -564,6 +661,7 @@
 	document.querySelectorAll( '.kdna-launchpad-repeat' ).forEach( function ( container ) {
 		container.addEventListener( 'click', function ( event ) {
 			if ( event.target.closest( '.kdna-launchpad-repeat__remove' ) ) {
+				event.target.closest( '.kdna-launchpad-repeat__row' ).querySelectorAll( 'textarea.kdna-launchpad-rich' ).forEach( removeRich );
 				event.target.closest( '.kdna-launchpad-repeat__row' ).remove();
 				renumberRepeat( container );
 			}
@@ -578,6 +676,7 @@
 
 			container.insertBefore( row, template );
 			renumberRepeat( container );
+			row.querySelectorAll( 'textarea.kdna-launchpad-rich' ).forEach( initRich );
 			row.querySelector( 'input' ).focus();
 		} );
 	} );
@@ -645,7 +744,7 @@
 			compose.querySelector( '[data-fill="to"]' ).textContent = ( button.getAttribute( 'data-name' ) ? button.getAttribute( 'data-name' ) + ' ' : '' ) + '<' + button.getAttribute( 'data-email' ) + '>';
 			compose.querySelector( '[data-fill="business"]' ).textContent = button.getAttribute( 'data-business' );
 			subject.value = '';
-			body.value = '';
+			setRich( body, '' );
 			if ( templatePicker ) {
 				templatePicker.value = '';
 			}
@@ -656,6 +755,8 @@
 			setStatus( '' );
 			busy( false );
 			compose.showModal();
+			initRich( body );
+			setRich( body, '' );
 			subject.focus();
 		} );
 
@@ -663,14 +764,14 @@
 		compose.addEventListener( 'kdna-close-request', function ( event ) {
 			event.stopImmediatePropagation();
 			// eslint-disable-next-line no-alert
-			if ( '' === body.value.trim() || window.confirm( data.i18n.confirmCloseDraft ) ) {
+			if ( richIsEmpty( body ) || window.confirm( data.i18n.confirmCloseDraft ) ) {
 				compose.close();
 			}
 		}, true );
 
 		compose.addEventListener( 'cancel', function ( event ) {
 			// eslint-disable-next-line no-alert
-			if ( '' !== body.value.trim() && ! window.confirm( data.i18n.confirmCloseDraft ) ) {
+			if ( ! richIsEmpty( body ) && ! window.confirm( data.i18n.confirmCloseDraft ) ) {
 				event.preventDefault();
 			}
 		} );
@@ -689,7 +790,7 @@
 				} ).then( function ( response ) {
 					if ( response.success ) {
 						subject.value = response.data.subject;
-						body.value = response.data.body;
+						setRich( body, response.data.body );
 						setStatus( '' );
 					} else {
 						setStatus( response.data.message, 'error' );
@@ -720,10 +821,14 @@
 					busy( false );
 					if ( response.success ) {
 						subject.value = response.data.subject;
-						body.value = response.data.body;
+						setRich( body, response.data.body );
 						draftBox.hidden = true;
 						setStatus( '' );
-						body.focus();
+						if ( richEditor( body ) ) {
+							richEditor( body ).focus();
+						} else {
+							body.focus();
+						}
 					} else {
 						setStatus( response.data.message, 'error' );
 					}
@@ -742,7 +847,7 @@
 				nonce: data.contactNonce,
 				application_id: composeForm.elements.application_id.value,
 				subject: subject.value,
-				body: body.value
+				body: getRich( body )
 			} ).then( function ( response ) {
 				busy( false );
 				if ( ! response.success ) {
@@ -763,7 +868,7 @@
 					marker.textContent = response.data.label;
 				}
 
-				body.value = '';
+				setRich( body, '' );
 				setTimeout( function () {
 					compose.close();
 				}, 1200 );

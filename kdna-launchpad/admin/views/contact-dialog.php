@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="text" id="kdna-launchpad-compose-subject" name="subject" class="large-text" />
 
 		<label for="kdna-launchpad-compose-body" class="kdna-launchpad-scorecard__label"><?php esc_html_e( 'Message', 'kdna-launchpad' ); ?></label>
-		<textarea id="kdna-launchpad-compose-body" name="body" rows="12" class="large-text"></textarea>
+		<textarea id="kdna-launchpad-compose-body" name="body" rows="12" class="large-text kdna-launchpad-rich"></textarea>
 
 		<p class="description">
 			<?php

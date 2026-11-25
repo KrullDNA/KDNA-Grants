@@ -164,6 +164,9 @@ class KDNA_Launchpad_Admin_Contact {
 			wp_send_json_error( array( 'message' => $draft->get_error_message() ) );
 		}
 
+		// Claude writes plain text; the editor takes paragraphs.
+		$draft['body'] = KDNA_Launchpad_Contact::to_html( $draft['body'] );
+
 		wp_send_json_success( $draft );
 	}
 
@@ -175,7 +178,7 @@ class KDNA_Launchpad_Admin_Contact {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Checked in check().
 		$subject = isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '';
-		$body    = isset( $_POST['body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['body'] ) ) : '';
+		$body    = isset( $_POST['body'] ) ? wp_kses_post( wp_unslash( $_POST['body'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		$result = KDNA_Launchpad_Contact::send( $application['id'], $subject, $body );

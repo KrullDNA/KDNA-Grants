@@ -90,8 +90,25 @@ class KDNA_Launchpad_Contact {
 
 		return array(
 			'subject' => strtr( $templates[ $index ]['subject'], $values ),
-			'body'    => strtr( $templates[ $index ]['body'], $values ),
+			'body'    => strtr( self::to_html( $templates[ $index ]['body'] ), array_map( 'esc_html', $values ) ),
 		);
+	}
+
+	/**
+	 * A message as HTML for the editor and the email. Plain text (older templates,
+	 * Claude drafts) is turned into paragraphs; HTML is kept, with unsafe parts removed.
+	 *
+	 * @param string $text Message as plain text or HTML.
+	 * @return string
+	 */
+	public static function to_html( $text ) {
+		$text = (string) $text;
+
+		if ( wp_strip_all_tags( $text ) === $text ) {
+			$text = esc_html( $text );
+		}
+
+		return wpautop( wp_kses_post( $text ) );
 	}
 
 	/**
@@ -99,7 +116,7 @@ class KDNA_Launchpad_Contact {
 	 *
 	 * @param int    $application_id Application ID.
 	 * @param string $subject        Subject line.
-	 * @param string $body           Message, plain text with blank lines between paragraphs.
+	 * @param string $body           Message, as HTML from the editor (plain text also works).
 	 * @return true|WP_Error
 	 */
 	public static function send( $application_id, $subject, $body ) {
@@ -114,9 +131,9 @@ class KDNA_Launchpad_Contact {
 		}
 
 		$subject = trim( sanitize_text_field( $subject ) );
-		$body    = trim( sanitize_textarea_field( $body ) );
+		$body    = trim( (string) $body );
 
-		if ( '' === $subject || '' === $body ) {
+		if ( '' === $subject || '' === trim( wp_strip_all_tags( $body ) ) ) {
 			return new WP_Error( 'empty', __( 'Please write a subject and a message.', 'kdna-launchpad' ) );
 		}
 
@@ -124,7 +141,7 @@ class KDNA_Launchpad_Contact {
 			$application['email'],
 			array(
 				'subject' => $subject,
-				'body'    => wpautop( esc_html( $body ) ),
+				'body'    => self::to_html( $body ),
 			),
 			self::reply_to()
 		);

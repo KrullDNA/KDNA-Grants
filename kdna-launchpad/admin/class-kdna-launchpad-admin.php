@@ -247,6 +247,9 @@ class KDNA_Launchpad_Admin {
 			wp_enqueue_media();
 		}
 
+		// The visual editor, for the email window and the email templates.
+		wp_enqueue_editor();
+
 		wp_localize_script(
 			'kdna-launchpad-admin',
 			'kdnaLaunchpadSettings',
@@ -262,6 +265,8 @@ class KDNA_Launchpad_Admin {
 				'i18n'         => array(
 					'saving'             => __( 'Saving…', 'kdna-launchpad' ),
 					'chooseLogo'         => __( 'Choose the email logo', 'kdna-launchpad' ),
+					'linkPrompt'         => __( 'Link address (for example https://krulldna.com)', 'kdna-launchpad' ),
+					'linkButton'         => __( 'Insert or edit link', 'kdna-launchpad' ),
 					'useLogo'            => __( 'Use this logo', 'kdna-launchpad' ),
 					'saved'              => __( 'Saved', 'kdna-launchpad' ),
 					'saveFailed'         => __( 'Not saved. Please try again.', 'kdna-launchpad' ),
@@ -452,7 +457,7 @@ class KDNA_Launchpad_Admin {
 			$compose[] = array(
 				'name'    => $name,
 				'subject' => isset( $template['subject'] ) ? sanitize_text_field( $template['subject'] ) : '',
-				'body'    => isset( $template['body'] ) ? sanitize_textarea_field( $template['body'] ) : '',
+				'body'    => isset( $template['body'] ) ? wp_kses_post( $template['body'] ) : '',
 			);
 		}
 		$settings['compose_templates'] = $compose;

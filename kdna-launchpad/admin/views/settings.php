@@ -467,7 +467,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<button type="button" class="button-link kdna-launchpad-link-danger kdna-launchpad-repeat__remove"><?php esc_html_e( 'Remove', 'kdna-launchpad' ); ?></button>
 						</div>
 						<input type="text" data-field="subject" name="compose_templates[<?php echo esc_attr( $kdna_launchpad_index ); ?>][subject]" value="<?php echo esc_attr( $kdna_launchpad_template['subject'] ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'Subject', 'kdna-launchpad' ); ?>" aria-label="<?php esc_attr_e( 'Subject', 'kdna-launchpad' ); ?>" />
-						<textarea data-field="body" name="compose_templates[<?php echo esc_attr( $kdna_launchpad_index ); ?>][body]" rows="6" class="large-text" placeholder="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>" aria-label="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>"><?php echo esc_textarea( $kdna_launchpad_template['body'] ); ?></textarea>
+						<textarea data-field="body" id="kdna-launchpad-compose-template-<?php echo esc_attr( $kdna_launchpad_index ); ?>" name="compose_templates[<?php echo esc_attr( $kdna_launchpad_index ); ?>][body]" rows="8" class="large-text kdna-launchpad-rich" aria-label="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>"><?php echo esc_textarea( KDNA_Launchpad_Contact::to_html( $kdna_launchpad_template['body'] ) ); ?></textarea>
 					</div>
 				<?php endforeach; ?>
 				<template class="kdna-launchpad-repeat__template">
@@ -477,7 +477,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<button type="button" class="button-link kdna-launchpad-link-danger kdna-launchpad-repeat__remove"><?php esc_html_e( 'Remove', 'kdna-launchpad' ); ?></button>
 						</div>
 						<input type="text" data-field="subject" value="" class="large-text" placeholder="<?php esc_attr_e( 'Subject', 'kdna-launchpad' ); ?>" aria-label="<?php esc_attr_e( 'Subject', 'kdna-launchpad' ); ?>" />
-						<textarea data-field="body" rows="6" class="large-text" placeholder="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>" aria-label="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>"></textarea>
+						<textarea data-field="body" rows="8" class="large-text kdna-launchpad-rich" aria-label="<?php esc_attr_e( 'Message', 'kdna-launchpad' ); ?>"></textarea>
 					</div>
 				</template>
 			</div>
