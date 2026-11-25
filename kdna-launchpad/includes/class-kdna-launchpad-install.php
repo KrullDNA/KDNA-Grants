@@ -400,6 +400,7 @@ class KDNA_Launchpad_Install {
 		return array(
 			'winner'       => array(
 				'subject' => __( 'Congratulations {first_name}, {business_name} has won KDNA Launchpad', 'kdna-launchpad' ),
+				'heading' => __( 'Congratulations, you\'ve won Launchpad!', 'kdna-launchpad' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-launchpad' ) . '</p>'
 					. '<p>' . __( 'Thank you for applying for KDNA Launchpad ({round_name}). We\'re delighted to tell you that {business_name} has been chosen as the winner.', 'kdna-launchpad' ) . '</p>'
 					. '<p>' . __( 'We\'ll be in touch in the next few days to book a kick-off meeting. In the meantime, you can get ready by setting up your domain name and WordPress hosting (we recommend VentraIP), and gathering your words, photos, logo files, brand colours and fonts.', 'kdna-launchpad' ) . '</p>'
@@ -408,6 +409,7 @@ class KDNA_Launchpad_Install {
 			),
 			'unsuccessful' => array(
 				'subject' => __( 'Your KDNA Launchpad application, {round_name}', 'kdna-launchpad' ),
+				'heading' => __( 'Thank you for applying for Launchpad', 'kdna-launchpad' ),
 				'body'    => '<p>' . __( 'Hi {first_name},', 'kdna-launchpad' ) . '</p>'
 					. '<p>' . __( 'Thank you for applying for KDNA Launchpad ({round_name}), and for telling us about {business_name}. We had many strong applications, and this time {business_name} wasn\'t chosen.', 'kdna-launchpad' ) . '</p>'
 					. '<p>' . __( 'You\'re very welcome to apply again. The next round opens on {next_open_date}.', 'kdna-launchpad' ) . '</p>'

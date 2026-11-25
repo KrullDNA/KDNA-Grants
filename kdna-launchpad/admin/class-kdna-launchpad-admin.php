@@ -392,6 +392,7 @@ class KDNA_Launchpad_Admin {
 		foreach ( array_keys( KDNA_Launchpad_Emails::types() ) as $type ) {
 			$emails[ $type ] = array(
 				'subject' => isset( $_POST['emails'][ $type ]['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['emails'][ $type ]['subject'] ) ) : '',
+				'heading' => isset( $_POST['emails'][ $type ]['heading'] ) ? sanitize_text_field( wp_unslash( $_POST['emails'][ $type ]['heading'] ) ) : '',
 				'body'    => isset( $_POST['emails'][ $type ]['body'] ) ? wp_kses_post( wp_unslash( $_POST['emails'][ $type ]['body'] ) ) : '',
 			);
 		}
@@ -580,6 +581,7 @@ class KDNA_Launchpad_Admin {
 
 		$template = array(
 			'subject' => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+			'heading' => isset( $_POST['heading'] ) ? sanitize_text_field( wp_unslash( $_POST['heading'] ) ) : '',
 			'body'    => isset( $_POST['body'] ) ? wp_kses_post( wp_unslash( $_POST['body'] ) ) : '',
 		);
 		if ( '' === trim( $template['subject'] ) || '' === trim( $template['body'] ) ) {

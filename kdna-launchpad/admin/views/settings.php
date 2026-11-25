@@ -385,6 +385,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<label for="kdna-launchpad-subject-<?php echo esc_attr( $kdna_launchpad_type ); ?>" class="kdna-launchpad-scorecard__label"><?php esc_html_e( 'Subject', 'kdna-launchpad' ); ?></label>
 				<input type="text" class="large-text kdna-launchpad-email-card__subject" id="kdna-launchpad-subject-<?php echo esc_attr( $kdna_launchpad_type ); ?>" name="emails[<?php echo esc_attr( $kdna_launchpad_type ); ?>][subject]" value="<?php echo esc_attr( $kdna_launchpad_template['subject'] ); ?>" />
 
+				<label for="kdna-launchpad-heading-<?php echo esc_attr( $kdna_launchpad_type ); ?>" class="kdna-launchpad-scorecard__label"><?php esc_html_e( 'Heading', 'kdna-launchpad' ); ?></label>
+				<input type="text" class="large-text kdna-launchpad-email-card__heading" id="kdna-launchpad-heading-<?php echo esc_attr( $kdna_launchpad_type ); ?>" name="emails[<?php echo esc_attr( $kdna_launchpad_type ); ?>][heading]" value="<?php echo esc_attr( $kdna_launchpad_template['heading'] ); ?>" />
+				<p class="description"><?php esc_html_e( 'Shown large at the top of the email, above the text. Merge tags work here. Leave blank for no heading.', 'kdna-launchpad' ); ?></p>
+
 				<p class="kdna-launchpad-scorecard__label"><?php esc_html_e( 'Message', 'kdna-launchpad' ); ?></p>
 				<?php
 				wp_editor(

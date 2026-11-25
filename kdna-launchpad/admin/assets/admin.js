@@ -382,6 +382,7 @@
 				nonce: data.testNonce,
 				type: type,
 				subject: card.querySelector( '.kdna-launchpad-email-card__subject' ).value,
+				heading: card.querySelector( '.kdna-launchpad-email-card__heading' ).value,
 				body: document.getElementById( editorId ).value
 			} ).then( function ( response ) {
 				result.textContent = response.data && response.data.message ? response.data.message : data.i18n.saveFailed;

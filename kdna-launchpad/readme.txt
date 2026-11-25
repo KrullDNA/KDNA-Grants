@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.7
+Stable tag: 1.3.8
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,10 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.8 =
+* New: a Heading for the winner and unsuccessful emails, shown at 24px in medium weight above the text. Edit it in Settings > Emails and messages; merge tags work, and leaving it blank means no heading.
+* Headings typed into the application form's KDNA Forms emails (h1 or h2) get the same style, and newly created forms include one in the confirmation email.
 
 = 1.3.7 =
 * The email footer now accepts simple HTML, such as links and bold text. Links match the footer colour, and pressing Enter still starts a new line.

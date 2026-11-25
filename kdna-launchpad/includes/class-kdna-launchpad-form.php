@@ -465,7 +465,8 @@ class KDNA_Launchpad_Form {
 					'to'       => '11',
 					'replyTo'  => '{admin_email}',
 					'subject'  => __( 'We\'ve received your KDNA Launchpad application', 'kdna-launchpad' ),
-					'message'  => '<p>' . __( 'Hi {Your name (First):10.3},', 'kdna-launchpad' ) . '</p>'
+					'message'  => '<h1>' . __( 'Thanks for applying for Launchpad', 'kdna-launchpad' ) . '</h1>'
+						. '<p>' . __( 'Hi {Your name (First):10.3},', 'kdna-launchpad' ) . '</p>'
 						. '<p>' . __( 'Thank you for applying for KDNA Launchpad. We\'ve received your application for {launchpad_business_name}.', 'kdna-launchpad' ) . '</p>'
 						. '<p>' . __( 'Applications are judged after the round closes, and every applicant will hear from us by the winner announcement date shown on our website.', 'kdna-launchpad' ) . '</p>'
 						. '<p>' . __( 'Thanks again,', 'kdna-launchpad' ) . '<br />' . __( 'Nick Krull, KDNA', 'kdna-launchpad' ) . '</p>'

@@ -86,7 +86,7 @@ class KDNA_Launchpad_Emails {
 	 * A saved template, falling back to the default copy.
 	 *
 	 * @param string $type 'winner' or 'unsuccessful'.
-	 * @return array 'subject' and 'body'.
+	 * @return array 'subject', 'heading' and 'body'.
 	 */
 	public static function get_template( $type ) {
 		$defaults = KDNA_Launchpad_Install::default_emails();
@@ -95,6 +95,8 @@ class KDNA_Launchpad_Emails {
 
 		return array(
 			'subject' => isset( $template['subject'] ) && '' !== trim( $template['subject'] ) ? $template['subject'] : $defaults[ $type ]['subject'],
+			// A heading saved as empty means "no heading", so only fall back when none has been saved yet.
+			'heading' => isset( $template['heading'] ) ? $template['heading'] : $defaults[ $type ]['heading'],
 			'body'    => isset( $template['body'] ) && '' !== trim( $template['body'] ) ? $template['body'] : $defaults[ $type ]['body'],
 		);
 	}
@@ -131,18 +133,20 @@ class KDNA_Launchpad_Emails {
 	/**
 	 * Fills in a template.
 	 *
-	 * @param array $template 'subject' and 'body'.
+	 * @param array $template 'subject', 'heading' (optional) and 'body'.
 	 * @param array $values   Merge tag values.
-	 * @return array 'subject' (plain text) and 'body' (HTML).
+	 * @return array 'subject' and 'heading' (plain text) and 'body' (HTML).
 	 */
 	public static function render( $template, $values ) {
 		// [offer]...[/offer] sections only show when the applicant has an offer code.
 		$has_offer = ! empty( $values['{offer_code}'] );
 		$subject   = strtr( KDNA_Launchpad_Offers::apply_blocks( $template['subject'], $has_offer ), $values );
+		$heading   = isset( $template['heading'] ) ? strtr( KDNA_Launchpad_Offers::apply_blocks( $template['heading'], $has_offer ), $values ) : '';
 		$body      = strtr( wpautop( KDNA_Launchpad_Offers::apply_blocks( $template['body'], $has_offer ) ), array_map( 'esc_html', $values ) );
 
 		return array(
 			'subject' => wp_strip_all_tags( $subject ),
+			'heading' => wp_strip_all_tags( $heading ),
 			'body'    => $body,
 		);
 	}
@@ -151,7 +155,7 @@ class KDNA_Launchpad_Emails {
 	 * Sends one email as HTML, with replies going to Nick's address.
 	 *
 	 * @param string $to       Email address.
-	 * @param array  $email    'subject' and 'body'.
+	 * @param array  $email    'subject', 'body' and optionally 'heading'.
 	 * @param string $reply_to Reply-To address, or '' for the Reply-To setting.
 	 * @return bool Whether wp_mail() accepted it.
 	 */
@@ -163,7 +167,7 @@ class KDNA_Launchpad_Emails {
 		$reply_to = is_email( $reply_to ) ? $reply_to : KDNA_Launchpad_Contact::reply_to();
 
 		// The designed email: logo, fonts and colours from Settings > Emails and messages.
-		$html = KDNA_Launchpad_Email_Design::wrap( $email['body'], $email['subject'] );
+		$html = KDNA_Launchpad_Email_Design::wrap( $email['body'], $email['subject'], isset( $email['heading'] ) ? $email['heading'] : '' );
 
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 		if ( is_email( $reply_to ) ) {

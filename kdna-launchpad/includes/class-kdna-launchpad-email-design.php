@@ -145,13 +145,36 @@ class KDNA_Launchpad_Email_Design {
 	}
 
 	/**
+	 * Google Fonts address for the medium weight (500) used by headings. '' for none.
+	 *
+	 * Kept separate, so a font without a medium weight still loads its regular and bold.
+	 *
+	 * @param array $design Design settings.
+	 * @return string
+	 */
+	public static function font_url_medium( $design ) {
+		if ( '' === $design['font'] ) {
+			return '';
+		}
+
+		return 'https://fonts.googleapis.com/css2?family=' . str_replace( ' ', '+', $design['font'] ) . ':wght@500&display=swap';
+	}
+
+	/**
 	 * Wraps an email body in the full designed email.
 	 *
 	 * @param string $body    The email content as HTML.
 	 * @param string $subject Subject line (used as the page title).
+	 * @param string $heading Heading shown above the text, or '' for none.
 	 * @return string Full HTML document.
 	 */
-	public static function wrap( $body, $subject ) {
+	public static function wrap( $body, $subject, $heading = '' ) {
+		$heading = trim( (string) $heading );
+
+		if ( '' !== $heading ) {
+			$body = '<h1>' . esc_html( $heading ) . '</h1>' . $body;
+		}
+
 		return strtr(
 			self::template(),
 			array(
@@ -177,7 +200,8 @@ class KDNA_Launchpad_Email_Design {
 		$font_link = '';
 		if ( $url ) {
 			// Hidden from Outlook on Windows, which can't use web fonts and may otherwise fall back to Times New Roman.
-			$font_link = '<!--[if !mso]><!--><link href="' . esc_url( $url ) . '" rel="stylesheet" type="text/css" /><style type="text/css">@import url(' . esc_url( $url ) . ');</style><!--<![endif]-->'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Inside an email, not a page.
+			$medium    = self::font_url_medium( $design );
+			$font_link = '<!--[if !mso]><!--><link href="' . esc_url( $url ) . '" rel="stylesheet" type="text/css" /><link href="' . esc_url( $medium ) . '" rel="stylesheet" type="text/css" /><style type="text/css">@import url(' . esc_url( $url ) . '); @import url(' . esc_url( $medium ) . ');</style><!--<![endif]-->'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Inside an email, not a page.
 		}
 
 		$fallbacks = self::fallbacks();
@@ -220,7 +244,8 @@ class KDNA_Launchpad_Email_Design {
 			. 'img { border: 0; line-height: 100%; outline: none; text-decoration: none; }'
 			. '.kdna-email-content p { margin: 0 0 16px; }'
 			. '.kdna-email-content a { color: ' . $design['link'] . '; text-decoration: underline; }'
-			. '.kdna-email-content h1, .kdna-email-content h2, .kdna-email-content h3 { margin: 0 0 12px; line-height: 1.3; }'
+			. '.kdna-email-content h1, .kdna-email-content h2 { margin: 0 0 20px; font-size: 24px; line-height: 1.3; font-weight: 500; }'
+			. '.kdna-email-content h3 { margin: 0 0 12px; line-height: 1.3; }'
 			. '@media only screen and (max-width: 620px) { .kdna-email-card { padding: 28px 22px !important; } }'
 			. '</style>'
 			. '</head>'
@@ -255,6 +280,16 @@ class KDNA_Launchpad_Email_Design {
 	}
 
 	/**
+	 * Inline style for headings: 24px, medium weight. Arial (Gmail and Outlook) shows medium as regular.
+	 *
+	 * @param array $design Design settings.
+	 * @return string
+	 */
+	public static function heading_style( $design ) {
+		return 'margin: 0 0 20px; font-family: ' . self::font_stack( $design ) . '; font-size: 24px; line-height: 1.3; font-weight: 500; color: ' . $design['text'] . ';';
+	}
+
+	/**
 	 * Adds inline styles to paragraphs and links, for email apps that ignore the style block.
 	 *
 	 * @param string $body Email body HTML.
@@ -264,6 +299,7 @@ class KDNA_Launchpad_Email_Design {
 		$design = self::settings();
 
 		$body = preg_replace( '/<p>/i', '<p style="margin: 0 0 16px;">', (string) $body );
+		$body = preg_replace( '/<(h1|h2)>/i', '<$1 style="' . esc_attr( self::heading_style( $design ) ) . '">', $body );
 		$body = preg_replace( '/<a (?![^>]*\sstyle=)/i', '<a style="color: ' . esc_attr( $design['link'] ) . '; text-decoration: underline;" ', $body );
 
 		return $body;
