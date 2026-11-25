@@ -367,7 +367,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<label for="kdna-launchpad-email-footer" class="kdna-launchpad-row__label"><?php esc_html_e( 'Footer', 'kdna-launchpad' ); ?></label>
 				<div class="kdna-launchpad-row__control">
 					<textarea name="email_design[footer]" id="kdna-launchpad-email-footer" rows="3" class="large-text"><?php echo esc_textarea( $kdna_launchpad_design['footer'] ); ?></textarea>
-					<p class="description"><?php esc_html_e( 'Shown in small grey text under every email. Leave blank for no footer.', 'kdna-launchpad' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Shown in small grey text under every email. Simple HTML works, such as links and bold, and pressing Enter starts a new line. For example: <a href="https://krulldna.com">krulldna.com</a>. Leave blank for no footer.', 'kdna-launchpad' ); ?></p>
 				</div>
 			</div>
 

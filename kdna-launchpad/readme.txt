@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.7 =
+* The email footer now accepts simple HTML, such as links and bold text. Links match the footer colour, and pressing Enter still starts a new line.
 
 = 1.3.6 =
 * The email logo is now centred and 100px wide by default (both can be changed in Email design), and always uses the full-size image so it stays sharp.

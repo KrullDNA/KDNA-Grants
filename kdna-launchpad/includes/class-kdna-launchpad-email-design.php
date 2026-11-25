@@ -92,7 +92,7 @@ class KDNA_Launchpad_Email_Design {
 			'background' => $colour( 'background' ),
 			'text'       => $colour( 'text' ),
 			'link'       => $colour( 'link' ),
-			'footer'     => isset( $posted['footer'] ) ? sanitize_textarea_field( $posted['footer'] ) : '',
+			'footer'     => isset( $posted['footer'] ) ? wp_kses_post( $posted['footer'] ) : '',
 		);
 	}
 
@@ -198,7 +198,7 @@ class KDNA_Launchpad_Email_Design {
 		$footer = '';
 		if ( '' !== trim( $design['footer'] ) ) {
 			$footer = '<tr><td style="padding: 24px 8px 0; font-family: ' . esc_attr( $font ) . '; font-size: 13px; line-height: 1.5; color: ' . $muted . '; text-align: center;">'
-				. nl2br( esc_html( $design['footer'] ) )
+				. self::footer_html( $design['footer'], $muted )
 				. '</td></tr>';
 		}
 
@@ -238,6 +238,20 @@ class KDNA_Launchpad_Email_Design {
 			. '<!--[if mso]></td></tr></table><![endif]-->'
 			. '</td></tr></table>'
 			. '</body></html>';
+	}
+
+	/**
+	 * The footer as HTML: simple HTML such as links and bold is allowed, and line breaks are kept.
+	 * Links are styled inline to match the footer text.
+	 *
+	 * @param string $footer Footer text or HTML.
+	 * @param string $colour Footer text colour.
+	 * @return string
+	 */
+	private static function footer_html( $footer, $colour ) {
+		$html = nl2br( trim( wp_kses_post( (string) $footer ) ) );
+
+		return (string) preg_replace( '/<a (?![^>]*\sstyle=)/i', '<a style="color: ' . esc_attr( $colour ) . '; text-decoration: underline;" ', $html );
 	}
 
 	/**
