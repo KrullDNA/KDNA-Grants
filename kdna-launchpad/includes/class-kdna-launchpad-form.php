@@ -153,8 +153,18 @@ class KDNA_Launchpad_Form {
 		};
 
 		$terms_link = $terms_url
-			? '<a href="' . esc_url( $terms_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Read the KDNA Launchpad terms and conditions', 'kdna-launchpad' ) . '</a>'
-			: esc_html__( 'Read the KDNA Launchpad terms and conditions', 'kdna-launchpad' );
+			? '<a href="' . esc_url( $terms_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Read the terms and conditions', 'kdna-launchpad' ) . '</a>'
+			: esc_html__( 'Read the terms and conditions', 'kdna-launchpad' );
+
+		// The site's privacy policy page, as set in WordPress under Settings > Privacy.
+		$privacy_url  = get_privacy_policy_url();
+		$privacy_link = $privacy_url
+			? '<a href="' . esc_url( $privacy_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'privacy policy', 'kdna-launchpad' ) . '</a>'
+			: esc_html__( 'privacy policy', 'kdna-launchpad' );
+
+		$consent_note = $terms_link . '<br />'
+			/* translators: %s: link to the privacy policy. */
+			. sprintf( esc_html__( 'We use your details to assess your application and tell you the result. Your business answers may be reviewed with the help of AI, but your name and contact details are never shared with it. See our %s for details.', 'kdna-launchpad' ), $privacy_link );
 
 		$fields = array(
 			array(
@@ -379,8 +389,8 @@ class KDNA_Launchpad_Form {
 				'type'          => 'consent',
 				'label'         => __( 'Terms and conditions', 'kdna-launchpad' ),
 				'isRequired'    => true,
-				'checkboxLabel' => __( 'I have read and agree to the KDNA Launchpad terms and conditions', 'kdna-launchpad' ),
-				'description'   => $terms_link,
+				'checkboxLabel' => __( 'I have read and agree to the Launchpad terms and conditions and privacy policy', 'kdna-launchpad' ),
+				'description'   => $consent_note,
 				'inputs'        => array(
 					array(
 						'id'    => '27.1',
