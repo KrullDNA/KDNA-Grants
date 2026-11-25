@@ -363,6 +363,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 
 			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-body-ls" class="kdna-launchpad-row__label"><?php esc_html_e( 'Body text letter spacing', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<input type="number" step="0.1" min="-5" max="10" name="email_design[body_ls]" id="kdna-launchpad-body-ls" class="small-text" value="<?php echo esc_attr( $kdna_launchpad_design['body_ls'] ); ?>" /> px
+					<p class="description"><?php esc_html_e( 'For the 16px body text. 0 is normal.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
 				<span class="kdna-launchpad-row__label"><?php esc_html_e( 'Colours', 'kdna-launchpad' ); ?></span>
 				<div class="kdna-launchpad-row__control kdna-launchpad-colours">
 					<label><input type="color" name="email_design[background]" value="<?php echo esc_attr( $kdna_launchpad_design['background'] ); ?>" /> <?php esc_html_e( 'Background', 'kdna-launchpad' ); ?></label>

@@ -54,6 +54,7 @@ class KDNA_Launchpad_Email_Design {
 			'link'       => '#111111',
 			'footer'     => "Krull Design & Advertising\nkrulldna.com",
 			'heading_ls' => 0,
+			'body_ls'    => 0,
 		);
 	}
 
@@ -95,6 +96,7 @@ class KDNA_Launchpad_Email_Design {
 			'link'       => $colour( 'link' ),
 			'footer'     => isset( $posted['footer'] ) ? wp_kses_post( $posted['footer'] ) : '',
 			'heading_ls' => isset( $posted['heading_ls'] ) && is_numeric( $posted['heading_ls'] ) ? round( min( 10, max( -5, (float) $posted['heading_ls'] ) ), 2 ) : 0,
+			'body_ls'    => isset( $posted['body_ls'] ) && is_numeric( $posted['body_ls'] ) ? round( min( 10, max( -5, (float) $posted['body_ls'] ) ), 2 ) : 0,
 		);
 	}
 
@@ -257,7 +259,7 @@ class KDNA_Launchpad_Email_Design {
 			. '<!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td><![endif]-->'
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px;">'
 			. '<tr><td align="' . $align . '" style="padding: 0 8px 24px;">' . $header . '</td></tr>'
-			. '<tr><td class="kdna-email-card kdna-email-content" style="background-color: #ffffff; border-radius: 12px; padding: 40px; font-family: ' . esc_attr( $font ) . '; font-size: 16px; line-height: 1.6; color: ' . esc_attr( $design['text'] ) . ';">'
+			. '<tr><td class="kdna-email-card kdna-email-content" style="background-color: #ffffff; border-radius: 12px; padding: 40px; font-family: ' . esc_attr( $font ) . '; font-size: 16px; line-height: 1.6; letter-spacing: ' . esc_attr( self::letter_spacing( $design, 'body_ls' ) ) . '; color: ' . esc_attr( $design['text'] ) . ';">'
 			. '{message}'
 			. '</td></tr>'
 			. $footer
@@ -292,13 +294,14 @@ class KDNA_Launchpad_Email_Design {
 	}
 
 	/**
-	 * Heading letter spacing for CSS, in pixels, for example "-0.5px". Outlook supports pixels.
+	 * Letter spacing for CSS, in pixels, for example "-0.5px". Outlook supports pixels.
 	 *
-	 * @param array $design Design settings.
+	 * @param array  $design Design settings.
+	 * @param string $key    'heading_ls' for headings or 'body_ls' for the body text.
 	 * @return string
 	 */
-	public static function letter_spacing( $design ) {
-		$value = isset( $design['heading_ls'] ) && is_numeric( $design['heading_ls'] ) ? (float) $design['heading_ls'] : 0;
+	public static function letter_spacing( $design, $key = 'heading_ls' ) {
+		$value = isset( $design[ $key ] ) && is_numeric( $design[ $key ] ) ? (float) $design[ $key ] : 0;
 
 		return 0.0 === $value ? 'normal' : rtrim( rtrim( number_format( $value, 2, '.', '' ), '0' ), '.' ) . 'px';
 	}
@@ -312,7 +315,7 @@ class KDNA_Launchpad_Email_Design {
 	private static function inline_styles( $body ) {
 		$design = self::settings();
 
-		$body = preg_replace( '/<p>/i', '<p style="margin: 0 0 16px;">', (string) $body );
+		$body = preg_replace( '/<p>/i', '<p style="margin: 0 0 16px; letter-spacing: ' . esc_attr( self::letter_spacing( $design, 'body_ls' ) ) . ';">', (string) $body );
 		$body = preg_replace( '/<(h1|h2)>/i', '<$1 style="' . esc_attr( self::heading_style( $design ) ) . '">', $body );
 		$body = preg_replace( '/<a (?![^>]*\sstyle=)/i', '<a style="color: ' . esc_attr( $design['link'] ) . '; text-decoration: underline;" ', $body );
 
