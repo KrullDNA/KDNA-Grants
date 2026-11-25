@@ -337,7 +337,7 @@ class KDNA_Launchpad_Email_Design {
 
 		nocache_headers();
 		header( 'Content-Type: text/html; charset=UTF-8' );
-		echo self::wrap( $email['body'], $email['subject'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped parts in wrap().
+		echo self::wrap( $email['body'], $email['subject'], $email['heading'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped parts in wrap().
 		exit;
 	}
 }
