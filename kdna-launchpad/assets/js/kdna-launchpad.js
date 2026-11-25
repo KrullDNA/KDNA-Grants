@@ -1,5 +1,6 @@
 /**
- * KDNA Launchpad front end: keeps the "Applications close in ..." countdown up to date.
+ * KDNA Launchpad front end: keeps the "Applications close in ..." countdown, and any
+ * time left shown with [launchpad_info] or the Elementor dynamic tag, up to date.
  *
  * Shows days, then hours, then minutes. When the round closes, the countdown
  * says so. The form itself also refuses late submissions on the server.
@@ -53,6 +54,20 @@
 			if ( time ) {
 				time.textContent = timeLeft( left );
 			}
+		} );
+
+		// The time left on its own, placed anywhere with the [launchpad_info] shortcode or the Elementor dynamic tag.
+		document.querySelectorAll( '.kdna-launchpad-time-left[data-closes]' ).forEach( function ( span ) {
+			var left = parseInt( span.getAttribute( 'data-closes' ), 10 ) - now;
+
+			if ( left <= 0 ) {
+				span.classList.add( 'is-closed' );
+				span.textContent = words.closedShort || '';
+				span.removeAttribute( 'data-closes' );
+				return;
+			}
+
+			span.textContent = timeLeft( left );
 		} );
 	}
 

@@ -63,6 +63,7 @@ require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-privacy.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-test-tool.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-export.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-frontend.php';
+require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-tags.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-offers.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-claude.php';
 require_once KDNA_LAUNCHPAD_PATH . 'includes/class-kdna-launchpad-contact.php';
@@ -154,6 +155,7 @@ function kdna_launchpad_boot() {
 	KDNA_Launchpad_Emails::register();
 	KDNA_Launchpad_Privacy::register();
 	KDNA_Launchpad_Frontend::register();
+	KDNA_Launchpad_Tags::register();
 	KDNA_Launchpad_Offers::register();
 	KDNA_Launchpad_Claude::register();
 	KDNA_Launchpad_Abn::register();

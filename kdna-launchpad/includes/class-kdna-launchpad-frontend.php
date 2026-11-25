@@ -104,19 +104,20 @@ class KDNA_Launchpad_Frontend {
 			'kdnaLaunchpadCountdown',
 			array(
 				/* translators: %d: 1 (one day). */
-				'day'     => __( '%d day', 'kdna-launchpad' ),
+				'day'         => __( '%d day', 'kdna-launchpad' ),
 				/* translators: %d: number of days. */
-				'days'    => __( '%d days', 'kdna-launchpad' ),
+				'days'        => __( '%d days', 'kdna-launchpad' ),
 				/* translators: %d: 1 (one hour). */
-				'hour'    => __( '%d hour', 'kdna-launchpad' ),
+				'hour'        => __( '%d hour', 'kdna-launchpad' ),
 				/* translators: %d: number of hours. */
-				'hours'   => __( '%d hours', 'kdna-launchpad' ),
+				'hours'       => __( '%d hours', 'kdna-launchpad' ),
 				/* translators: %d: 1 (one minute). */
-				'minute'  => __( '%d minute', 'kdna-launchpad' ),
+				'minute'      => __( '%d minute', 'kdna-launchpad' ),
 				/* translators: %d: number of minutes. */
-				'minutes' => __( '%d minutes', 'kdna-launchpad' ),
-				'soon'    => __( 'less than a minute', 'kdna-launchpad' ),
-				'closed'  => __( 'Applications for this round have now closed.', 'kdna-launchpad' ),
+				'minutes'     => __( '%d minutes', 'kdna-launchpad' ),
+				'soon'        => __( 'less than a minute', 'kdna-launchpad' ),
+				'closed'      => __( 'Applications for this round have now closed.', 'kdna-launchpad' ),
+				'closedShort' => __( 'no time', 'kdna-launchpad' ),
 			)
 		);
 	}
