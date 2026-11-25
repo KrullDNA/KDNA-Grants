@@ -111,6 +111,7 @@ class KDNA_Launchpad_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_post_' . self::SAVE_ACTION, array( $this, 'save_settings' ) );
 		add_action( 'wp_ajax_kdna_launchpad_test_email', array( $this, 'ajax_test_email' ) );
+		add_action( 'admin_post_' . KDNA_Launchpad_Email_Design::PREVIEW_ACTION, array( 'KDNA_Launchpad_Email_Design', 'preview' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( KDNA_LAUNCHPAD_FILE ), array( $this, 'plugin_action_links' ) );
 	}
 
@@ -241,6 +242,11 @@ class KDNA_Launchpad_Admin {
 
 		$is_settings = isset( $_GET['page'] ) && self::SETTINGS_PAGE === $_GET['page']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display only.
 
+		// The media library, for choosing the email logo.
+		if ( $is_settings ) {
+			wp_enqueue_media();
+		}
+
 		wp_localize_script(
 			'kdna-launchpad-admin',
 			'kdnaLaunchpadSettings',
@@ -255,6 +261,8 @@ class KDNA_Launchpad_Admin {
 				'assessNonce'  => wp_create_nonce( KDNA_Launchpad_Admin_Picks::ASSESS_ACTION ),
 				'i18n'         => array(
 					'saving'             => __( 'Saving…', 'kdna-launchpad' ),
+					'chooseLogo'         => __( 'Choose the email logo', 'kdna-launchpad' ),
+					'useLogo'            => __( 'Use this logo', 'kdna-launchpad' ),
 					'saved'              => __( 'Saved', 'kdna-launchpad' ),
 					'saveFailed'         => __( 'Not saved. Please try again.', 'kdna-launchpad' ),
 					'sending'            => __( 'Sending…', 'kdna-launchpad' ),
@@ -388,6 +396,9 @@ class KDNA_Launchpad_Admin {
 			);
 		}
 		$settings['emails'] = $emails;
+
+		// Email design: logo, font, colours and footer.
+		$settings['email_design'] = KDNA_Launchpad_Email_Design::sanitize( isset( $_POST['email_design'] ) && is_array( $_POST['email_design'] ) ? wp_unslash( $_POST['email_design'] ) : array() ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitised in sanitize().
 
 		// Closed messages.
 		$defaults = KDNA_Launchpad_Install::default_settings();

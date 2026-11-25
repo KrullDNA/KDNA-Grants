@@ -353,6 +353,9 @@ class KDNA_Launchpad_Install {
 			// Stage 3: emails. The applicant confirmation email is sent by KDNA Forms.
 			'emails'                   => self::default_emails(),
 
+			// 1.3.5: the look of every email (see KDNA_Launchpad_Email_Design).
+			'email_design'             => array(),
+
 			// 1.3.0: the terms page linked from the application form's tick box.
 			'terms_url'                => '',
 			'word_limits'              => array(),

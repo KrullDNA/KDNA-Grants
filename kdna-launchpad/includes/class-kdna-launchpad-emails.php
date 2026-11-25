@@ -41,6 +41,12 @@ class KDNA_Launchpad_Emails {
 	 */
 	public static function register() {
 		add_action( self::CRON_HOOK, array( __CLASS__, 'process_batch' ) );
+
+		// The application form's own emails (sent by KDNA Forms) get the same design.
+		$form_id = absint( kdna_launchpad_get_setting( 'form_id', 0 ) );
+		if ( $form_id ) {
+			KDNA_Launchpad_Forms_Bridge::style_notifications( $form_id, array( 'KDNA_Launchpad_Email_Design', 'template' ) );
+		}
 	}
 
 	/**
@@ -156,9 +162,8 @@ class KDNA_Launchpad_Emails {
 
 		$reply_to = is_email( $reply_to ) ? $reply_to : KDNA_Launchpad_Contact::reply_to();
 
-		$html = '<!DOCTYPE html><html><body style="font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.6; color: #1d2327;">'
-			. $email['body']
-			. '</body></html>';
+		// The designed email: logo, fonts and colours from Settings > Emails and messages.
+		$html = KDNA_Launchpad_Email_Design::wrap( $email['body'], $email['subject'] );
 
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 		if ( is_email( $reply_to ) ) {
@@ -178,9 +183,22 @@ class KDNA_Launchpad_Emails {
 	 */
 	public static function send_test( $type, $to, $template = null ) {
 		$template = $template ? $template : self::get_template( $type );
-		$next     = KDNA_Launchpad_Rounds::get_next_round();
 
-		$values = array(
+		$email            = self::render( $template, self::sample_values() );
+		$email['subject'] = '[' . __( 'Test', 'kdna-launchpad' ) . '] ' . $email['subject'];
+
+		return self::send( $to, $email );
+	}
+
+	/**
+	 * Sample details for test emails and the design preview.
+	 *
+	 * @return array Merge tag => value.
+	 */
+	public static function sample_values() {
+		$next = KDNA_Launchpad_Rounds::get_next_round();
+
+		return array(
 			'{first_name}'     => 'Sam',
 			'{business_name}'  => 'Brightside Bakery',
 			'{round_name}'     => __( 'Q1 2027', 'kdna-launchpad' ),
@@ -192,11 +210,6 @@ class KDNA_Launchpad_Emails {
 			'{offer_expiry}'   => wp_date( 'j F Y', time() + absint( kdna_launchpad_get_setting( 'offer_days', 90 ) ) * DAY_IN_SECONDS ),
 			'{offer_cap}'      => (string) kdna_launchpad_get_setting( 'offer_cap', '' ),
 		);
-
-		$email            = self::render( $template, $values );
-		$email['subject'] = '[' . __( 'Test', 'kdna-launchpad' ) . '] ' . $email['subject'];
-
-		return self::send( $to, $email );
 	}
 
 	/*

@@ -1219,3 +1219,42 @@
 .kdna-launchpad-admin [hidden] {
 	display: none !important;
 }
+
+/* Email design: logo picker and colours. */
+.kdna-launchpad-logo-picker__preview {
+	display: inline-block;
+	padding: 12px;
+	background: #f4f4f5;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.kdna-launchpad-logo-picker__preview img {
+	display: block;
+	max-width: 240px;
+	max-height: 80px;
+	height: auto;
+}
+
+.kdna-launchpad-logo-picker__preview[hidden],
+.kdna-launchpad-logo-picker__remove[hidden] {
+	display: none;
+}
+
+.kdna-launchpad-colours {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.kdna-launchpad-colours label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.kdna-launchpad-row__control select.kdna-launchpad-select-auto {
+	width: auto;
+	min-width: 120px;
+	margin-left: 8px;
+}

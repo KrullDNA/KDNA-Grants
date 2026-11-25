@@ -827,4 +827,46 @@
 			} );
 		} );
 	} );
+
+	/*
+	 * Email logo: choose from the media library.
+	 */
+
+	document.querySelectorAll( '.kdna-launchpad-logo-picker' ).forEach( function ( picker ) {
+		var input = picker.querySelector( '.kdna-launchpad-logo-picker__id' );
+		var preview = picker.querySelector( '.kdna-launchpad-logo-picker__preview' );
+		var remove = picker.querySelector( '.kdna-launchpad-logo-picker__remove' );
+		var frame = null;
+
+		picker.querySelector( '.kdna-launchpad-logo-picker__choose' ).addEventListener( 'click', function () {
+			if ( ! window.wp || ! window.wp.media ) {
+				return;
+			}
+
+			if ( ! frame ) {
+				frame = window.wp.media( {
+					title: data.i18n.chooseLogo,
+					button: { text: data.i18n.useLogo },
+					library: { type: 'image' },
+					multiple: false
+				} );
+
+				frame.on( 'select', function () {
+					var image = frame.state().get( 'selection' ).first().toJSON();
+					input.value = image.id;
+					preview.querySelector( 'img' ).src = image.url;
+					preview.hidden = false;
+					remove.hidden = false;
+				} );
+			}
+
+			frame.open();
+		} );
+
+		remove.addEventListener( 'click', function () {
+			input.value = '';
+			preview.hidden = true;
+			remove.hidden = true;
+		} );
+	} );
 } )();

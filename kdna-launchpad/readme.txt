@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.5 =
+* New: email design. Every Launchpad email, and the application form's confirmation and "new application" emails, now use a designed layout with your logo, a Google Font with fallbacks (Arial for Gmail and Outlook), your colours and a footer. Set it up in Settings > Emails and messages > Email design, with a preview button.
 
 = 1.3.4 =
 * New: show round details anywhere in a layout. Use the "Launchpad round info" dynamic tag in any Elementor Heading or Text Editor widget, or the [launchpad_info] shortcode, for example [launchpad_info show="round"]. Choose from the round name, time left (a live countdown), closing date, next round name and next opening date, with optional text to show when there is nothing to show.

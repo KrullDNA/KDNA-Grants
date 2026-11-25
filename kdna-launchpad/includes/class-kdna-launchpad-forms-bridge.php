@@ -95,6 +95,44 @@ class KDNA_Launchpad_Forms_Bridge {
 	 */
 
 	/**
+	 * Gives the form's HTML notification emails a custom design.
+	 *
+	 * KDNA Forms wraps HTML notifications in a basic page template just before
+	 * sending, after merge tags are filled in. For this form's notifications only,
+	 * that template is swapped for the one the callback returns. It must contain
+	 * {message} and {subject}. Notifications already written as a full HTML page
+	 * are left alone by KDNA Forms.
+	 *
+	 * @param int      $form_id  The KDNA Forms form ID.
+	 * @param callable $callback Returns the template HTML.
+	 */
+	public static function style_notifications( $form_id, $callback ) {
+		$pending = false;
+
+		add_filter(
+			'kdnaform_notification_' . absint( $form_id ),
+			function ( $notification ) use ( &$pending ) {
+				$format  = is_array( $notification ) && ! empty( $notification['message_format'] ) ? $notification['message_format'] : 'html';
+				$pending = 'text' !== $format;
+				return $notification;
+			}
+		);
+
+		add_filter(
+			'kdnaform_html_message_template_pre_send_email',
+			function ( $template ) use ( &$pending, $callback ) {
+				if ( ! $pending ) {
+					return $template;
+				}
+
+				$pending = false;
+
+				return (string) call_user_func( $callback );
+			}
+		);
+	}
+
+	/**
 	 * Runs a callback whenever the form is about to be shown on a page.
 	 *
 	 * @param int      $form_id  The KDNA Forms form ID.

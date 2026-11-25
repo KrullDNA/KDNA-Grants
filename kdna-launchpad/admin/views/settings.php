@@ -299,6 +299,84 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</p>
 		</div>
 
+		<!-- Email design -->
+		<?php
+		$kdna_launchpad_design   = KDNA_Launchpad_Email_Design::settings();
+		$kdna_launchpad_logo_url = KDNA_Launchpad_Email_Design::logo_url( $kdna_launchpad_design );
+		$kdna_launchpad_preview  = wp_nonce_url( admin_url( 'admin-post.php?action=' . KDNA_Launchpad_Email_Design::PREVIEW_ACTION ), KDNA_Launchpad_Email_Design::PREVIEW_ACTION );
+		?>
+		<div class="kdna-launchpad-card">
+			<h2 class="kdna-launchpad-card__title"><?php esc_html_e( 'Email design', 'kdna-launchpad' ); ?></h2>
+			<p class="kdna-launchpad-card__intro"><?php esc_html_e( 'The look of every Launchpad email, including the confirmation and "new application" emails from the application form. Save, then preview.', 'kdna-launchpad' ); ?></p>
+
+			<div class="kdna-launchpad-row">
+				<span class="kdna-launchpad-row__label"><?php esc_html_e( 'Logo', 'kdna-launchpad' ); ?></span>
+				<div class="kdna-launchpad-row__control kdna-launchpad-logo-picker">
+					<input type="hidden" name="email_design[logo_id]" class="kdna-launchpad-logo-picker__id" value="<?php echo esc_attr( $kdna_launchpad_design['logo_id'] ); ?>" />
+					<div class="kdna-launchpad-logo-picker__preview"<?php echo $kdna_launchpad_logo_url ? '' : ' hidden'; ?>>
+						<img src="<?php echo esc_url( $kdna_launchpad_logo_url ); ?>" alt="" />
+					</div>
+					<p>
+						<button type="button" class="button kdna-launchpad-logo-picker__choose"><?php esc_html_e( 'Choose logo', 'kdna-launchpad' ); ?></button>
+						<button type="button" class="button-link kdna-launchpad-link-danger kdna-launchpad-logo-picker__remove"<?php echo $kdna_launchpad_design['logo_id'] ? '' : ' hidden'; ?>><?php esc_html_e( 'Remove', 'kdna-launchpad' ); ?></button>
+					</p>
+					<p class="description"><?php esc_html_e( 'Use a PNG or JPG. Most email apps, including Gmail and Outlook, can\'t show SVG files. With no logo chosen, your site logo is used.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-logo-width" class="kdna-launchpad-row__label"><?php esc_html_e( 'Logo width', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<input type="number" min="40" max="560" name="email_design[logo_width]" id="kdna-launchpad-logo-width" class="small-text" value="<?php echo esc_attr( $kdna_launchpad_design['logo_width'] ); ?>" /> px
+					<select name="email_design[logo_align]" class="kdna-launchpad-select-auto" aria-label="<?php esc_attr_e( 'Logo position', 'kdna-launchpad' ); ?>">
+						<option value="left" <?php selected( $kdna_launchpad_design['logo_align'], 'left' ); ?>><?php esc_html_e( 'Left', 'kdna-launchpad' ); ?></option>
+						<option value="center" <?php selected( $kdna_launchpad_design['logo_align'], 'center' ); ?>><?php esc_html_e( 'Centre', 'kdna-launchpad' ); ?></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-email-font" class="kdna-launchpad-row__label"><?php esc_html_e( 'Font', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<input type="text" name="email_design[font]" id="kdna-launchpad-email-font" class="regular-text" value="<?php echo esc_attr( $kdna_launchpad_design['font'] ); ?>" placeholder="Inter" />
+					<p class="description"><?php esc_html_e( 'A Google Fonts name, exactly as Google spells it. It shows in Apple Mail, iPhone and some other apps. Gmail and Outlook use the fallback below instead.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-email-fallback" class="kdna-launchpad-row__label"><?php esc_html_e( 'Fallback font', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<select name="email_design[fallback]" id="kdna-launchpad-email-fallback">
+						<?php foreach ( KDNA_Launchpad_Email_Design::fallbacks() as $kdna_launchpad_key => $kdna_launchpad_fallback ) : ?>
+							<option value="<?php echo esc_attr( $kdna_launchpad_key ); ?>" <?php selected( $kdna_launchpad_design['fallback'], $kdna_launchpad_key ); ?>><?php echo esc_html( $kdna_launchpad_fallback[0] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
+				<span class="kdna-launchpad-row__label"><?php esc_html_e( 'Colours', 'kdna-launchpad' ); ?></span>
+				<div class="kdna-launchpad-row__control kdna-launchpad-colours">
+					<label><input type="color" name="email_design[background]" value="<?php echo esc_attr( $kdna_launchpad_design['background'] ); ?>" /> <?php esc_html_e( 'Background', 'kdna-launchpad' ); ?></label>
+					<label><input type="color" name="email_design[text]" value="<?php echo esc_attr( $kdna_launchpad_design['text'] ); ?>" /> <?php esc_html_e( 'Text', 'kdna-launchpad' ); ?></label>
+					<label><input type="color" name="email_design[link]" value="<?php echo esc_attr( $kdna_launchpad_design['link'] ); ?>" /> <?php esc_html_e( 'Links', 'kdna-launchpad' ); ?></label>
+				</div>
+			</div>
+
+			<div class="kdna-launchpad-row">
+				<label for="kdna-launchpad-email-footer" class="kdna-launchpad-row__label"><?php esc_html_e( 'Footer', 'kdna-launchpad' ); ?></label>
+				<div class="kdna-launchpad-row__control">
+					<textarea name="email_design[footer]" id="kdna-launchpad-email-footer" rows="3" class="large-text"><?php echo esc_textarea( $kdna_launchpad_design['footer'] ); ?></textarea>
+					<p class="description"><?php esc_html_e( 'Shown in small grey text under every email. Leave blank for no footer.', 'kdna-launchpad' ); ?></p>
+				</div>
+			</div>
+
+			<p>
+				<a class="button" href="<?php echo esc_url( $kdna_launchpad_preview ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Preview the winner email', 'kdna-launchpad' ); ?></a>
+				<span class="description"><?php esc_html_e( 'Opens in a new tab with sample details. Save first to see your changes. For a true test, use "Send test email" below and open it in Gmail and Outlook.', 'kdna-launchpad' ); ?></span>
+			</p>
+		</div>
+
 		<?php foreach ( KDNA_Launchpad_Emails::types() as $kdna_launchpad_type => $kdna_launchpad_type_label ) : ?>
 			<?php $kdna_launchpad_template = KDNA_Launchpad_Emails::get_template( $kdna_launchpad_type ); ?>
 			<div class="kdna-launchpad-card kdna-launchpad-email-card" data-type="<?php echo esc_attr( $kdna_launchpad_type ); ?>">
