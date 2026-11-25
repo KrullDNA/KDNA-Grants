@@ -178,10 +178,11 @@ class KDNA_Launchpad_Widget extends Widget_Base {
 		$this->add_control(
 			'countdown_label',
 			array(
-				'label'     => esc_html__( 'Countdown wording', 'kdna-launchpad' ),
-				'type'      => Controls_Manager::TEXT,
-				'default'   => KDNA_Launchpad_Frontend::default_countdown_label(),
-				'condition' => array( 'show_countdown' => 'yes' ),
+				'label'       => esc_html__( 'Countdown wording', 'kdna-launchpad' ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => KDNA_Launchpad_Frontend::default_countdown_label(),
+				'condition'   => array( 'show_countdown' => 'yes' ),
+				'description' => esc_html__( 'You can use {round} for the round name (for example Q1 2027), {close_date} for the closing date and {time_left} for the live countdown. Without {time_left}, the time left goes at the end. Example: {round} applications close in {time_left}', 'kdna-launchpad' ),
 			)
 		);
 

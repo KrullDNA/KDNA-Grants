@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,10 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.3 =
+* New: tags in the countdown wording. Use {round} for the round name, {close_date} for the closing date and {time_left} to place the live countdown anywhere, for example "{round} applications close in {time_left}".
+* New: {next_round} in the closed message, for the name of the next round.
 
 = 1.3.2 =
 * The terms tick box on the built-in form now links to your privacy policy too (the page set in Settings > Privacy), with a short note on how application details are used, including AI. The tick box now reads "I have read and agree to the Launchpad terms and conditions and privacy policy".

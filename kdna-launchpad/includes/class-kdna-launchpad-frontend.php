@@ -242,7 +242,7 @@ class KDNA_Launchpad_Frontend {
 			$html = '';
 
 			if ( $args['countdown'] && $state['show_countdown'] ) {
-				$html .= self::countdown_html( $state['closes'], $args['countdown_label'] );
+				$html .= self::countdown_html( $state['closes'], $args['countdown_label'], $state['round'] );
 			}
 
 			// A styled Elementor template (with the KDNA Forms widget) if one is chosen, otherwise the plain form.
@@ -267,7 +267,7 @@ class KDNA_Launchpad_Frontend {
 		return '<div class="kdna-launchpad-application kdna-launchpad-application--closed">'
 			. '<div class="kdna-launchpad-closed">'
 			. $heading
-			. '<div class="kdna-launchpad-closed__message">' . wpautop( esc_html( self::closed_message( $state['next_opens'] ) ) ) . '</div>'
+			. '<div class="kdna-launchpad-closed__message">' . wpautop( esc_html( self::closed_message( $state['next_opens'], $state['next_round'] ) ) ) . '</div>'
 			. '</div></div>';
 	}
 
@@ -330,7 +330,9 @@ class KDNA_Launchpad_Frontend {
 					'state'          => 'open',
 					'closes'         => time() + 12 * DAY_IN_SECONDS + 3 * HOUR_IN_SECONDS,
 					'show_countdown' => self::PREVIEW_OPEN_COUNTDOWN === $preview,
+					'round'          => self::sample_round_name(),
 					'next_opens'     => '',
+					'next_round'     => '',
 				);
 
 			case self::PREVIEW_CLOSED_NEXT:
@@ -338,7 +340,9 @@ class KDNA_Launchpad_Frontend {
 					'state'          => 'closed',
 					'closes'         => 0,
 					'show_countdown' => false,
+					'round'          => '',
 					'next_opens'     => gmdate( KDNA_Launchpad_Rounds::DB_FORMAT, time() + 40 * DAY_IN_SECONDS ),
+					'next_round'     => self::sample_round_name(),
 				);
 
 			case self::PREVIEW_CLOSED_NONE:
@@ -346,7 +350,9 @@ class KDNA_Launchpad_Frontend {
 					'state'          => 'closed',
 					'closes'         => 0,
 					'show_countdown' => false,
+					'round'          => '',
 					'next_opens'     => '',
+					'next_round'     => '',
 				);
 		}
 
@@ -359,7 +365,9 @@ class KDNA_Launchpad_Frontend {
 				'state'          => 'open',
 				'closes'         => strtotime( $open['closes_at'] . ' UTC' ),
 				'show_countdown' => true,
+				'round'          => (string) $open['name'],
 				'next_opens'     => '',
+				'next_round'     => '',
 			);
 		}
 
@@ -369,7 +377,9 @@ class KDNA_Launchpad_Frontend {
 			'state'          => 'closed',
 			'closes'         => 0,
 			'show_countdown' => false,
+			'round'          => '',
 			'next_opens'     => $next ? $next['opens_at'] : '',
+			'next_round'     => $next ? (string) $next['name'] : '',
 		);
 	}
 
@@ -377,13 +387,14 @@ class KDNA_Launchpad_Frontend {
 	 * The closed message from Settings, with the next opening date filled in.
 	 *
 	 * @param string $next_opens UTC time the next round opens, or ''.
+	 * @param string $next_round Name of the next round, for example "Q2 2027", or ''.
 	 * @return string
 	 */
-	public static function closed_message( $next_opens ) {
+	public static function closed_message( $next_opens, $next_round = '' ) {
 		if ( $next_opens ) {
 			return str_replace(
-				'{next_open_date}',
-				KDNA_Launchpad_Rounds::format( $next_opens, false ),
+				array( '{next_open_date}', '{next_round}' ),
+				array( KDNA_Launchpad_Rounds::format( $next_opens, false ), $next_round ),
 				(string) kdna_launchpad_get_setting( 'closed_message', '' )
 			);
 		}
@@ -394,17 +405,45 @@ class KDNA_Launchpad_Frontend {
 	/**
 	 * The countdown, for example "Applications close in 12 days". The script keeps it up to date.
 	 *
+	 * The wording can include {round} (the round's name), {close_date} (the closing date) and
+	 * {time_left} (the live countdown). Without {time_left}, the time left goes at the end.
+	 *
 	 * @param int    $closes Closing time (timestamp).
-	 * @param string $label  Words before the time left.
+	 * @param string $label  Countdown wording.
+	 * @param string $round  Name of the open round, for example "Q1 2027".
 	 * @return string
 	 */
-	private static function countdown_html( $closes, $label ) {
-		return sprintf(
-			'<div class="kdna-launchpad-countdown" data-closes="%1$d"><span class="kdna-launchpad-countdown__label">%2$s</span> <span class="kdna-launchpad-countdown__time">%3$s</span></div>',
-			(int) $closes,
-			esc_html( $label ),
-			esc_html( self::time_left( $closes - time() ) )
+	private static function countdown_html( $closes, $label, $round = '' ) {
+		$time = sprintf( '<span class="kdna-launchpad-countdown__time">%s</span>', esc_html( self::time_left( $closes - time() ) ) );
+
+		$label = esc_html(
+			str_replace(
+				array( '{round}', '{close_date}' ),
+				array( $round, wp_date( 'j F Y', (int) $closes ) ),
+				(string) $label
+			)
 		);
+		$label = trim( preg_replace( '/\s+/', ' ', $label ) );
+
+		if ( false !== strpos( $label, '{time_left}' ) ) {
+			$parts = explode( '{time_left}', $label, 2 );
+			$inner = ( '' !== trim( $parts[0] ) ? '<span class="kdna-launchpad-countdown__label">' . rtrim( $parts[0] ) . '</span> ' : '' )
+				. $time
+				. ( '' !== trim( $parts[1] ) ? ' <span class="kdna-launchpad-countdown__label">' . ltrim( $parts[1] ) . '</span>' : '' );
+		} else {
+			$inner = ( '' !== $label ? '<span class="kdna-launchpad-countdown__label">' . $label . '</span> ' : '' ) . $time;
+		}
+
+		return sprintf( '<div class="kdna-launchpad-countdown" data-closes="%1$d">%2$s</div>', (int) $closes, $inner );
+	}
+
+	/**
+	 * A round name for the editor previews, in the same style as real rounds, for example "Q1 2027".
+	 *
+	 * @return string
+	 */
+	private static function sample_round_name() {
+		return 'Q' . (int) ceil( (int) wp_date( 'n' ) / 3 ) . ' ' . wp_date( 'Y' );
 	}
 
 	/**

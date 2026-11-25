@@ -391,7 +391,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<label for="kdna-launchpad-closed-message" class="kdna-launchpad-row__label"><?php esc_html_e( 'When the next round is scheduled', 'kdna-launchpad' ); ?></label>
 				<div class="kdna-launchpad-row__control">
 					<textarea name="closed_message" id="kdna-launchpad-closed-message" rows="3" class="large-text"><?php echo esc_textarea( $settings['closed_message'] ); ?></textarea>
-					<p class="description"><?php esc_html_e( 'Use {next_open_date} for the date the next round opens.', 'kdna-launchpad' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Use {next_open_date} for the date the next round opens, and {next_round} for its name (for example Q2 2027).', 'kdna-launchpad' ); ?></p>
 				</div>
 			</div>
 
