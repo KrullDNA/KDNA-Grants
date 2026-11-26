@@ -4,7 +4,7 @@ Tags: launchpad, giveaway, judging, applications, elementor
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.3.15
+Stable tag: 1.3.16
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,9 @@ Test rounds never fire these actions.
 5. Go to Launchpad > Rounds and create the first round.
 
 == Changelog ==
+
+= 1.3.16 =
+* Fixed: sites with saved email templates still asked winners for content "within 4 weeks". Updating now changes that sentence to 2 weeks in saved templates, leaving the rest of your wording as it is.
 
 = 1.3.15 =
 * The default "Hosting and next steps" email template now asks for content within 2 weeks of the kick-off meeting, to match the terms.

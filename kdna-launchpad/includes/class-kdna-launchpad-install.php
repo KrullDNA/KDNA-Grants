@@ -92,7 +92,12 @@ class KDNA_Launchpad_Install {
 	private static function maybe_upgrade_settings() {
 		$done = get_option( 'kdna_launchpad_settings_version', '' );
 
+		if ( version_compare( (string) $done, '1.3.16', '>=' ) ) {
+			return;
+		}
+
 		if ( version_compare( (string) $done, '1.1.1', '>=' ) ) {
+			self::upgrade_settings_1_3_16();
 			return;
 		}
 
@@ -121,6 +126,32 @@ class KDNA_Launchpad_Install {
 		}
 
 		update_option( 'kdna_launchpad_settings_version', '1.1.1', false );
+
+		self::upgrade_settings_1_3_16();
+	}
+
+	/**
+	 * 1.3.16: winners now supply their content within 2 weeks of kick-off, not 4.
+	 * Updates that sentence in saved email templates, leaving everything else as it is.
+	 */
+	private static function upgrade_settings_1_3_16() {
+		$settings = get_option( KDNA_LAUNCHPAD_OPTION, array() );
+
+		if ( is_array( $settings ) && ! empty( $settings['compose_templates'] ) && is_array( $settings['compose_templates'] ) ) {
+			foreach ( $settings['compose_templates'] as $index => $template ) {
+				if ( isset( $template['body'] ) && is_string( $template['body'] ) ) {
+					$settings['compose_templates'][ $index ]['body'] = str_replace(
+						'Please send everything within 4 weeks of our kick-off meeting.',
+						'Please send everything within 2 weeks of our kick-off meeting.',
+						$template['body']
+					);
+				}
+			}
+
+			update_option( KDNA_LAUNCHPAD_OPTION, $settings, false );
+		}
+
+		update_option( 'kdna_launchpad_settings_version', '1.3.16', false );
 	}
 
 	/**
